@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Business OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2ec; --bg2: #edeae2; --card: #ffffff; --border: #ddd9cf;
+  --ink: #1a1814; --ink2: #6b6760; --ink3: #a09d97;
+  --green: #2d6a4f; --green-bg: #e8f4ee;
+  --amber: #b45309; --amber-bg: #fef3c7;
+  --red: #991b1b; --red-bg: #fee2e2;
+  --blue: #1e40af; --blue-bg: #dbeafe;
+  --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--ink); font-family: 'Inconsolata', monospace; min-height: 100vh; }
+
+#setup { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.setup-inner { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 52px; width: 460px; max-width: 92vw; }
+.setup-inner h2 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+.setup-inner p { font-size: 13px; color: var(--ink2); line-height: 1.8; margin-bottom: 28px; }
+.setup-inner input { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 13px 16px; font-family: 'Inconsolata', monospace; font-size: 13px; background: var(--bg); color: var(--ink); outline: none; margin-bottom: 14px; }
+.setup-inner input:focus { border-color: var(--ink); }
+.setup-inner button { width: 100%; background: var(--ink); color: var(--bg); border: none; border-radius: 8px; padding: 14px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+#loading { position: fixed; inset: 0; z-index: 300; background: var(--bg); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#app { display: none; }
+.topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; align-items: center; height: 60px; gap: 24px; position: sticky; top: 0; z-index: 50; }
+.topbar-brand { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab { padding: 6px 16px; border-radius: 6px; font-family: 'Inconsolata', monospace; font-size: 13px; cursor: pointer; border: none; background: transparent; color: var(--ink2); transition: all 0.15s; }
+.nav-tab.active { background: var(--ink); color: var(--bg); }
+.nav-tab:hover:not(.active) { background: var(--bg2); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.topbar-date { font-size: 12px; color: var(--ink3); }
+.sync-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+.sync-ok { background: var(--green-bg); color: var(--green); }
+.sync-saving { background: var(--amber-bg); color: var(--amber); }
+.sync-err { background: var(--red-bg); color: var(--red); }
+
+.main { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+.page { display: none; }
+.page.active { display: block; }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--ink3); }
+
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.card-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); margin-bottom: 16px; }
+.focus-card { background: var(--ink); color: var(--bg); border-radius: var(--radius); padding: 22px; grid-column: span 3; }
+.focus-card .card-title { color: rgba(255,255,255,0.4); }
+.focus-today { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; line-height: 1.5; }
+
+.task-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--bg2); cursor: pointer; }
+.task-item:last-child { border-bottom: none; }
+.task-cb { width: 18px; height: 18px; border: 1.5px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; }
+.task-item.done .task-cb { background: var(--green); border-color: var(--green); color: white; }
+.task-item.done .task-text { text-decoration: line-through; color: var(--ink3); }
+.task-text { font-size: 13px; line-height: 1.5; flex: 1; }
+.task-meta { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+.priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.p-high { background: var(--red); }
+.p-med { background: var(--amber); }
+.p-low { background: var(--green); }
+
+.clients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.client-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: all 0.2s; }
+.client-card:hover { border-color: var(--ink); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.client-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.client-biz { font-size: 12px; color: var(--ink3); margin-bottom: 12px; }
+.client-status { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; }
+.status-active { background: var(--green-bg); color: var(--green); }
+.status-waiting { background: var(--amber-bg); color: var(--amber); }
+.status-review { background: var(--blue-bg); color: var(--blue); }
+.status-inactive { background: #f3f4f6; color: #6b7280; }
+.client-promise { margin-top: 10px; background: var(--amber-bg); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: var(--amber); }
+.client-promise strong { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+
+.ai-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; height: 500px; }
+.ai-messages { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.ai-msg { font-size: 13px; line-height: 1.7; max-width: 90%; animation: fadeUp 0.2s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.ai-msg.user { background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 8px 8px 2px 8px; align-self: flex-end; }
+.ai-msg.claude { background: var(--bg2); padding: 10px 14px; border-radius: 8px 8px 8px 2px; align-self: flex-start; }
+.ai-input-row { display: flex; gap: 10px; padding: 14px; border-top: 1px solid var(--border); }
+.ai-input-row input { flex: 1; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: 'Inconsolata', monospace; font-size: 13px; background: var(--bg); color: var(--ink); outline: none; }
+.ai-input-row button { background: var(--ink); color: var(--bg); border: none; border-radius: 8px; padding: 10px 18px; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+.modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(26,24,20,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; }
+.modal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 36px; width: 520px; max-width: 94vw; max-height: 90vh; overflow-y: auto; }
+.modal h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink3); margin-bottom: 6px; }
+.field input, .field textarea, .field select { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 11px 14px; font-family: 'Inconsolata', monospace; font-size: 13px; background: var(--bg); color: var(--ink); outline: none; }
+.field textarea { resize: vertical; min-height: 80px; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--ink); }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.btn-primary { flex: 1; background: var(--ink); color: var(--bg); border: none; border-radius: 8px; padding: 12px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+.btn-cancel { padding: 12px 20px; background: transparent; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Inconsolata', monospace; font-size: 13px; cursor: pointer; color: var(--ink2); }
+.btn-danger { padding: 12px 20px; background: transparent; border: 1.5px solid var(--red-bg); border-radius: 8px; font-family: 'Inconsolata', monospace; font-size: 13px; cursor: pointer; color: var(--red); }
+.add-btn { display: flex; align-items: center; gap: 8px; font-family: 'Inconsolata', monospace; font-size: 13px; color: var(--ink2); background: var(--bg2); border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 12px 18px; cursor: pointer; width: 100%; margin-top: 12px; }
+.add-btn:hover { border-color: var(--ink); color: var(--ink); }
+.empty-state { text-align: center; padding: 40px; color: var(--ink3); font-size: 13px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.page-header h2 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; }
+.page-header p { font-size: 13px; color: var(--ink3); margin-top: 2px; }
+.btn-add { background: var(--ink); color: var(--bg); border: none; border-radius: 8px; padding: 12px 22px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spinner"></div><div style="font-size:13px;color:var(--ink3);">Loading from Google Sheets...</div></div>
+
+<div id="setup">
+  <div class="setup-inner">
+    <h2>My Business OS</h2>
+    <p>Enter your Anthropic key once — saved in your browser, never in the code.</p>
+    <input type="password" id="api-key-input" placeholder="Anthropic API key (sk-ant-api03-...)" />
+    <button onclick="startApp()">Launch Dashboard →</button>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-brand">⬡ Business OS</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</button>
+      <button class="nav-tab" onclick="showPage('clients',this)">Clients</button>
+      <button class="nav-tab" onclick="showPage('tasks',this)">Tasks</button>
+      <button class="nav-tab" onclick="showPage('assistant',this)">AI Assistant</button>
+    </div>
+    <div class="topbar-right">
+      <div id="sync-badge" class="sync-badge sync-ok">✓ Saved to Google</div>
+      <div class="topbar-date" id="topbar-date"></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row" id="stats-row"></div>
+      <div class="dashboard-grid">
+        <div class="focus-card"><div class="card-title">🎯 Today's Focus</div><div class="focus-today" id="focus-text">Loading your priorities...</div></div>
+        <div class="card" style="grid-column:span 2"><div class="card-title">⚡ Top Tasks Today</div><div id="dashboard-tasks"></div></div>
+        <div class="card"><div class="card-title">👥 Client Pulse</div><div id="dashboard-clients"></div></div>
+        <div class="card" style="grid-column:span 2">
+          <div class="card-title">💬 Quick Ask</div>
+          <div id="quick-messages" style="min-height:50px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;"></div>
+          <div style="display:flex;gap:10px;">
+            <input type="text" id="quick-input" placeholder="Ask anything about your day or clients..." style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Inconsolata',monospace;font-size:13px;background:var(--bg);outline:none;" onkeydown="if(event.key==='Enter')quickAsk()" />
+            <button onclick="quickAsk()" style="background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Ask</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-clients">
+      <div class="page-header"><div><h2>Clients</h2><p>All saved automatically to Google Sheets</p></div><button class="btn-add" onclick="openClientModal()">+ Add Client</button></div>
+      <div class="clients-grid" id="clients-grid"></div>
+    </div>
+
+    <div class="page" id="page-tasks">
+      <div class="page-header"><div><h2>Tasks</h2><p>All saved automatically to Google Sheets</p></div><button class="btn-add" onclick="openTaskModal()">+ Add Task</button></div>
+      <div class="card"><div id="all-tasks-list"></div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button></div>
+    </div>
+
+    <div class="page" id="page-assistant">
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;">AI Assistant</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:20px;">Knows all your clients and tasks. Ask it anything.</div>
+      <div class="ai-panel">
+        <div class="ai-messages" id="ai-messages">
+          <div class="ai-msg claude">Hi! I'm your business assistant. I know all your clients and tasks. Try asking:<br><br>• "What should I focus on today?"<br>• "Summarize where I am with each client"<br>• "What have I promised clients?"<br>• "Who needs attention most urgently?"</div>
+        </div>
+        <div class="ai-input-row">
+          <input type="text" id="ai-input" placeholder="Ask about your clients, tasks, day..." onkeydown="if(event.key==='Enter')aiAsk()" />
+          <button onclick="aiAsk()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Client Modal -->
+<div id="client-modal" style="display:none" class="modal-overlay">
+  <div class="modal">
+    <h3 id="cm-title">Add Client</h3>
+    <div class="field"><label>Client Name</label><input type="text" id="cm-name" placeholder="e.g. Sarah Johnson" /></div>
+    <div class="field"><label>Business / Store Name</label><input type="text" id="cm-biz" placeholder="e.g. Boutique Fashion Store" /></div>
+    <div class="field"><label>Status</label><select id="cm-status">
+      <option value="active">Active — Working together</option>
+      <option value="waiting">Waiting — Waiting on them</option>
+      <option value="review">Review — In review</option>
+      <option value="inactive">Not Active — Paused or ended</option>
+    </select></div>
+    <div class="field"><label>Monthly Revenue / Deal Value</label><input type="text" id="cm-revenue" placeholder="e.g. $2,000/month" /></div>
+    <div class="field"><label>Where we left off</label><textarea id="cm-last" placeholder="What happened in the last session or call?"></textarea></div>
+    <div class="field"><label>What I promised them</label><textarea id="cm-promise" placeholder="Any deliverables or commitments you made..."></textarea></div>
+    <div class="field"><label>Next step</label><input type="text" id="cm-next" placeholder="What's the next action for this client?" /></div>
+    <input type="hidden" id="cm-id" />
+    <input type="hidden" id="cm-row" />
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('client-modal')">Cancel</button>
+      <button class="btn-danger" id="cm-delete-btn" onclick="deleteClient()" style="display:none">Delete</button>
+      <button class="btn-primary" onclick="saveClient()">Save to Google Sheets ↗</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Modal -->
+<div id="task-modal" style="display:none" class="modal-overlay">
+  <div class="modal">
+    <h3>Add Task</h3>
+    <div class="field"><label>Task</label><input type="text" id="tm-text" placeholder="What needs to be done?" /></div>
+    <div class="field"><label>Client (optional)</label><select id="tm-client"><option value="">— Not client specific —</option></select></div>
+    <div class="field"><label>Priority</label><select id="tm-priority">
+      <option value="high">🔴 High — Do today</option>
+      <option value="med">🟡 Medium — Do soon</option>
+      <option value="low">🟢 Low — When possible</option>
+    </select></div>
+    <div class="field"><label>Due date (optional)</label><input type="date" id="tm-due" /></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('task-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveTask()">Save to Google Sheets ↗</button>
+    </div>
+  </div>
+</div>
+
+<div id="detail-modal" style="display:none" class="modal-overlay"><div class="modal" id="detail-content"></div></div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────────────────────
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzd_qImuLJRNMUGUcxdb_a2FnetKSoMlmk313L6fPFZJbRfyoOrjW2gAkewG3w9SQZG/exec';
+
+let API_KEY = '';
+let clients = [], tasks = [], aiHistory = [], quickHistory = [];
+
+// ── Sync badge ───────────────────────────────────────────────────────────────
+function syncBadge(s) {
+  const el = document.getElementById('sync-badge'); if (!el) return;
+  const map = { saving:['sync-saving','⟳ Saving...'], ok:['sync-ok','✓ Saved to Google'], err:['sync-err','✗ Sync error'] };
+  el.className = 'sync-badge ' + map[s][0]; el.textContent = map[s][1];
+}
+
+// ── Google Apps Script helpers ───────────────────────────────────────────────
+async function gasRead(sheet) {
+  const r = await fetch(GAS_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'read', sheet })
+  });
+  if (!r.ok) throw new Error('Read error');
+  return r.json();
+}
+
+async function gasWrite(sheet, data) {
+  syncBadge('saving');
+  try {
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'write', sheet, data })
+    });
+    syncBadge(r.ok ? 'ok' : 'err');
+  } catch(e) { syncBadge('err'); throw e; }
+}
+
+// ── Parse rows ───────────────────────────────────────────────────────────────
+function parseClients(rows) {
+  const start = (rows[0] && rows[0][0] === 'id') ? 1 : 0;
+  return rows.slice(start).map((r, i) => ({
+    id: r[0]||'', name: r[1]||'', biz: r[2]||'', status: r[3]||'active',
+    revenue: r[4]||'', last: r[5]||'', promise: r[6]||'', next: r[7]||''
+  })).filter(c => c.name);
+}
+
+function parseTasks(rows) {
+  const start = (rows[0] && rows[0][0] === 'id') ? 1 : 0;
+  return rows.slice(start).map((r, i) => ({
+    id: r[0]||'', text: r[1]||'', client: r[2]||'', priority: r[3]||'med',
+    due: r[4]||'', done: r[5]==='true'
+  })).filter(t => t.text);
+}
+
+function clientToRow(c) {
+  return [c.id, c.name, c.biz, c.status, c.revenue, c.last, c.promise, c.next];
+}
+
+function taskToRow(t) {
+  return [t.id, t.text, t.client, t.priority, t.due, String(t.done)];
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+document.getElementById('api-key-input').addEventListener('keydown', e => { if(e.key==='Enter') startApp(); });
+
+const savedAKey = localStorage.getItem('bos_api_key');
+if (savedAKey) {
+  API_KEY = savedAKey;
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('loading').style.display = 'flex';
+  loadAll();
+}
+
+function startApp() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if (!k.startsWith('sk-ant-')) { alert('Please enter a valid Anthropic API key (starts with sk-ant-)'); return; }
+  API_KEY = k;
+  localStorage.setItem('bos_api_key', k);
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('loading').style.display = 'flex';
+  loadAll();
+}
+
+async function loadAll() {
+  try {
+    const [cr, tr] = await Promise.all([
+      gasRead('clients').catch(() => []),
+      gasRead('tasks').catch(() => [])
+    ]);
+    clients = parseClients(Array.isArray(cr) ? cr : []);
+    tasks = parseTasks(Array.isArray(tr) ? tr : []);
+  } catch(e) {
+    console.error('Load error:', e);
+    clients = []; tasks = [];
+    syncBadge('err');
+  }
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  renderAll();
+  generateFocus();
+}
+
+// ── Save all (full rewrite approach for reliability) ─────────────────────────
+async function saveAllClients() {
+  const header = ['id','name','biz','status','revenue','last','promise','next'];
+  const rows = [header, ...clients.map(clientToRow)];
+  await gasWrite('clients', rows);
+}
+
+async function saveAllTasks() {
+  const header = ['id','text','client','priority','due','done'];
+  const rows = [header, ...tasks.map(taskToRow)];
+  await gasWrite('tasks', rows);
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function renderAll() { renderStats(); renderDashboardTasks(); renderDashboardClients(); renderClientsPage(); renderTasks(); updateClientDropdown(); }
+
+function renderStats() {
+  document.getElementById('stats-row').innerHTML = [
+    [clients.length, 'Total Clients', ''],
+    [clients.filter(c=>c.status==='active').length, 'Active Now', 'color:var(--green)'],
+    [tasks.filter(t=>!t.done).length, 'Open Tasks', ''],
+    [tasks.filter(t=>!t.done&&t.priority==='high').length, 'High Priority', 'color:var(--red)']
+  ].map(([n,l,s])=>`<div class="stat-card"><div class="stat-num" style="${s}">${n}</div><div class="stat-label">${l}</div></div>`).join('');
+}
+
+function pSort(a,b) { return ({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1); }
+
+function renderDashboardTasks() {
+  const top = tasks.filter(t=>!t.done).sort(pSort).slice(0,5);
+  document.getElementById('dashboard-tasks').innerHTML = top.length
+    ? top.map(t=>`<div class="task-item" onclick="toggleTask('${t.id}')"><div class="priority-dot p-${t.priority}"></div><div class="task-cb"></div><div><div class="task-text">${t.text}</div><div class="task-meta">${t.client?'👤 '+t.client+' ':''} ${t.due?'📅 '+t.due:''}</div></div></div>`).join('')
+    : '<div class="empty-state">No open tasks yet.</div>';
+}
+
+function renderDashboardClients() {
+  document.getElementById('dashboard-clients').innerHTML = clients.length
+    ? clients.map(c=>`<div class="task-item" onclick="openClientDetail('${c.id}')" style="cursor:pointer"><div><div style="font-size:13px;font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--ink3)">${c.biz||''}</div></div><div class="client-status status-${c.status}" style="margin-left:auto;margin-bottom:0">${statusLabel(c.status)}</div></div>`).join('')
+    : '<div class="empty-state">No clients yet.</div>';
+}
+
+function statusLabel(s) { return s==='active'?'● Active':s==='waiting'?'⏳ Waiting':s==='inactive'?'○ Not Active':'👀 Review'; }
+
+function renderClientsPage() {
+  document.getElementById('clients-grid').innerHTML = clients.length
+    ? clients.map(c=>`<div class="client-card" onclick="openClientDetail('${c.id}')">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div><div class="client-name">${c.name}</div><div class="client-biz">${c.biz||''}</div></div>
+          <div class="client-status status-${c.status}">${statusLabel(c.status)}</div>
+        </div>
+        ${c.revenue?`<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">💰 ${c.revenue}</div>`:''}
+        ${c.last?`<div style="font-size:12px;color:var(--ink2);line-height:1.6"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)">Last session</strong><br>${c.last}</div>`:''}
+        ${c.promise?`<div class="client-promise"><strong>📌 Promised</strong>${c.promise}</div>`:''}
+        ${c.next?`<div style="margin-top:10px;font-size:12px;color:var(--blue)"><strong>→ Next:</strong> ${c.next}</div>`:''}
+      </div>`).join('')
+    : '<div class="empty-state">No clients yet. Add your first client!</div>';
+}
+
+function renderTasks() {
+  const sorted = [...tasks].sort((a,b)=>{ if(a.done!==b.done) return a.done?1:-1; return pSort(a,b); });
+  document.getElementById('all-tasks-list').innerHTML = sorted.length
+    ? sorted.map(t=>`<div class="task-item ${t.done?'done':''}" onclick="toggleTask('${t.id}')">
+        <div class="priority-dot p-${t.priority}"></div>
+        <div class="task-cb">${t.done?'✓':''}</div>
+        <div style="flex:1"><div class="task-text">${t.text}</div><div class="task-meta">${t.client?'👤 '+t.client+'  ':''} ${t.due?'📅 '+t.due:''}</div></div>
+        <div onclick="event.stopPropagation();deleteTask('${t.id}')" style="font-size:18px;color:var(--ink3);padding:4px 8px;cursor:pointer">×</div>
+      </div>`).join('')
+    : '<div class="empty-state">No tasks yet.</div>';
+}
+
+function updateClientDropdown() {
+  document.getElementById('tm-client').innerHTML = '<option value="">— Not client specific —</option>' + clients.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+async function toggleTask(id) {
+  const t = tasks.find(t=>t.id===id); if(!t) return;
+  t.done = !t.done; renderAll();
+  await saveAllTasks();
+}
+
+async function deleteTask(id) {
+  tasks = tasks.filter(t=>t.id!==id); renderAll();
+  await saveAllTasks();
+}
+
+// ── Modals ───────────────────────────────────────────────────────────────────
+function openClientModal(id) {
+  const c = id ? clients.find(c=>c.id===id) : null;
+  document.getElementById('cm-title').textContent = c ? 'Edit Client' : 'Add Client';
+  ['name','biz','last','promise','next','revenue'].forEach(f => document.getElementById('cm-'+f).value = c?.[f]||'');
+  document.getElementById('cm-status').value = c?.status||'active';
+  document.getElementById('cm-id').value = c?.id||'';
+  document.getElementById('cm-delete-btn').style.display = c ? 'block' : 'none';
+  document.getElementById('client-modal').style.display = 'flex';
+}
+
+function openTaskModal() {
+  updateClientDropdown();
+  document.getElementById('tm-text').value = '';
+  document.getElementById('task-modal').style.display = 'flex';
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+async function saveClient() {
+  const existId = document.getElementById('cm-id').value;
+  const id = existId || Date.now().toString();
+  const c = {
+    id, name: document.getElementById('cm-name').value.trim(),
+    biz: document.getElementById('cm-biz').value.trim(),
+    status: document.getElementById('cm-status').value,
+    revenue: document.getElementById('cm-revenue').value.trim(),
+    last: document.getElementById('cm-last').value.trim(),
+    promise: document.getElementById('cm-promise').value.trim(),
+    next: document.getElementById('cm-next').value.trim()
+  };
+  if (!c.name) { alert('Please enter a client name'); return; }
+  closeModal('client-modal');
+  const idx = clients.findIndex(x=>x.id===id);
+  if (idx>=0) clients[idx] = {...clients[idx], ...c};
+  else clients.push(c);
+  renderAll();
+  await saveAllClients();
+}
+
+async function saveTask() {
+  const t = {
+    id: Date.now().toString(),
+    text: document.getElementById('tm-text').value.trim(),
+    client: document.getElementById('tm-client').value,
+    priority: document.getElementById('tm-priority').value,
+    due: document.getElementById('tm-due').value,
+    done: false
+  };
+  if (!t.text) { alert('Please enter a task'); return; }
+  closeModal('task-modal');
+  tasks.push(t); renderAll();
+  await saveAllTasks();
+}
+
+async function deleteClient() {
+  const id = document.getElementById('cm-id').value;
+  if (!id || !confirm('Delete this client? This cannot be undone.')) return;
+  closeModal('client-modal');
+  clients = clients.filter(c=>c.id!==id); renderAll();
+  await saveAllClients();
+}
+
+function openClientDetail(id) {
+  const c = clients.find(c=>c.id===id); if(!c) return;
+  const ct = tasks.filter(t=>t.client===c.name&&!t.done);
+  document.getElementById('detail-content').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div><h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">${c.name}</h3>
+      <div style="font-size:13px;color:var(--ink3);margin-top:2px">${c.biz||''}</div>
+      ${c.revenue?`<div style="font-size:13px;color:var(--green);font-weight:600;margin-top:4px">💰 ${c.revenue}</div>`:''}</div>
+      <div class="client-status status-${c.status}">${statusLabel(c.status)}</div>
+    </div>
+    ${c.last?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:6px">Where we left off</div><div style="font-size:13px;line-height:1.7;background:var(--bg);padding:12px;border-radius:8px">${c.last}</div></div>`:''}
+    ${c.promise?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:6px">📌 What I promised</div><div style="font-size:13px;line-height:1.7;background:var(--amber-bg);padding:12px;border-radius:8px;color:var(--amber)">${c.promise}</div></div>`:''}
+    ${c.next?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:6px">→ Next step</div><div style="font-size:13px;line-height:1.7;background:var(--blue-bg);padding:12px;border-radius:8px;color:var(--blue)">${c.next}</div></div>`:''}
+    ${ct.length?`<div style="margin-top:16px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Open Tasks</div>${ct.map(t=>`<div class="task-item"><div class="priority-dot p-${t.priority}"></div><div class="task-text">${t.text}</div></div>`).join('')}</div>`:''}
+    <div style="display:flex;gap:10px;margin-top:24px">
+      <button class="btn-cancel" onclick="closeModal('detail-modal')">Close</button>
+      <button class="btn-primary" onclick="closeModal('detail-modal');openClientModal('${c.id}')">Edit Client</button>
+    </div>`;
+  document.getElementById('detail-modal').style.display = 'flex';
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.style.display='none'; }));
+
+// ── AI ───────────────────────────────────────────────────────────────────────
+function buildContext() {
+  const c = clients.map(c=>`${c.name} (${c.biz||'?'}) | ${c.status} | Revenue: ${c.revenue||'N/A'} | Last: ${c.last||'N/A'} | Promised: ${c.promise||'N/A'} | Next: ${c.next||'N/A'}`).join('\n');
+  const t = tasks.filter(x=>!x.done).map(t=>`${t.text} | ${t.priority} priority | Client: ${t.client||'General'} | Due: ${t.due||'none'}`).join('\n');
+  return `CLIENTS:\n${c||'none'}\n\nOPEN TASKS:\n${t||'none'}`;
+}
+
+async function callClaude(messages, system) {
+  const body = { model:'claude-opus-4-5', max_tokens:1024, messages };
+  if(system) body.system = system;
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify(body)
+  });
+  const d = await r.json();
+  if(d.error) throw new Error(d.error.message);
+  return d.content[0].text;
+}
+
+async function generateFocus() {
+  if(!clients.length&&!tasks.length) { document.getElementById('focus-text').textContent='Add your clients and tasks to get a personalized daily focus.'; return; }
+  try {
+    const r = await callClaude([{role:'user',content:`Based on this data, give me ONE clear sentence on what to focus on today. Data: ${buildContext()}`}],"You are a sharp business advisor. One sentence only. Be direct and specific.");
+    document.getElementById('focus-text').textContent = r;
+  } catch(e) { document.getElementById('focus-text').textContent='Start by reviewing your highest priority tasks.'; }
+}
+
+async function quickAsk() {
+  const inp = document.getElementById('quick-input');
+  const text = inp.value.trim(); if(!text) return; inp.value='';
+  const msgs = document.getElementById('quick-messages');
+  const u=document.createElement('div'); u.className='ai-msg user'; u.textContent=text; msgs.appendChild(u);
+  const r=document.createElement('div'); r.className='ai-msg claude'; r.textContent='...'; msgs.appendChild(r);
+  quickHistory.push({role:'user',content:text+'\n\nContext:\n'+buildContext()});
+  try { const rep=await callClaude(quickHistory,"You are a sharp business assistant for an ecommerce consultant. Be concise."); r.textContent=rep; quickHistory.push({role:'assistant',content:rep}); }
+  catch(e) { r.textContent='Error: '+e.message; }
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function aiAsk() {
+  const inp=document.getElementById('ai-input');
+  const text=inp.value.trim(); if(!text) return; inp.value='';
+  addAiMsg('user',text);
+  aiHistory.push({role:'user',content:text+'\n\nMy business context:\n'+buildContext()});
+  const r=addAiMsg('claude','...');
+  try { const rep=await callClaude(aiHistory,"You are a sharp business assistant for an ecommerce consultant. You have full context of their clients and tasks. Be practical, specific and concise."); r.textContent=rep; aiHistory.push({role:'assistant',content:rep}); }
+  catch(e) { r.textContent='Error: '+e.message; }
+}
+
+function addAiMsg(role,text) {
+  const el=document.getElementById('ai-messages');
+  const d=document.createElement('div'); d.className='ai-msg '+role; d.textContent=text;
+  el.appendChild(d); el.scrollTop=el.scrollHeight; return d;
+}
+</script>
+</body>
+</html>
