@@ -446,7 +446,7 @@ function pSort(a,b){return({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,l
 
 function taskHTML(t, showDelete=true) {
   const recurBadge = t.recurring ? `<span class="recurring-badge">🔄 ${t.recurring}</span>` : '';
-  return `<div class="task-item ${t.done?'done':''}" onclick="toggleTask('${t.id}')">
+  return `<div class="task-item ${t.done?'done':''}" data-id="${t.id}" data-action="toggle">
     <div class="priority-dot p-${t.priority}"></div>
     <div class="task-cb">${t.done?'✓':''}</div>
     <div style="flex:1">
