@@ -323,7 +323,7 @@ async function gasWrite(sheet, data) {
   syncBadge('saving');
   try {
     const encoded = encodeURIComponent(JSON.stringify(data));
-    const r = await fetch(`${GAS_URL}?action=write&sheet=${sheet}&data=${encoded}`);
+    await fetch(`${GAS_URL}?action=write&sheet=${sheet}&data=${encoded}`, {method:'GET', mode:'no-cors'});
     syncBadge('ok');
   } catch(e){syncBadge('err');throw e;}
 }
