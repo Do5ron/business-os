@@ -61,25 +61,25 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .focus-card .card-title{color:rgba(255,255,255,.4);}
 .focus-today{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;line-height:1.5;}
 
-/* Tasks */
 .task-filter-tabs{display:flex;gap:6px;margin-bottom:16px;}
 .task-filter-tab{padding:5px 14px;border-radius:20px;font-family:'Inconsolata',monospace;font-size:12px;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--ink2);transition:all .15s;}
 .task-filter-tab.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
-.task-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bg2);cursor:pointer;}
+.task-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bg2);cursor:pointer;user-select:none;}
 .task-item:last-child{border-bottom:none;}
-.task-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.task-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:11px;pointer-events:none;}
 .task-item.done .task-cb{background:var(--green);border-color:var(--green);color:white;}
 .task-item.done .task-title-text{text-decoration:line-through;color:var(--ink3);}
-.task-title-text{font-size:13px;font-weight:600;line-height:1.4;}
-.task-desc-text{font-size:12px;color:var(--ink2);margin-top:2px;line-height:1.5;}
-.task-meta{font-size:11px;color:var(--ink3);margin-top:3px;}
-.priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.task-title-text{font-size:13px;font-weight:600;line-height:1.4;pointer-events:none;}
+.task-desc-text{font-size:12px;color:var(--ink2);margin-top:2px;line-height:1.5;pointer-events:none;}
+.task-meta{font-size:11px;color:var(--ink3);margin-top:3px;pointer-events:none;}
+.priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;pointer-events:none;}
 .p-high{background:var(--red);}
 .p-med{background:var(--amber);}
 .p-low{background:var(--green);}
-.recurring-badge{font-size:10px;background:var(--purple-bg);color:var(--purple);padding:2px 7px;border-radius:10px;font-weight:600;margin-left:6px;}
+.recurring-badge{font-size:10px;background:var(--purple-bg);color:var(--purple);padding:2px 7px;border-radius:10px;font-weight:600;margin-left:6px;pointer-events:none;}
+.delete-btn{font-size:18px;color:var(--ink3);padding:4px 8px;cursor:pointer;flex-shrink:0;}
+.delete-btn:hover{color:var(--red);}
 
-/* Clients */
 .clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
 .client-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .2s;}
 .client-card:hover{border-color:var(--ink);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.06);}
@@ -95,7 +95,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .kpi-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .kpi-chip{background:var(--purple-bg);color:var(--purple);font-size:11px;padding:3px 10px;border-radius:10px;font-weight:600;}
 
-/* AI */
 .ai-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;height:500px;}
 .ai-messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;}
 .ai-msg{font-size:13px;line-height:1.7;max-width:90%;animation:fadeUp .2s ease;}
@@ -106,7 +105,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .ai-input-row input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Inconsolata',monospace;font-size:13px;background:var(--bg);color:var(--ink);outline:none;}
 .ai-input-row button{background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 
-/* Modals */
 .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(26,24,20,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px;width:560px;max-width:94vw;max-height:90vh;overflow-y:auto;}
 .modal h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:20px;}
@@ -127,9 +125,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .page-header h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;}
 .page-header p{font-size:13px;color:var(--ink3);margin-top:2px;}
 .btn-add{background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:12px 22px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);padding:12px 0 6px;border-top:1px solid var(--bg2);margin-top:4px;}
-.mini-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--ink3);padding:2px 6px;border-radius:4px;}
-.mini-btn:hover{color:var(--ink);background:var(--bg2);}
 </style>
 </head>
 <body>
@@ -161,23 +156,17 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
   </div>
 
   <div class="main">
-
-    <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="stats-row" id="stats-row"></div>
       <div class="dashboard-grid">
         <div class="focus-card"><div class="card-title">🎯 Today's Focus</div><div class="focus-today" id="focus-text">Loading your priorities...</div></div>
         <div class="card" style="grid-column:span 2">
-          <div class="card-title">
-            ⚡ Top Tasks Today
+          <div class="card-title">⚡ Top Tasks Today
             <button onclick="openTaskModal()" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-family:'Inconsolata',monospace;font-size:11px;cursor:pointer;color:var(--ink);">+ Add Task</button>
           </div>
           <div id="dashboard-tasks"></div>
         </div>
-        <div class="card">
-          <div class="card-title">👥 Client Pulse</div>
-          <div id="dashboard-clients"></div>
-        </div>
+        <div class="card"><div class="card-title">👥 Client Pulse</div><div id="dashboard-clients"></div></div>
         <div class="card" style="grid-column:span 2">
           <div class="card-title">💬 Quick Ask</div>
           <div id="quick-messages" style="min-height:50px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;"></div>
@@ -189,13 +178,11 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
       </div>
     </div>
 
-    <!-- CLIENTS -->
     <div class="page" id="page-clients">
       <div class="page-header"><div><h2>Clients</h2><p>All saved automatically to Google Sheets</p></div><button class="btn-add" onclick="openClientModal()">+ Add Client</button></div>
       <div class="clients-grid" id="clients-grid"></div>
     </div>
 
-    <!-- TASKS -->
     <div class="page" id="page-tasks">
       <div class="page-header"><div><h2>Tasks</h2><p>All saved automatically to Google Sheets</p></div><button class="btn-add" onclick="openTaskModal()">+ Add Task</button></div>
       <div class="task-filter-tabs">
@@ -206,13 +193,12 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
       <div class="card"><div id="all-tasks-list"></div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button></div>
     </div>
 
-    <!-- AI ASSISTANT -->
     <div class="page" id="page-assistant">
       <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;">AI Assistant</div>
-      <div style="font-size:13px;color:var(--ink3);margin-bottom:20px;">Knows all your clients, KPIs, and tasks. Ask it anything.</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:20px;">Knows all your clients, KPIs, and tasks.</div>
       <div class="ai-panel">
         <div class="ai-messages" id="ai-messages">
-          <div class="ai-msg claude">Hi! I'm your business assistant. I know all your clients, KPIs and tasks. Try asking:<br><br>• "What should I focus on today?"<br>• "Show me all client KPIs"<br>• "Which clients need KPI updates?"<br>• "Summarize where I am with each client"</div>
+          <div class="ai-msg claude">Hi! I know all your clients, KPIs and tasks. Try asking:<br><br>• "What should I focus on today?"<br>• "Which clients need KPI updates?"<br>• "Summarize where I am with each client"</div>
         </div>
         <div class="ai-input-row">
           <input type="text" id="ai-input" placeholder="Ask about your clients, KPIs, tasks..." onkeydown="if(event.key==='Enter')aiAsk()" />
@@ -243,11 +229,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
     <div class="field"><label>Where we left off</label><textarea id="cm-last" placeholder="What happened in the last session or call?"></textarea></div>
     <div class="field"><label>What I promised them</label><textarea id="cm-promise" placeholder="Any deliverables or commitments you made..."></textarea></div>
     <div class="field"><label>Next step</label><input type="text" id="cm-next" placeholder="What's the next action for this client?" /></div>
-
     <div style="border-top:1px solid var(--border);margin:20px 0 16px;padding-top:16px;">
       <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:14px;">📊 KPI Tracking</div>
-      <div class="field"><label>Numbers BEFORE you (baseline)</label><textarea id="cm-kpi-baseline" placeholder="e.g. ROAS: 1.8x, Revenue: $12k/mo, CAC: $45, Conversion rate: 1.2%"></textarea></div>
-      <div class="field"><label>KPIs we are tracking</label><textarea id="cm-kpi-tracking" placeholder="e.g. ROAS, Monthly Revenue, CAC, Conversion Rate, Email Open Rate"></textarea></div>
+      <div class="field"><label>Numbers BEFORE you (baseline)</label><textarea id="cm-kpi-baseline" placeholder="e.g. ROAS: 1.8x, Revenue: $12k/mo, CAC: $45"></textarea></div>
+      <div class="field"><label>KPIs we are tracking</label><textarea id="cm-kpi-tracking" placeholder="e.g. ROAS, Monthly Revenue, CAC, Conversion Rate"></textarea></div>
       <div class="field-row">
         <div class="field"><label>Update frequency</label><select id="cm-kpi-freq">
           <option value="">— No recurring task —</option>
@@ -259,7 +244,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
         <div class="field"><label>Current numbers</label><input type="text" id="cm-kpi-current" placeholder="e.g. ROAS: 2.4x, Revenue: $18k" /></div>
       </div>
     </div>
-
     <input type="hidden" id="cm-id" />
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('client-modal')">Cancel</button>
@@ -291,7 +275,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
   </div>
 </div>
 
-<!-- Detail Modal -->
 <div id="detail-modal" style="display:none" class="modal-overlay"><div class="modal" id="detail-content"></div></div>
 
 <script>
@@ -300,14 +283,12 @@ let API_KEY = '';
 let clients = [], tasks = [], aiHistory = [], quickHistory = [];
 let taskFilter = 'open';
 
-// ── Sync ─────────────────────────────────────────────────────────────────────
 function syncBadge(s) {
   const el = document.getElementById('sync-badge'); if(!el) return;
   const map = {saving:['sync-saving','⟳ Saving...'],ok:['sync-ok','✓ Saved to Google'],err:['sync-err','✗ Sync error']};
   el.className='sync-badge '+map[s][0]; el.textContent=map[s][1];
 }
 
-// ── GAS ──────────────────────────────────────────────────────────────────────
 async function gasRead(sheet) {
   const r = await fetch(GAS_URL+'?action=read&sheet='+sheet);
   if(!r.ok) throw new Error('Read error');
@@ -316,19 +297,13 @@ async function gasRead(sheet) {
 async function gasWrite(sheet, data) {
   syncBadge('saving');
   try {
-    const payload = JSON.stringify({action:'write', sheet, data});
-    const r = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain'},
-      body: payload
-    });
+    await fetch(GAS_URL, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify({action:'write',sheet,data})});
     syncBadge('ok');
-  } catch(e) { syncBadge('err'); throw e; }
+  } catch(e){syncBadge('err');throw e;}
 }
 
-// ── Parse ─────────────────────────────────────────────────────────────────────
 function parseClients(rows) {
-  const s = (rows[0]&&rows[0][0]==='id')?1:0;
+  const s=(rows[0]&&rows[0][0]==='id')?1:0;
   return rows.slice(s).map(r=>({
     id:r[0]||'',name:r[1]||'',biz:r[2]||'',status:r[3]||'active',
     revenue:r[4]||'',last:r[5]||'',promise:r[6]||'',next:r[7]||'',
@@ -336,87 +311,55 @@ function parseClients(rows) {
   })).filter(c=>c.name);
 }
 function parseTasks(rows) {
-  const s = (rows[0]&&rows[0][0]==='id')?1:0;
+  const s=(rows[0]&&rows[0][0]==='id')?1:0;
   return rows.slice(s).map(r=>({
     id:r[0]||'',text:r[1]||'',desc:r[2]||'',client:r[3]||'',priority:r[4]||'med',
-    due:r[5]||'',done:r[6]==='true',recurring:r[7]||''
+    due:r[5]||'',done:r[6]==='true'||r[6]===true,recurring:r[7]||''
   })).filter(t=>t.text);
 }
 function clientToRow(c){return[c.id,c.name,c.biz,c.status,c.revenue,c.last,c.promise,c.next,c.kpiBaseline||'',c.kpiTracking||'',c.kpiFreq||'',c.kpiCurrent||''];}
 function taskToRow(t){return[t.id,t.text,t.desc||'',t.client,t.priority,t.due,String(t.done),t.recurring||''];}
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
 document.getElementById('api-key-input').addEventListener('keydown',e=>{if(e.key==='Enter')startApp();});
-const savedKey = localStorage.getItem('bos_api_key');
+const savedKey=localStorage.getItem('bos_api_key');
 if(savedKey){API_KEY=savedKey;document.getElementById('setup').style.display='none';document.getElementById('loading').style.display='flex';loadAll();}
 
-function startApp() {
+function startApp(){
   const k=document.getElementById('api-key-input').value.trim();
-  if(!k.startsWith('sk-ant-')){alert('Please enter a valid Anthropic API key (starts with sk-ant-)');return;}
+  if(!k.startsWith('sk-ant-')){alert('Please enter a valid Anthropic API key');return;}
   API_KEY=k;localStorage.setItem('bos_api_key',k);
   document.getElementById('setup').style.display='none';
   document.getElementById('loading').style.display='flex';
   loadAll();
 }
 
-async function loadAll() {
-  try {
+async function loadAll(){
+  try{
     const [cr,tr]=await Promise.all([gasRead('clients').catch(()=>[]),gasRead('tasks').catch(()=>[])]);
     clients=parseClients(Array.isArray(cr)?cr:[]);
     tasks=parseTasks(Array.isArray(tr)?tr:[]);
     injectRecurringTasks();
-  } catch(e){console.error(e);clients=[];tasks=[];syncBadge('err');}
+  }catch(e){console.error(e);clients=[];tasks=[];syncBadge('err');}
   document.getElementById('loading').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   renderAll();generateFocus();
 }
 
-// ── Recurring KPI tasks ───────────────────────────────────────────────────────
-function injectRecurringTasks() {
-  const today = new Date().toISOString().split('T')[0];
-  clients.forEach(c => {
-    if(!c.kpiFreq || !c.kpiTracking) return;
-    const recurId = 'recurring_kpi_'+c.id;
-    const exists = tasks.find(t=>t.id===recurId);
-    if(!exists) {
-      tasks.push({
-        id: recurId,
-        text: `📊 Update KPIs — ${c.name}`,
-        desc: `Track: ${c.kpiTracking}`,
-        client: c.name,
-        priority: 'high',
-        due: today,
-        done: false,
-        recurring: c.kpiFreq
-      });
-    } else {
-      // Reset recurring task if it was done and enough time has passed
-      if(exists.done && shouldReset(exists, c.kpiFreq)) {
-        exists.done = false;
-        exists.due = today;
-      }
+function injectRecurringTasks(){
+  const today=new Date().toISOString().split('T')[0];
+  clients.forEach(c=>{
+    if(!c.kpiFreq||!c.kpiTracking)return;
+    const rid='recurring_kpi_'+c.id;
+    if(!tasks.find(t=>t.id===rid)){
+      tasks.push({id:rid,text:'📊 Update KPIs — '+c.name,desc:'Track: '+c.kpiTracking,client:c.name,priority:'high',due:today,done:false,recurring:c.kpiFreq});
     }
   });
 }
 
-function shouldReset(task, freq) {
-  if(!task.completedDate) return false;
-  const comp = new Date(task.completedDate);
-  const now = new Date();
-  const days = (now-comp)/(1000*60*60*24);
-  if(freq==='daily') return days>=1;
-  if(freq==='weekly') return days>=7;
-  if(freq==='biweekly') return days>=14;
-  if(freq==='monthly') return days>=30;
-  return false;
-}
-
-// ── Save ──────────────────────────────────────────────────────────────────────
 async function saveAllClients(){await gasWrite('clients',[['id','name','biz','status','revenue','last','promise','next','kpiBaseline','kpiTracking','kpiFreq','kpiCurrent'],...clients.map(clientToRow)]);}
 async function saveAllTasks(){await gasWrite('tasks',[['id','text','desc','client','priority','due','done','recurring'],...tasks.map(taskToRow)]);}
 
-// ── Navigation ────────────────────────────────────────────────────────────────
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
@@ -430,31 +373,32 @@ function setTaskFilter(f,btn){
   renderTasks();
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
 function renderAll(){renderStats();renderDashboardTasks();renderDashboardClients();renderClientsPage();renderTasks();updateClientDropdown();}
 
 function renderStats(){
   document.getElementById('stats-row').innerHTML=[
-    [clients.length,'Total Clients','','showPage(\'clients\',document.querySelector(\'.nav-tab:nth-child(2)\'))'],
+    [clients.length,'Total Clients','','clients'],
     [clients.filter(c=>c.status==='active').length,'Active Now','color:var(--green)',''],
-    [tasks.filter(t=>!t.done).length,'Open Tasks','','showPage(\'tasks\',document.querySelector(\'.nav-tab:nth-child(3)\'))'],
+    [tasks.filter(t=>!t.done).length,'Open Tasks','','tasks'],
     [tasks.filter(t=>!t.done&&t.priority==='high').length,'High Priority','color:var(--red)','']
-  ].map(([n,l,s,cl])=>`<div class="stat-card" onclick="${cl}"><div class="stat-num" style="${s}">${n}</div><div class="stat-label">${l}</div></div>`).join('');
+  ].map(([n,l,s,pg])=>`<div class="stat-card" ${pg?`onclick="showPage('${pg}',document.querySelectorAll('.nav-tab')[${pg==='clients'?1:2}])"`:''}><div class="stat-num" style="${s}">${n}</div><div class="stat-label">${l}</div></div>`).join('');
 }
 
 function pSort(a,b){return({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1);}
+function statusLabel(s){return s==='active'?'● Active':s==='waiting'?'⏳ Waiting':s==='inactive'?'○ Not Active':'👀 Review';}
 
-function taskHTML(t, showDelete=true) {
-  const recurBadge = t.recurring ? `<span class="recurring-badge">🔄 ${t.recurring}</span>` : '';
-  return `<div class="task-item ${t.done?'done':''}" data-id="${t.id}" data-action="toggle">
+function taskHTML(t,showDelete){
+  const recurBadge=t.recurring?`<span class="recurring-badge">🔄 ${t.recurring}</span>`:'';
+  const delBtn=showDelete?`<span class="delete-btn" data-task-delete="${t.id}">×</span>`:'';
+  return `<div class="task-item ${t.done?'done':''}" data-task-toggle="${t.id}">
     <div class="priority-dot p-${t.priority}"></div>
     <div class="task-cb">${t.done?'✓':''}</div>
-    <div style="flex:1">
-      <div style="display:flex;align-items:center;gap:4px"><div class="task-title-text">${t.text}</div>${recurBadge}</div>
+    <div style="flex:1;pointer-events:none">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">${t.text}</span>${recurBadge}</div>
       ${t.desc?`<div class="task-desc-text">${t.desc}</div>`:''}
-      <div class="task-meta">${t.client?'👤 '+t.client+'  ':''}${t.due?'📅 '+t.due:''}</div>
+      <div class="task-meta">${t.client?'👤 '+t.client+'  ':''}${t.due&&t.due!=='true'?'📅 '+t.due:''}</div>
     </div>
-    ${showDelete?`<div onclick="event.stopPropagation();deleteTask('${t.id}')" style="font-size:18px;color:var(--ink3);padding:4px 8px;cursor:pointer">×</div>`:''}
+    ${delBtn}
   </div>`;
 }
 
@@ -465,33 +409,28 @@ function renderDashboardTasks(){
 
 function renderDashboardClients(){
   document.getElementById('dashboard-clients').innerHTML=clients.length
-    ?clients.map(c=>`<div class="task-item" onclick="openClientDetail('${c.id}')" style="cursor:pointer"><div><div style="font-size:13px;font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--ink3)">${c.biz||''}</div></div><div class="client-status status-${c.status}" style="margin-left:auto;margin-bottom:0">${statusLabel(c.status)}</div></div>`).join('')
+    ?clients.map(c=>`<div class="task-item" data-client-detail="${c.id}"><div style="pointer-events:none"><div style="font-size:13px;font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--ink3)">${c.biz||''}</div></div><div class="client-status status-${c.status}" style="margin-left:auto;margin-bottom:0;pointer-events:none">${statusLabel(c.status)}</div></div>`).join('')
     :'<div class="empty-state">No clients yet.</div>';
 }
 
-function statusLabel(s){return s==='active'?'● Active':s==='waiting'?'⏳ Waiting':s==='inactive'?'○ Not Active':'👀 Review';}
-
 function renderClientsPage(){
   document.getElementById('clients-grid').innerHTML=clients.length
-    ?clients.map(c=>`<div class="client-card" onclick="openClientDetail('${c.id}')">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+    ?clients.map(c=>`<div class="client-card" data-client-detail="${c.id}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
           <div><div class="client-name">${c.name}</div><div class="client-biz">${c.biz||''}</div></div>
           <div class="client-status status-${c.status}">${statusLabel(c.status)}</div>
         </div>
-        ${c.revenue?`<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px">💰 ${c.revenue}</div>`:''}
-        ${c.kpiTracking?`<div class="kpi-row">${c.kpiTracking.split(',').slice(0,3).map(k=>`<span class="kpi-chip">📊 ${k.trim()}</span>`).join('')}</div>`:''}
-        ${c.last?`<div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-top:10px"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)">Last session</strong><br>${c.last}</div>`:''}
-        ${c.promise?`<div class="client-promise"><strong>📌 Promised</strong>${c.promise}</div>`:''}
-        ${c.next?`<div style="margin-top:10px;font-size:12px;color:var(--blue)"><strong>→ Next:</strong> ${c.next}</div>`:''}
+        ${c.revenue?`<div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px;pointer-events:none">💰 ${c.revenue}</div>`:''}
+        ${c.kpiTracking?`<div class="kpi-row" style="pointer-events:none">${c.kpiTracking.split(',').slice(0,3).map(k=>`<span class="kpi-chip">📊 ${k.trim()}</span>`).join('')}</div>`:''}
+        ${c.last?`<div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-top:10px;pointer-events:none"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)">Last session</strong><br>${c.last}</div>`:''}
+        ${c.promise?`<div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>${c.promise}</div>`:''}
+        ${c.next?`<div style="margin-top:10px;font-size:12px;color:var(--blue);pointer-events:none"><strong>→ Next:</strong> ${c.next}</div>`:''}
       </div>`).join('')
     :'<div class="empty-state">No clients yet. Add your first client!</div>';
 }
 
 function renderTasks(){
-  let filtered;
-  if(taskFilter==='open') filtered=tasks.filter(t=>!t.done);
-  else if(taskFilter==='done') filtered=tasks.filter(t=>t.done);
-  else filtered=[...tasks];
+  let filtered=taskFilter==='open'?tasks.filter(t=>!t.done):taskFilter==='done'?tasks.filter(t=>t.done):[...tasks];
   const sorted=filtered.sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;return pSort(a,b);});
   document.getElementById('all-tasks-list').innerHTML=sorted.length?sorted.map(t=>taskHTML(t,true)).join(''):'<div class="empty-state">No tasks here.</div>';
 }
@@ -500,18 +439,38 @@ function updateClientDropdown(){
   document.getElementById('tm-client').innerHTML='<option value="">— Not client specific —</option>'+clients.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
 }
 
-// ── Actions ───────────────────────────────────────────────────────────────────
+// ── Single global click handler ───────────────────────────────────────────────
+document.addEventListener('click', function(e) {
+  // Task toggle
+  const taskEl = e.target.closest('[data-task-toggle]');
+  if(taskEl && !e.target.closest('[data-task-delete]')) {
+    toggleTask(taskEl.dataset.taskToggle);
+    return;
+  }
+  // Task delete
+  const delEl = e.target.closest('[data-task-delete]');
+  if(delEl) {
+    deleteTask(delEl.dataset.taskDelete);
+    return;
+  }
+  // Client detail
+  const clientEl = e.target.closest('[data-client-detail]');
+  if(clientEl) {
+    openClientDetail(clientEl.dataset.clientDetail);
+    return;
+  }
+});
+
 async function toggleTask(id){
   const t=tasks.find(t=>t.id===id);if(!t)return;
   t.done=!t.done;
-  if(t.done) t.completedDate=new Date().toISOString().split('T')[0];
+  if(t.done)t.completedDate=new Date().toISOString().split('T')[0];
   renderAll();await saveAllTasks();
 }
 async function deleteTask(id){
   tasks=tasks.filter(t=>t.id!==id);renderAll();await saveAllTasks();
 }
 
-// ── Modals ────────────────────────────────────────────────────────────────────
 function openClientModal(id){
   const c=id?clients.find(c=>c.id===id):null;
   document.getElementById('cm-title').textContent=c?'Edit Client':'Add Client';
@@ -525,23 +484,21 @@ function openClientModal(id){
   document.getElementById('cm-delete-btn').style.display=c?'block':'none';
   document.getElementById('client-modal').style.display='flex';
 }
-
 function openTaskModal(clientName){
   updateClientDropdown();
   document.getElementById('tm-text').value='';
   document.getElementById('tm-desc').value='';
   document.getElementById('tm-due').value='';
-  if(clientName){document.getElementById('tm-client').value=clientName;}
+  if(clientName)document.getElementById('tm-client').value=clientName;
   document.getElementById('task-modal').style.display='flex';
 }
-
 function closeModal(id){document.getElementById(id).style.display='none';}
 
 async function saveClient(){
   const existId=document.getElementById('cm-id').value;
   const id=existId||Date.now().toString();
-  const c={
-    id,name:document.getElementById('cm-name').value.trim(),
+  const c={id,
+    name:document.getElementById('cm-name').value.trim(),
     biz:document.getElementById('cm-biz').value.trim(),
     status:document.getElementById('cm-status').value,
     revenue:document.getElementById('cm-revenue').value.trim(),
@@ -557,11 +514,10 @@ async function saveClient(){
   closeModal('client-modal');
   const idx=clients.findIndex(x=>x.id===id);
   if(idx>=0)clients[idx]={...clients[idx],...c};else clients.push(c);
-  // Update recurring task if KPI settings changed
-  const recurId='recurring_kpi_'+id;
-  tasks=tasks.filter(t=>t.id!==recurId);
+  const rid='recurring_kpi_'+id;
+  tasks=tasks.filter(t=>t.id!==rid);
   if(c.kpiFreq&&c.kpiTracking){
-    tasks.push({id:recurId,text:`📊 Update KPIs — ${c.name}`,desc:`Track: ${c.kpiTracking}`,client:c.name,priority:'high',due:new Date().toISOString().split('T')[0],done:false,recurring:c.kpiFreq});
+    tasks.push({id:rid,text:'📊 Update KPIs — '+c.name,desc:'Track: '+c.kpiTracking,client:c.name,priority:'high',due:new Date().toISOString().split('T')[0],done:false,recurring:c.kpiFreq});
   }
   renderAll();await saveAllClients();await saveAllTasks();
 }
@@ -574,7 +530,7 @@ async function saveTask(){
 
 async function deleteClient(){
   const id=document.getElementById('cm-id').value;
-  if(!id||!confirm('Delete this client? This cannot be undone.'))return;
+  if(!id||!confirm('Delete this client?'))return;
   closeModal('client-modal');
   clients=clients.filter(c=>c.id!==id);
   tasks=tasks.filter(t=>t.id!=='recurring_kpi_'+id);
@@ -600,7 +556,7 @@ function openClientDetail(id){
     ${c.last?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:6px">Where we left off</div><div style="font-size:13px;line-height:1.7;background:var(--bg);padding:12px;border-radius:8px">${c.last}</div></div>`:''}
     ${c.promise?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:6px">📌 What I promised</div><div style="font-size:13px;line-height:1.7;background:var(--amber-bg);padding:12px;border-radius:8px;color:var(--amber)">${c.promise}</div></div>`:''}
     ${c.next?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:6px">→ Next step</div><div style="font-size:13px;line-height:1.7;background:var(--blue-bg);padding:12px;border-radius:8px;color:var(--blue)">${c.next}</div></div>`:''}
-    ${ct.length?`<div style="margin-top:16px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Open Tasks</div>${ct.map(t=>`<div class="task-item"><div class="priority-dot p-${t.priority}"></div><div style="flex:1"><div class="task-title-text">${t.text}</div>${t.desc?`<div class="task-desc-text">${t.desc}</div>`:''}</div></div>`).join('')}</div>`:''}
+    ${ct.length?`<div style="margin-top:16px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Open Tasks</div>${ct.map(t=>`<div class="task-item" style="cursor:default"><div class="priority-dot p-${t.priority}"></div><div style="flex:1"><div class="task-title-text">${t.text}</div>${t.desc?`<div class="task-desc-text">${t.desc}</div>`:''}</div></div>`).join('')}</div>`:''}
     <div style="display:flex;gap:10px;margin-top:24px">
       <button class="btn-cancel" onclick="closeModal('detail-modal')">Close</button>
       <button class="btn-cancel" onclick="closeModal('detail-modal');openTaskModal('${c.name}')">+ Add Task</button>
@@ -611,7 +567,6 @@ function openClientDetail(id){
 
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.style.display='none';}));
 
-// ── AI ────────────────────────────────────────────────────────────────────────
 function buildContext(){
   const c=clients.map(c=>`${c.name} (${c.biz||'?'}) | ${c.status} | Revenue: ${c.revenue||'N/A'} | KPIs: ${c.kpiTracking||'N/A'} | Baseline: ${c.kpiBaseline||'N/A'} | Current: ${c.kpiCurrent||'N/A'} | Last: ${c.last||'N/A'} | Promised: ${c.promise||'N/A'} | Next: ${c.next||'N/A'}`).join('\n');
   const t=tasks.filter(x=>!x.done).map(t=>`${t.text}${t.desc?' — '+t.desc:''} | ${t.priority} | Client: ${t.client||'General'} | Due: ${t.due||'none'}${t.recurring?' | Recurring: '+t.recurring:''}`).join('\n');
@@ -628,8 +583,10 @@ async function callClaude(messages,system){
 
 async function generateFocus(){
   if(!clients.length&&!tasks.length){document.getElementById('focus-text').textContent='Add your clients and tasks to get a personalized daily focus.';return;}
-  try{const r=await callClaude([{role:'user',content:`Based on this data, give me ONE clear sentence on what to focus on today. Data: ${buildContext()}`}],"You are a sharp business advisor. One sentence only. Be direct and specific.");document.getElementById('focus-text').textContent=r;}
-  catch(e){document.getElementById('focus-text').textContent='Start by reviewing your highest priority tasks.';}
+  try{
+    const r=await callClaude([{role:'user',content:`Based on this data, give me ONE clear sentence on what to focus on today. No markdown, no asterisks. Data: ${buildContext()}`}],"You are a sharp business advisor. One sentence only. Be direct and specific. No markdown formatting.");
+    document.getElementById('focus-text').textContent=r.replace(/\*\*/g,'');
+  }catch(e){document.getElementById('focus-text').textContent='Start by reviewing your highest priority tasks.';}
 }
 
 async function quickAsk(){
@@ -648,7 +605,7 @@ async function aiAsk(){
   addAiMsg('user',text);
   aiHistory.push({role:'user',content:text+'\n\nMy business context:\n'+buildContext()});
   const r=addAiMsg('claude','...');
-  try{const rep=await callClaude(aiHistory,"You are a sharp business assistant for an ecommerce consultant. You have full context of their clients, KPIs and tasks. Be practical, specific and concise.");r.textContent=rep;aiHistory.push({role:'assistant',content:rep});}
+  try{const rep=await callClaude(aiHistory,"You are a sharp business assistant for an ecommerce consultant. Be practical, specific and concise.");r.textContent=rep;aiHistory.push({role:'assistant',content:rep});}
   catch(e){r.textContent='Error: '+e.message;}
 }
 
