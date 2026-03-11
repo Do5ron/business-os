@@ -344,14 +344,7 @@ function parseTasks(rows) {
     done:r[6]==='true'||r[6]===true,
     recurring:r[7]||''
   })).filter(t=>t.text);
-}
-if (action === 'write') {
-  const raw = e.parameter.data;
-  const data = JSON.parse(raw);
-  sheet.clearContents();
-  if (data.length) sheet.getRange(1,1,data.length,data[0].length).setValues(data);
-  return ContentService.createTextOutput(JSON.stringify({ok:true}))
-    .setMimeType(ContentService.MimeType.JSON);
+function clientToRow(c){return[c.id,c.name,c.biz,c.status,c.revenue,c.last,c.promise,c.next,c.kpiBaseline||'',c.kpiTracking||'',c.kpiFreq||'',c.kpiCurrent||''];}
 }function taskToRow(t){return[t.id,t.text,t.desc||'',t.client,t.priority,t.due,String(t.done),t.recurring||''];}
 
 document.getElementById('api-key-input').addEventListener('keydown',e=>{if(e.key==='Enter')startApp();});
