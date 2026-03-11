@@ -526,6 +526,14 @@ function updateClientDropdown(){
 
 // ── Global click handler ──────────────────────────────────────────────────────
 document.addEventListener('click', function(e){
+  // Edit client from detail modal (check FIRST)
+  const ec=e.target.closest('[data-edit-client]');
+  if(ec){closeModal('detail-modal');openClientModal(ec.dataset.editClient);return;}
+
+  // Add task from detail modal (check FIRST)
+  const atc=e.target.closest('[data-add-task-client]');
+  if(atc){closeModal('detail-modal');openTaskModal(atc.dataset.addTaskClient);return;}
+
   // Checkbox = toggle done
   const cb=e.target.closest('[data-task-toggle]');
   if(cb){toggleTask(cb.dataset.taskToggle);return;}
@@ -541,14 +549,6 @@ document.addEventListener('click', function(e){
   // Client card/row = detail modal
   const cl=e.target.closest('[data-client-detail]');
   if(cl){openClientDetail(cl.dataset.clientDetail);return;}
-
-  // Edit client from detail modal
-  const ec=e.target.closest('[data-edit-client]');
-  if(ec){closeModal('detail-modal');openClientModal(ec.dataset.editClient);return;}
-
-  // Add task from detail modal
-  const atc=e.target.closest('[data-add-task-client]');
-  if(atc){closeModal('detail-modal');openTaskModal(atc.dataset.addTaskClient);return;}
 });
 
 async function toggleTask(id){
