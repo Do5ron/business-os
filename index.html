@@ -106,6 +106,24 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .kpi-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .kpi-chip{background:var(--purple-bg);color:var(--purple);font-size:11px;padding:3px 10px;border-radius:10px;font-weight:600;}
 
+/* My Day */
+.myday-block{display:flex;gap:16px;margin-bottom:12px;align-items:flex-start;}
+.myday-time{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--ink3);width:72px;flex-shrink:0;padding-top:14px;text-align:right;}
+.myday-line{display:flex;flex-direction:column;align-items:center;gap:0;margin-top:14px;}
+.myday-dot{width:10px;height:10px;border-radius:50%;background:var(--ink);flex-shrink:0;}
+.myday-vline{width:2px;flex:1;background:var(--border);min-height:20px;}
+.myday-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:all .15s;}
+.myday-card:hover{border-color:var(--ink);}
+.myday-card.done-block{opacity:.5;}
+.myday-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.myday-task{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.myday-meta{font-size:11px;color:var(--ink3);margin-top:2px;}
+.myday-duration{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--ink2);}
+.myday-break{display:flex;gap:16px;margin-bottom:12px;align-items:center;}
+.myday-break-label{font-size:12px;color:var(--ink3);font-style:italic;padding:8px 0;}
+.myday-unscheduled{margin-top:28px;}
+.myday-unscheduled-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;}
+
 /* AI */
 .ai-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;height:500px;}
 .ai-messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;}
@@ -161,6 +179,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
       <button class="nav-tab" onclick="showPage('clients',this)">Clients</button>
       <button class="nav-tab" onclick="showPage('tasks',this)">Tasks</button>
       <button class="nav-tab" onclick="showPage('assistant',this)">AI Assistant</button>
+      <button class="nav-tab" onclick="showPage('myday',this)">My Day</button>
     </div>
     <div class="topbar-right">
       <div id="sync-badge" class="sync-badge sync-ok">✓ Saved to Google</div>
@@ -210,6 +229,15 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
         <button class="task-filter-tab active" id="group-btn" onclick="toggleGrouping(this)">📁 By Client</button>
       </div>
       <div id="tasks-container"></div>
+    </div>
+
+    <!-- MY DAY -->
+    <div class="page" id="page-myday">
+      <div class="page-header">
+        <div><h2>My Day</h2><p id="myday-summary">Building your schedule...</p></div>
+        <button class="btn-add" onclick="generateMyDay()">↻ Regenerate</button>
+      </div>
+      <div id="myday-container"><div class="empty-state" style="padding:60px">Loading your day...</div></div>
     </div>
 
     <!-- AI ASSISTANT -->
@@ -402,6 +430,7 @@ function showPage(id,btn){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(btn)btn.classList.add('active');
+  if(id==='myday')generateMyDay();
 }
 function setTaskFilter(f,btn){
   taskFilter=f;
@@ -793,6 +822,122 @@ async function aiAsk(){
   const r=addAiMsg('claude','...');
   try{const rep=await callClaude(aiHistory,"You are a sharp business assistant for an ecommerce consultant. Be practical and concise.");r.textContent=rep;aiHistory.push({role:'assistant',content:rep});}
   catch(e){r.textContent='Error: '+e.message;}
+}
+
+async function generateMyDay(){
+  const container=document.getElementById('myday-container');
+  const summary=document.getElementById('myday-summary');
+  container.innerHTML='<div class="empty-state" style="padding:60px">⏳ Claude is estimating your tasks...</div>';
+  summary.textContent='Building your schedule...';
+
+  const open=tasks.filter(t=>!t.done);
+  if(!open.length){
+    container.innerHTML='<div class="empty-state" style="padding:60px">No open tasks! Enjoy your day 🎉</div>';
+    summary.textContent='Nothing scheduled';
+    return;
+  }
+
+  // Sort: overdue first (by days late), then today, then priority
+  const now=new Date(); now.setHours(0,0,0,0);
+  function urgency(t){
+    if(!t.due||t.due==='true'||t.due==='') return 999;
+    const d=new Date(t.due+'T00:00:00');
+    const diff=Math.round((now-d)/(864e5));
+    if(diff>0) return -diff; // overdue = very urgent (negative = sort first)
+    if(diff===0) return 0;
+    return diff;
+  }
+  const sorted=open.slice().sort((a,b)=>{
+    const ua=urgency(a),ub=urgency(b);
+    if(ua!==ub)return ua-ub;
+    return ({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1);
+  });
+
+  // Ask Claude to estimate time for each task
+  const taskList=sorted.map((t,i)=>`${i+1}. [${t.priority}] ${t.text}${t.desc?' — '+t.desc:''} | Client: ${t.client||'General'} | Due: ${t.due||'none'}`).join('\n');
+
+  let estimates=[];
+  try{
+    const prompt=`Given these tasks, estimate how long each will take. Reply ONLY with a JSON array of numbers (minutes), one per task, in the same order. Only use: 15, 30, 60, 90, 120. Example: [30,60,15,90,120]\n\nTasks:\n${taskList}`;
+    const raw=await callClaude([{role:'user',content:prompt}],'You are a time estimation expert. Reply ONLY with a valid JSON array of numbers. No text, no explanation.');
+    const clean=raw.replace(/```json|```/g,'').trim();
+    estimates=JSON.parse(clean);
+    if(!Array.isArray(estimates))throw new Error('not array');
+  }catch(e){
+    estimates=sorted.map(t=>t.priority==='high'?60:t.priority==='low'?30:45);
+  }
+
+  // Build schedule from 10:00 AM, 8 hours = 480 min
+  const TOTAL=480;
+  let minutesUsed=0;
+  const scheduled=[];
+  const unscheduled=[];
+
+  sorted.forEach((t,i)=>{
+    const dur=estimates[i]||45;
+    if(minutesUsed+dur<=TOTAL){
+      scheduled.push({task:t,dur,start:minutesUsed});
+      minutesUsed+=dur;
+    } else {
+      unscheduled.push({task:t,dur});
+    }
+  });
+
+  // Render
+  function minToTime(min){
+    const h=Math.floor((600+min)/60)%24;
+    const m=(600+min)%60;
+    const ampm=h>=12?'PM':'AM';
+    const hh=h>12?h-12:h===0?12:h;
+    return `${hh}:${m.toString().padStart(2,'0')} ${ampm}`;
+  }
+
+  function clientColor(name){
+    const colors=['var(--blue)','var(--purple)','var(--green)','var(--amber)','var(--red)'];
+    const idx=clients.findIndex(c=>c.name===name);
+    return colors[Math.abs(idx)%colors.length]||'var(--ink)';
+  }
+
+  function overdueLabel(t){
+    if(!t.due||t.due==='true'||t.due==='')return '';
+    const d=new Date(t.due+'T00:00:00');
+    const diff=Math.round((now-d)/(864e5));
+    if(diff===1)return '🔴 1 day overdue';
+    if(diff===2)return '🔴 2 days overdue';
+    if(diff===3)return '🔴 3 days overdue';
+    if(diff>3)return `🔴 ${diff} days overdue`;
+    if(diff===0)return '⚡ Due today';
+    return '';
+  }
+
+  let html='';
+  scheduled.forEach(({task:t,dur,start})=>{
+    const color=clientColor(t.client);
+    const ol=overdueLabel(t);
+    html+=`<div class="myday-block">
+      <div class="myday-time">${minToTime(start)}</div>
+      <div class="myday-line"><div class="myday-dot" style="background:${color}"></div><div class="myday-vline"></div></div>
+      <div class="myday-card ${t.done?'done-block':''}" data-task-toggle="${t.id}">
+        <div class="myday-card-header">
+          <div class="myday-task">${t.text}</div>
+          <div class="myday-duration">${dur>=60?dur/60+'h':dur+'min'}</div>
+        </div>
+        <div class="myday-meta">${t.client?'👤 '+t.client+'  ':''}${ol?ol+'  ':''}<span style="color:${color};font-weight:600">${({high:'🔴 High',med:'🟡 Med',low:'🟢 Low'})[t.priority]}</span></div>
+        ${t.desc?`<div style="font-size:12px;color:var(--ink2);margin-top:6px">${t.desc}</div>`:''}
+      </div>
+    </div>`;
+  });
+
+  if(unscheduled.length){
+    html+=`<div class="myday-unscheduled">
+      <div class="myday-unscheduled-title">📋 Doesn't fit today (${unscheduled.length} tasks)</div>
+      <div class="card" style="padding:8px 16px">${unscheduled.map(({task:t})=>taskHTML(t,false)).join('')}</div>
+    </div>`;
+  }
+
+  container.innerHTML=html;
+  const totalH=(minutesUsed/60).toFixed(1);
+  summary.textContent=`${scheduled.length} tasks · ${totalH}h scheduled out of 8h${unscheduled.length?' · '+unscheduled.length+' moved to tomorrow':''}`;
 }
 
 function addAiMsg(role,text){
