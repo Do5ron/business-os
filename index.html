@@ -680,8 +680,8 @@ function openClientDetail(id){
       ${ct.map(t=>`<div class="task-item" style="cursor:default"><div class="priority-dot p-${t.priority}"></div><div style="flex:1"><div class="task-title-text">${t.text}</div>${t.desc?`<div class="task-desc-text">${t.desc}</div>`:''}</div></div>`).join('')}</div>`:''}
     <div style="display:flex;gap:10px;margin-top:24px">
       <button class="btn-cancel" onclick="closeModal('detail-modal')">Close</button>
-      <button class="btn-cancel" data-add-task-client="${c.name}">+ Add Task</button>
-      <button class="btn-primary" data-edit-client="${c.id}">Edit Client</button>
+      <button class="btn-cancel" onclick="closeModal('detail-modal');openTaskModal('${c.name}')">+ Add Task</button>
+      <button class="btn-primary" onclick="closeModal('detail-modal');openClientModal('${c.id}')">Edit Client</button>
     </div>`;
   document.getElementById('detail-modal').style.display='flex';
 }
