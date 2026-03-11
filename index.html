@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Business OS</title>
+<title>UZHER.COM</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -147,7 +146,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 
 <div id="setup">
   <div class="setup-inner">
-    <h2>My Business OS</h2>
+    <h2>UZHER.COM</h2>
     <p>Enter your Anthropic key once — saved in your browser, never in the code.</p>
     <input type="password" id="api-key-input" placeholder="Anthropic API key (sk-ant-api03-...)" />
     <button onclick="startApp()">Launch Dashboard →</button>
@@ -156,7 +155,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 
 <div id="app">
   <div class="topbar">
-    <div class="topbar-brand">⬡ Business OS</div>
+    <div class="topbar-brand">⬡ UZHER.COM</div>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</button>
       <button class="nav-tab" onclick="showPage('clients',this)">Clients</button>
@@ -332,7 +331,7 @@ async function gasWrite(sheet, data) {
 function parseClients(rows) {
   const s=(rows[0]&&rows[0][0]==='id')?1:0;
   return rows.slice(s).map(r=>({
-    id:String(r[0])||'',name:r[1]||'',biz:r[2]||'',status:r[3]||'active',
+    id:r[0]||'',name:r[1]||'',biz:r[2]||'',status:r[3]||'active',
     revenue:r[4]||'',last:r[5]||'',promise:r[6]||'',next:r[7]||'',
     kpiBaseline:r[8]||'',kpiTracking:r[9]||'',kpiFreq:r[10]||'',kpiCurrent:r[11]||''
   })).filter(c=>c.name);
@@ -340,7 +339,7 @@ function parseClients(rows) {
 function parseTasks(rows) {
   const s=(rows[0]&&rows[0][0]==='id')?1:0;
   return rows.slice(s).map(r=>({
-    id:String(r[0])||'',text:r[1]||'',desc:r[2]||'',client:r[3]||'',priority:r[4]||'med',
+    id:r[0]||'',text:r[1]||'',desc:r[2]||'',client:r[3]||'',priority:r[4]||'med',
     due:String(r[5]||'').replace(/T.*$/,''),
     done:r[6]==='true'||r[6]===true,
     recurring:r[7]||''
@@ -478,47 +477,73 @@ function renderClientsPage(){
 
 function renderTasks(){
   let filtered=taskFilter==='open'?tasks.filter(t=>!t.done):taskFilter==='done'?tasks.filter(t=>t.done):[...tasks];
-  const sorted=filtered.sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;return pSort(a,b);});
   const container=document.getElementById('tasks-container');
 
+  if(taskFilter==='done'){
+    const sorted=filtered.sort((a,b)=>pSort(a,b));
+    container.innerHTML=`<div class="card">${sorted.length?sorted.map(t=>taskHTML(t,true)).join(''):'<div class="empty-state">No completed tasks.</div>'}</div>
+      <button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
+    return;
+  }
+
   if(!groupByClient){
+    const sorted=filtered.sort((a,b)=>pSort(a,b));
     container.innerHTML=`<div class="card">${sorted.length?sorted.map(t=>taskHTML(t,true)).join(''):'<div class="empty-state">No tasks here.</div>'}</div>
       <button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
     return;
   }
 
-  // Group by client
-  const groups={};
-  sorted.forEach(t=>{
-    const key=t.client||'__general__';
-    if(!groups[key])groups[key]=[];
-    groups[key].push(t);
+  // Group by due date status
+  const today=new Date(); today.setHours(0,0,0,0);
+  const tomorrow=new Date(today); tomorrow.setDate(today.getDate()+1);
+  const nextWeek=new Date(today); nextWeek.setDate(today.getDate()+7);
+
+  const groups={overdue:[],today:[],tomorrow:[],thisweek:[],later:[],none:[]};
+
+  filtered.forEach(t=>{
+    if(!t.due||t.due==='true'||t.due===''){groups.none.push(t);return;}
+    const d=new Date(t.due+'T00:00:00');
+    if(d<today) groups.overdue.push(t);
+    else if(d.toDateString()===today.toDateString()) groups.today.push(t);
+    else if(d.toDateString()===tomorrow.toDateString()) groups.tomorrow.push(t);
+    else if(d<=nextWeek) groups.thisweek.push(t);
+    else groups.later.push(t);
   });
 
-  // Order: clients first (in client order), then general
-  const clientNames=clients.map(c=>c.name);
-  const orderedKeys=[
-    ...clientNames.filter(n=>groups[n]),
-    ...Object.keys(groups).filter(k=>k!=='__general__'&&!clientNames.includes(k)),
-    ...(groups['__general__']?['__general__']:[])
+  const sections=[
+    {key:'overdue',label:'🔴 Overdue',color:'var(--red)'},
+    {key:'today',label:'⚡ Today',color:'var(--ink)'},
+    {key:'tomorrow',label:'📅 Tomorrow',color:'var(--amber)'},
+    {key:'thisweek',label:'📆 This Week',color:'var(--blue)'},
+    {key:'later',label:'🕐 Later',color:'var(--ink3)'},
+    {key:'none',label:'📌 No Due Date',color:'var(--ink3)'},
   ];
 
-  if(!orderedKeys.length){
-    container.innerHTML='<div class="card"><div class="empty-state">No tasks here.</div></div>';
-    return;
-  }
+  const activeSections=sections.filter(s=>groups[s.key].length>0);
+  const left=activeSections.filter((_,i)=>i%2===0);
+  const right=activeSections.filter((_,i)=>i%2===1);
 
-  container.innerHTML=orderedKeys.map(key=>{
-    const label=key==='__general__'?'General / No Client':key;
-    const items=groups[key];
+  function sectionHTML(s){
+    const items=groups[s.key].sort(pSort);
     return `<div class="client-group">
       <div class="client-group-header">
-        <span class="client-group-name">👤 ${label}</span>
-        <span style="font-size:11px;color:var(--ink3)">${items.filter(t=>!t.done).length} open</span>
+        <span class="client-group-name" style="color:${s.color}">${s.label}</span>
+        <span style="font-size:11px;color:var(--ink3)">${items.length} task${items.length!==1?'s':''}</span>
       </div>
       <div class="card" style="padding:8px 16px">${items.map(t=>taskHTML(t,true)).join('')}</div>
     </div>`;
-  }).join('')+'<button class="add-btn" onclick="openTaskModal()">+ Add new task</button>';
+  }
+
+  if(!activeSections.length){
+    container.innerHTML='<div class="card"><div class="empty-state">No tasks here.</div></div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button>';
+    return;
+  }
+
+  container.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+    <div>${left.map(sectionHTML).join('')}</div>
+    <div>${right.map(sectionHTML).join('')}</div>
+  </div>
+  <button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
 }
 
 function updateClientDropdown(){
