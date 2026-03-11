@@ -340,7 +340,7 @@ function parseClients(rows) {
 function parseTasks(rows) {
   const s=(rows[0]&&rows[0][0]==='id')?1:0;
   return rows.slice(s).map(r=>({
-    id:r[0]||'',text:r[1]||'',desc:r[2]||'',client:r[3]||'',priority:r[4]||'med',
+    id:String(r[0])||'',text:r[1]||'',desc:r[2]||'',client:r[3]||'',priority:r[4]||'med',
     due:String(r[5]||'').replace(/T.*$/,''),
     done:r[6]==='true'||r[6]===true,
     recurring:r[7]||''
