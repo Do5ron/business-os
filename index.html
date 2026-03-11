@@ -390,7 +390,8 @@ function statusLabel(s){return s==='active'?'● Active':s==='waiting'?'⏳ Wait
 function taskHTML(t,showDelete){
   const recurBadge=t.recurring?`<span class="recurring-badge">🔄 ${t.recurring}</span>`:'';
   const delBtn=showDelete?`<span class="delete-btn" data-task-delete="${t.id}">×</span>`:'';
-return `<div class="task-item ${t.done?'done':''}" data-task-toggle="${t.id}">    <div class="priority-dot p-${t.priority}"></div>
+  return `<div class="task-item ${t.done?'done':''}" data-task-toggle="${t.id}">
+    <div class="priority-dot p-${t.priority}"></div>
     <div class="task-cb">${t.done?'✓':''}</div>
     <div style="flex:1;pointer-events:none">
       <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">${t.text}</span>${recurBadge}</div>
