@@ -331,7 +331,7 @@ async function gasWrite(sheet, data) {
 function parseClients(rows) {
   const s=(rows[0]&&rows[0][0]==='id')?1:0;
   return rows.slice(s).map(r=>({
-    id:r[0]||'',name:r[1]||'',biz:r[2]||'',status:r[3]||'active',
+    id:String(r[0])||'',name:r[1]||'',biz:r[2]||'',status:r[3]||'active',
     revenue:r[4]||'',last:r[5]||'',promise:r[6]||'',next:r[7]||'',
     kpiBaseline:r[8]||'',kpiTracking:r[9]||'',kpiFreq:r[10]||'',kpiCurrent:r[11]||''
   })).filter(c=>c.name);
