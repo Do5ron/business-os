@@ -344,8 +344,9 @@ function parseTasks(rows) {
     done:r[6]==='true'||r[6]===true,
     recurring:r[7]||''
   })).filter(t=>t.text);
+}
 function clientToRow(c){return[c.id,c.name,c.biz,c.status,c.revenue,c.last,c.promise,c.next,c.kpiBaseline||'',c.kpiTracking||'',c.kpiFreq||'',c.kpiCurrent||''];}
-}function taskToRow(t){return[t.id,t.text,t.desc||'',t.client,t.priority,t.due,String(t.done),t.recurring||''];}
+function taskToRow(t){return[t.id,t.text,t.desc||'',t.client,t.priority,t.due,String(t.done),t.recurring||''];}
 
 document.getElementById('api-key-input').addEventListener('keydown',e=>{if(e.key==='Enter')startApp();});
 const savedKey=localStorage.getItem('bos_api_key');
