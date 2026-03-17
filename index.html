@@ -69,9 +69,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 8px;border-radius:6px;border-bottom:1px solid var(--bg2);transition:background .1s;}
 .task-item:last-child{border-bottom:none;}
 .task-item:hover{background:var(--bg);}
-.task-cb{width:20px;height:20px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;transition:all .15s;}
-.task-cb:hover{border-color:var(--green);}
-.task-item.done .task-cb{background:var(--green);border-color:var(--green);color:white;}
+.task-cb{display:none;}
+.done-btn{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--ink3);cursor:pointer;flex-shrink:0;transition:all .15s;font-family:'Inconsolata',monospace;}
+.done-btn:hover{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+.task-item.done .done-btn{background:var(--green-bg);border-color:var(--green);color:var(--green);}
 .task-item.done .task-title-text{text-decoration:line-through;color:var(--ink3);}
 .task-body{flex:1;cursor:pointer;min-width:0;}
 .task-title-text{font-size:13px;font-weight:600;line-height:1.4;}
@@ -464,12 +465,12 @@ function taskHTML(t, showDelete=true){
   const due=t.due&&t.due!=='true'?t.due:'';
   return `<div class="task-item ${t.done?'done':''}">
     <div class="priority-dot p-${t.priority}"></div>
-    <div class="task-cb" data-task-toggle="${t.id}">${t.done?'✓':''}</div>
     <div class="task-body" data-task-edit="${t.id}">
       <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">${t.text}</span>${recurBadge}</div>
       ${t.desc?`<div class="task-desc-text">${t.desc}</div>`:''}
       <div class="task-meta">${t.client?'👤 '+t.client+'  ':''}${due?'📅 '+due:''}</div>
     </div>
+    <button class="done-btn" onclick="toggleTask('${t.id}')">${t.done?'✓ Done':'✓'}</button>
     ${showDelete?`<span class="delete-btn" data-task-delete="${t.id}">×</span>`:''}
   </div>`;
 }
