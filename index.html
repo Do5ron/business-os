@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0048)file:///Users/doronshaibe/Downloads/index_3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UZHER.COM</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="./UZHER.COM_files/css2" rel="stylesheet">
 <style>
 :root {
   --bg:#f5f2ec;--bg2:#edeae2;--card:#fff;--border:#ddd9cf;
@@ -112,18 +112,24 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .myday-time{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--ink3);width:72px;flex-shrink:0;padding-top:14px;text-align:right;}
 .myday-line{display:flex;flex-direction:column;align-items:center;gap:0;margin-top:14px;}
 .myday-dot{width:10px;height:10px;border-radius:50%;background:var(--ink);flex-shrink:0;}
+.myday-dot.free{background:var(--green);}
 .myday-vline{width:2px;flex:1;background:var(--border);min-height:20px;}
-.myday-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;cursor:pointer;transition:all .15s;}
-.myday-card:hover{border-color:var(--ink);}
+.myday-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;transition:all .15s;}
 .myday-card.done-block{opacity:.5;}
+.myday-card.free-block{background:var(--green-bg);border-color:var(--green);border-style:dashed;}
 .myday-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
 .myday-task{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
 .myday-meta{font-size:11px;color:var(--ink3);margin-top:2px;}
-.myday-duration{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--ink2);}
+.myday-duration{display:flex;align-items:center;gap:6px;}
+.myday-dur-val{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--ink2);}
+.myday-dur-btn{font-size:14px;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink2);line-height:1;}
+.myday-dur-btn:hover{background:var(--bg2);border-color:var(--ink);}
 .myday-break{display:flex;gap:16px;margin-bottom:12px;align-items:center;}
 .myday-break-label{font-size:12px;color:var(--ink3);font-style:italic;padding:8px 0;}
 .myday-unscheduled{margin-top:28px;}
 .myday-unscheduled-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;}
+.myday-add-free{display:flex;align-items:center;gap:8px;font-family:'Inconsolata',monospace;font-size:12px;color:var(--green);background:var(--green-bg);border:1.5px dashed var(--green);border-radius:var(--radius);padding:10px 16px;cursor:pointer;margin-bottom:12px;margin-left:88px;}
+.myday-add-free:hover{background:var(--card);}
 
 /* AI */
 .ai-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;height:500px;}
@@ -161,53 +167,174 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 </head>
 <body>
 
-<div id="loading"><div class="spinner"></div><div style="font-size:13px;color:var(--ink3);">Loading from Google Sheets...</div></div>
+<div id="loading" style="display: none;"><div class="spinner"></div><div style="font-size:13px;color:var(--ink3);">Loading from Google Sheets...</div></div>
 
-<div id="setup">
+<div id="setup" style="display: none;">
   <div class="setup-inner">
     <h2>UZHER.COM</h2>
     <p>Enter your Anthropic key once — saved in your browser, never in the code.</p>
-    <input type="password" id="api-key-input" placeholder="Anthropic API key (sk-ant-api03-...)" />
+    <input type="password" id="api-key-input" placeholder="Anthropic API key (sk-ant-api03-...)">
     <button onclick="startApp()">Launch Dashboard →</button>
   </div>
 </div>
 
-<div id="app">
+<div id="app" style="display: block;">
   <div class="topbar">
     <div class="topbar-brand">⬡ UZHER.COM</div>
     <div class="nav-tabs">
-      <button class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</button>
-      <button class="nav-tab" onclick="showPage('clients',this)">Clients</button>
-      <button class="nav-tab" onclick="showPage('tasks',this)">Tasks</button>
-      <button class="nav-tab" onclick="showPage('assistant',this)">AI Assistant</button>
-      <button class="nav-tab" onclick="showPage('myday',this)">My Day</button>
+      <button class="nav-tab" onclick="showPage(&#39;dashboard&#39;,this)">Dashboard</button>
+      <button class="nav-tab" onclick="showPage(&#39;clients&#39;,this)">Clients</button>
+      <button class="nav-tab" onclick="showPage(&#39;tasks&#39;,this)">Tasks</button>
+      <button class="nav-tab" onclick="showPage(&#39;assistant&#39;,this)">AI Assistant</button>
+      <button class="nav-tab active" onclick="showPage(&#39;myday&#39;,this)">My Day</button>
     </div>
     <div class="topbar-right">
       <div id="sync-badge" class="sync-badge sync-ok">✓ Saved to Google</div>
-      <div class="topbar-date" id="topbar-date"></div>
+      <div class="topbar-date" id="topbar-date">Thursday, March 19</div>
     </div>
   </div>
 
   <div class="main">
 
     <!-- DASHBOARD -->
-    <div class="page active" id="page-dashboard">
-      <div class="stats-row" id="stats-row"></div>
+    <div class="page" id="page-dashboard">
+      <div class="stats-row" id="stats-row"><div class="stat-card" onclick="showPage(&#39;clients&#39;,document.querySelectorAll(&#39;.nav-tab&#39;)[1])">
+    <div class="stat-num" style="">9</div><div class="stat-label">Total Clients</div></div><div class="stat-card">
+    <div class="stat-num" style="color:var(--green)">7</div><div class="stat-label">Active Now</div></div><div class="stat-card" onclick="showPage(&#39;tasks&#39;,document.querySelectorAll(&#39;.nav-tab&#39;)[2])">
+    <div class="stat-num" style="">15</div><div class="stat-label">Open Tasks</div></div><div class="stat-card">
+    <div class="stat-num" style="color:var(--red)">5</div><div class="stat-label">High Priority</div></div></div>
       <div class="dashboard-grid">
-        <div class="focus-card"><div class="card-title">🎯 Today's Focus</div><div class="focus-today" id="focus-text">Loading your priorities...</div></div>
+        <div class="focus-card"><div class="card-title">🎯 Today's Focus</div><div class="focus-today" id="focus-text">Focus today on the high-priority KEREN WOLF tag positioning task due March 8th and the UPSTEP 2025 reporting due March 6th, as these are your most time-sensitive deliverables.</div></div>
         <div class="card" style="grid-column:span 2">
           <div class="card-title">⚡ Top Tasks Today
-            <button onclick="openTaskModal()" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-family:'Inconsolata',monospace;font-size:11px;cursor:pointer;color:var(--ink);">+ Add Task</button>
+            <button onclick="openTaskModal()" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-family:&#39;Inconsolata&#39;,monospace;font-size:11px;cursor:pointer;color:var(--ink);">+ Add Task</button>
           </div>
-          <div id="dashboard-tasks"></div>
+          <div id="dashboard-tasks"><div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);padding:4px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px">🔴 Overdue · 4+ days</div>
+      <div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773244943072">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">להשלים פיתוח ״הובר״ בדסקטופ שיציג מידות</span></div>
+      
+      <div class="task-meta">👤 ATA WEAR  📅 2026-03-07</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773244943072&#39;)">✓</button>
+    
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773245005456">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסיים לסדר את הקוד לגלריה-תפריט בעמוד הבית</span></div>
+      <div class="task-desc-text">לסיים את הקוד</div>
+      <div class="task-meta">👤 KEREN WOLF  📅 2026-03-09</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773245005456&#39;)">✓</button>
+    
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773250138000">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסיים לדווח את כל המדינות של 2025+2025</span></div>
+      
+      <div class="task-meta">👤 UPSTEP  📅 2026-03-06</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773250138000&#39;)">✓</button>
+    
+  </div><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="1773328207967">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסדר את המיקום של ״התגיות״ מתחת לתמונה</span></div>
+      <div class="task-desc-text">best seller, new in שיהיו מתחת ולא על התמונה</div>
+      <div class="task-meta">👤 KEREN WOLF  📅 2026-03-08</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773328207967&#39;)">✓</button>
+    
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773341357463">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסדר את הצבע ״השחור״ כציפוי</span></div>
+      <div class="task-desc-text">כמו הזהב והכסף רק לשחור - אלינור שלחה בווצאפ</div>
+      <div class="task-meta">👤 KEREN WOLF  📅 2026-03-12</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773341357463&#39;)">✓</button>
+    
+  </div>
+    </div><div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink);padding:4px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px">⚡ Today</div>
+      <div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="1773757015833">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסדר מוצר מתנה ״כובע טמבל״ מיום ראשון</span></div>
+      
+      <div class="task-meta">👤 ATA WEAR  📅 2026-03-19</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773757015833&#39;)">✓</button>
+    
+  </div>
+    </div><div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);padding:4px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px">📌 Other</div>
+      <div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="recurring_kpi_1773244631874">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">📊 Update KPIs — MYSELF - UZHER.COM</span><span class="recurring-badge">🔄 weekly</span></div>
+      <div class="task-desc-text">Track: TEST - KPIs we are tracking</div>
+      <div class="task-meta">👤 MYSELF - UZHER.COM  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;recurring_kpi_1773244631874&#39;)">✓</button>
+    
+  </div><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="1773246601698">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">להוציא חשבונית לפי הסכום שאביעד ישלח</span></div>
+      
+      <div class="task-meta"></div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773246601698&#39;)">✓</button>
+    
+  </div><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="recurring_kpi_1772747643254">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">📊 Update KPIs — UPSTEP</span><span class="recurring-badge">🔄 kpiFreq</span></div>
+      
+      <div class="task-meta">👤 UPSTEP  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;recurring_kpi_1772747643254&#39;)">✓</button>
+    
+  </div>
+    </div></div>
         </div>
-        <div class="card"><div class="card-title">👥 Client Pulse</div><div id="dashboard-clients"></div></div>
+        <div class="card"><div class="card-title">👥 Client Pulse</div><div id="dashboard-clients"><div class="task-item" data-client-detail="1772747643254">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">UPSTEP</div><div style="font-size:11px;color:var(--ink3)">Custom Orthotics</div></div>
+        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
+      </div><div class="task-item" data-client-detail="1772747694920">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">ATA WEAR</div><div style="font-size:11px;color:var(--ink3)">Fqshion</div></div>
+        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
+      </div><div class="task-item" data-client-detail="1772782719820">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">KEREN WOLF</div><div style="font-size:11px;color:var(--ink3)">https://kerenwolf.co.il/</div></div>
+        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
+      </div><div class="task-item" data-client-detail="1772782754804">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">DR-BRACE</div><div style="font-size:11px;color:var(--ink3)">https://dr-brace.com/</div></div>
+        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
+      </div><div class="task-item" data-client-detail="1772782774553">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">ENTAIL.AI</div><div style="font-size:11px;color:var(--ink3)">https://entail.ai/</div></div>
+        <div class="client-status status-inactive" style="margin-left:auto;margin-bottom:0;pointer-events:none">○ Not Active</div>
+      </div><div class="task-item" data-client-detail="1772782809486">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">KILARUN</div><div style="font-size:11px;color:var(--ink3)">https://kilarun.com/</div></div>
+        <div class="client-status status-inactive" style="margin-left:auto;margin-bottom:0;pointer-events:none">○ Not Active</div>
+      </div><div class="task-item" data-client-detail="1772782829852">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">TEMPDROP</div><div style="font-size:11px;color:var(--ink3)">https://www.tempdrop.com/</div></div>
+        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
+      </div><div class="task-item" data-client-detail="1773244631874">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">MYSELF - UZHER.COM</div><div style="font-size:11px;color:var(--ink3)">https://www.uzher.com/</div></div>
+        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
+      </div><div class="task-item" data-client-detail="1773751342295">
+        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">Einat Sberlo</div><div style="font-size:11px;color:var(--ink3)">Hair Products</div></div>
+        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
+      </div></div></div>
         <div class="card" style="grid-column:span 2">
           <div class="card-title">💬 Quick Ask</div>
           <div id="quick-messages" style="min-height:50px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;"></div>
           <div style="display:flex;gap:10px;">
-            <input type="text" id="quick-input" placeholder="Ask anything about your day or clients..." style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Inconsolata',monospace;font-size:13px;background:var(--bg);outline:none;" onkeydown="if(event.key==='Enter')quickAsk()" />
-            <button onclick="quickAsk()" style="background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Ask</button>
+            <input type="text" id="quick-input" placeholder="Ask anything about your day or clients..." style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:&#39;Inconsolata&#39;,monospace;font-size:13px;background:var(--bg);outline:none;" onkeydown="if(event.key===&#39;Enter&#39;)quickAsk()">
+            <button onclick="quickAsk()" style="background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:&#39;Syne&#39;,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Ask</button>
           </div>
         </div>
       </div>
@@ -216,41 +343,573 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
     <!-- CLIENTS -->
     <div class="page" id="page-clients">
       <div class="page-header"><div><h2>Clients</h2><p>Click a client to view or edit</p></div><button class="btn-add" onclick="openClientModal()">+ Add Client</button></div>
-      <div class="clients-grid" id="clients-grid"></div>
+      <div class="clients-grid" id="clients-grid"><div class="client-card" data-client-detail="1772747643254">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">UPSTEP</div><div class="client-biz">Custom Orthotics</div></div>
+          <div class="client-status status-active">● Active</div>
+        </div>
+        <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px;pointer-events:none">💰 -</div>
+        <div class="kpi-row" style="pointer-events:none"><span class="kpi-chip">📊 kpiTracking</span></div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-top:10px;pointer-events:none"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)">Last session</strong><br>https://www.upstep.com/</div>
+        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>Tax</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--blue);pointer-events:none"><strong>→ Next:</strong> next</div>
+      </div><div class="client-card" data-client-detail="1772747694920">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">ATA WEAR</div><div class="client-biz">Fqshion</div></div>
+          <div class="client-status status-active">● Active</div>
+        </div>
+        
+        
+        <div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-top:10px;pointer-events:none"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)">Last session</strong><br>https://atawear.co.il/</div>
+        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>Optimization</div>
+        
+      </div><div class="client-card" data-client-detail="1772782719820">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">KEREN WOLF</div><div class="client-biz">https://kerenwolf.co.il/</div></div>
+          <div class="client-status status-active">● Active</div>
+        </div>
+        
+        
+        
+        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>Optimization</div>
+        
+      </div><div class="client-card" data-client-detail="1772782754804">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">DR-BRACE</div><div class="client-biz">https://dr-brace.com/</div></div>
+          <div class="client-status status-active">● Active</div>
+        </div>
+        
+        
+        
+        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>UI/UX</div>
+        
+      </div><div class="client-card" data-client-detail="1772782774553">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">ENTAIL.AI</div><div class="client-biz">https://entail.ai/</div></div>
+          <div class="client-status status-inactive">○ Not Active</div>
+        </div>
+        
+        
+        
+        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>CRO</div>
+        
+      </div><div class="client-card" data-client-detail="1772782809486">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">KILARUN</div><div class="client-biz">https://kilarun.com/</div></div>
+          <div class="client-status status-inactive">○ Not Active</div>
+        </div>
+        
+        
+        
+        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>CRO</div>
+        
+      </div><div class="client-card" data-client-detail="1772782829852">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">TEMPDROP</div><div class="client-biz">https://www.tempdrop.com/</div></div>
+          <div class="client-status status-active">● Active</div>
+        </div>
+        
+        
+        
+        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>CRO</div>
+        
+      </div><div class="client-card" data-client-detail="1773244631874">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">MYSELF - UZHER.COM</div><div class="client-biz">https://www.uzher.com/</div></div>
+          <div class="client-status status-active">● Active</div>
+        </div>
+        
+        
+        
+        
+        
+      </div><div class="client-card" data-client-detail="1773751342295">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
+          <div><div class="client-name">Einat Sberlo</div><div class="client-biz">Hair Products</div></div>
+          <div class="client-status status-active">● Active</div>
+        </div>
+        
+        
+        
+        
+        
+      </div></div>
     </div>
 
     <!-- TASKS -->
     <div class="page" id="page-tasks">
       <div class="page-header"><div><h2>Tasks</h2><p>Click a task to edit · Check the box to complete</p></div><button class="btn-add" onclick="openTaskModal()">+ Add Task</button></div>
       <div class="task-filter-tabs" id="task-filter-tabs">
-        <button class="task-filter-tab active" onclick="setTaskFilter('open',this)">Open</button>
-        <button class="task-filter-tab" onclick="setTaskFilter('done',this)">Completed</button>
-        <button class="task-filter-tab" onclick="setTaskFilter('all',this)">All</button>
+        <button class="task-filter-tab active" onclick="setTaskFilter(&#39;open&#39;,this)">Open</button>
+        <button class="task-filter-tab" onclick="setTaskFilter(&#39;done&#39;,this)">Completed</button>
+        <button class="task-filter-tab" onclick="setTaskFilter(&#39;all&#39;,this)">All</button>
         <div style="width:1px;background:var(--border);margin:0 4px;"></div>
         <button class="task-filter-tab active" id="group-btn" onclick="toggleGrouping(this)">📁 By Client</button>
       </div>
-      <div id="tasks-container"></div>
+      <div id="tasks-container"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+    <div><div class="client-group">
+      <div class="client-group-header">
+        <span class="client-group-name" style="color:var(--red)">🔴 Overdue · 4+ days</span>
+        <span style="font-size:11px;color:var(--ink3)">5 tasks</span>
+      </div>
+      <div class="card" style="padding:8px 16px"><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773244943072">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">להשלים פיתוח ״הובר״ בדסקטופ שיציג מידות</span></div>
+      
+      <div class="task-meta">👤 ATA WEAR  📅 2026-03-07</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773244943072&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773244943072">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773245005456">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסיים לסדר את הקוד לגלריה-תפריט בעמוד הבית</span></div>
+      <div class="task-desc-text">לסיים את הקוד</div>
+      <div class="task-meta">👤 KEREN WOLF  📅 2026-03-09</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773245005456&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773245005456">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773250138000">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסיים לדווח את כל המדינות של 2025+2025</span></div>
+      
+      <div class="task-meta">👤 UPSTEP  📅 2026-03-06</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773250138000&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773250138000">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="1773328207967">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסדר את המיקום של ״התגיות״ מתחת לתמונה</span></div>
+      <div class="task-desc-text">best seller, new in שיהיו מתחת ולא על התמונה</div>
+      <div class="task-meta">👤 KEREN WOLF  📅 2026-03-08</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773328207967&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773328207967">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773341357463">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסדר את הצבע ״השחור״ כציפוי</span></div>
+      <div class="task-desc-text">כמו הזהב והכסף רק לשחור - אלינור שלחה בווצאפ</div>
+      <div class="task-meta">👤 KEREN WOLF  📅 2026-03-12</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773341357463&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773341357463">×</span>
+  </div></div>
+    </div><div class="client-group">
+      <div class="client-group-header">
+        <span class="client-group-name" style="color:var(--ink3)">📌 No Due Date</span>
+        <span style="font-size:11px;color:var(--ink3)">9 tasks</span>
+      </div>
+      <div class="card" style="padding:8px 16px"><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="recurring_kpi_1773244631874">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">📊 Update KPIs — MYSELF - UZHER.COM</span><span class="recurring-badge">🔄 weekly</span></div>
+      <div class="task-desc-text">Track: TEST - KPIs we are tracking</div>
+      <div class="task-meta">👤 MYSELF - UZHER.COM  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;recurring_kpi_1773244631874&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="recurring_kpi_1773244631874">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="1773246601698">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">להוציא חשבונית לפי הסכום שאביעד ישלח</span></div>
+      
+      <div class="task-meta"></div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773246601698&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773246601698">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="recurring_kpi_1772747643254">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">📊 Update KPIs — UPSTEP</span><span class="recurring-badge">🔄 kpiFreq</span></div>
+      
+      <div class="task-meta">👤 UPSTEP  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;recurring_kpi_1772747643254&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="recurring_kpi_1772747643254">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773580199508">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסדר את ה ״דאבל אופט-אין״ של האתר האמריקאי</span></div>
+      <div class="task-desc-text">לסדר כבר פופ-אפ ולבדוק פלואוז</div>
+      <div class="task-meta">👤 ATA WEAR  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773580199508&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773580199508">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773745319506">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">להוסיף מכנסי התעמלות ל״ברנד״ בגולג</span></div>
+      <div class="task-desc-text">לבדוק כבר גישה לסרצ׳ קונסול</div>
+      <div class="task-meta">👤 ATA WEAR  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773745319506&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773745319506">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773745368856">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לעשות קולקציית חג באתא - לבן נשים ולבן גברים</span></div>
+      <div class="task-desc-text">ביום ראשון להוריד את איוטה ולהעלות חג</div>
+      <div class="task-meta"></div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773745368856&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773745368856">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773745396688">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">להוסיף איסוף אסמסים גם לפופ-אפ במובייל</span></div>
+      
+      <div class="task-meta">👤 ATA WEAR  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773745396688&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773745396688">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-med"></div>
+    <div class="task-body" data-task-edit="1773751366311">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">להעביר את עינת סברלו לשופיפיי</span></div>
+      
+      <div class="task-meta">👤 Einat Sberlo  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773751366311&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773751366311">×</span>
+  </div><div class="task-item ">
+    <div class="priority-dot p-low"></div>
+    <div class="task-body" data-task-edit="1773586750291">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לעבוד על פרויקט משפיעניות של אתא</span></div>
+      
+      <div class="task-meta">👤 ATA WEAR  </div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773586750291&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773586750291">×</span>
+  </div></div>
+    </div></div>
+    <div><div class="client-group">
+      <div class="client-group-header">
+        <span class="client-group-name" style="color:var(--ink)">⚡ Today</span>
+        <span style="font-size:11px;color:var(--ink3)">1 task</span>
+      </div>
+      <div class="card" style="padding:8px 16px"><div class="task-item ">
+    <div class="priority-dot p-high"></div>
+    <div class="task-body" data-task-edit="1773757015833">
+      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">לסדר מוצר מתנה ״כובע טמבל״ מיום ראשון</span></div>
+      
+      <div class="task-meta">👤 ATA WEAR  📅 2026-03-19</div>
+    </div>
+    <button class="done-btn" onclick="toggleTask(&#39;1773757015833&#39;)">✓</button>
+    <span class="delete-btn" data-task-delete="1773757015833">×</span>
+  </div></div>
+    </div></div>
+  </div>
+  <button class="add-btn" onclick="openTaskModal()">+ Add new task</button></div>
     </div>
 
     <!-- MY DAY -->
-    <div class="page" id="page-myday">
+    <div class="page active" id="page-myday">
       <div class="page-header">
-        <div><h2>My Day</h2><p id="myday-summary">Building your schedule...</p></div>
+        <div><h2>My Day</h2><p id="myday-summary">15 tasks · 31.3h scheduled out of 8h</p></div>
         <button class="btn-add" onclick="generateMyDay()">↻ Regenerate</button>
       </div>
-      <div id="myday-container"><div class="empty-state" style="padding:60px">Loading your day...</div></div>
+      <div id="myday-container"><div class="myday-block">
+        <div class="myday-time">10:00 AM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--blue)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לסיים לדווח את כל המדינות של 2025+2025</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(0,-1)">−</button>
+              <span class="myday-dur-val">4h</span>
+              <button class="myday-dur-btn" onclick="changeDur(0,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 UPSTEP  🔴 13 days overdue  <span style="color:var(--blue);font-weight:600">🟡 Med</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773250138000&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(0)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">2:00 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">להשלים פיתוח ״הובר״ בדסקטופ שיציג מידות</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(1,-1)">−</button>
+              <span class="myday-dur-val">2h</span>
+              <button class="myday-dur-btn" onclick="changeDur(1,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 ATA WEAR  🔴 12 days overdue  <span style="color:var(--purple);font-weight:600">🟡 Med</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773244943072&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(1)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">4:00 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--green)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לסדר את המיקום של ״התגיות״ מתחת לתמונה</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(2,-1)">−</button>
+              <span class="myday-dur-val">1h</span>
+              <button class="myday-dur-btn" onclick="changeDur(2,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 KEREN WOLF  🔴 11 days overdue  <span style="color:var(--green);font-weight:600">🔴 High</span></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:6px">best seller, new in שיהיו מתחת ולא על התמונה</div>
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773328207967&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(2)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">5:00 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--green)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לסיים לסדר את הקוד לגלריה-תפריט בעמוד הבית</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(3,-1)">−</button>
+              <span class="myday-dur-val">3h</span>
+              <button class="myday-dur-btn" onclick="changeDur(3,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 KEREN WOLF  🔴 10 days overdue  <span style="color:var(--green);font-weight:600">🟡 Med</span></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:6px">לסיים את הקוד</div>
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773245005456&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(3)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">8:00 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--green)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לסדר את הצבע ״השחור״ כציפוי</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(4,-1)">−</button>
+              <span class="myday-dur-val">1h</span>
+              <button class="myday-dur-btn" onclick="changeDur(4,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 KEREN WOLF  🔴 7 days overdue  <span style="color:var(--green);font-weight:600">🟡 Med</span></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:6px">כמו הזהב והכסף רק לשחור - אלינור שלחה בווצאפ</div>
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773341357463&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(4)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">9:00 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לסדר מוצר מתנה ״כובע טמבל״ מיום ראשון</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(5,-1)">−</button>
+              <span class="myday-dur-val">1h 30min</span>
+              <button class="myday-dur-btn" onclick="changeDur(5,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 ATA WEAR  ⚡ Due today  <span style="color:var(--purple);font-weight:600">🔴 High</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773757015833&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(5)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">10:30 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--green)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">📊 Update KPIs — MYSELF - UZHER.COM</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(6,-1)">−</button>
+              <span class="myday-dur-val">30min</span>
+              <button class="myday-dur-btn" onclick="changeDur(6,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 MYSELF - UZHER.COM  <span style="color:var(--green);font-weight:600">🔴 High</span></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:6px">Track: TEST - KPIs we are tracking</div>
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;recurring_kpi_1773244631874&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(6)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">11:00 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">להוציא חשבונית לפי הסכום שאביעד ישלח</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(7,-1)">−</button>
+              <span class="myday-dur-val">15min</span>
+              <button class="myday-dur-btn" onclick="changeDur(7,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta"><span style="color:var(--purple);font-weight:600">🔴 High</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773246601698&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(7)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">11:15 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--blue)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">📊 Update KPIs — UPSTEP</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(8,-1)">−</button>
+              <span class="myday-dur-val">30min</span>
+              <button class="myday-dur-btn" onclick="changeDur(8,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 UPSTEP  <span style="color:var(--blue);font-weight:600">🔴 High</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;recurring_kpi_1772747643254&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(8)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">11:45 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לסדר את ה ״דאבל אופט-אין״ של האתר האמריקאי</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(9,-1)">−</button>
+              <span class="myday-dur-val">2h</span>
+              <button class="myday-dur-btn" onclick="changeDur(9,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 ATA WEAR  <span style="color:var(--purple);font-weight:600">🟡 Med</span></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:6px">לסדר כבר פופ-אפ ולבדוק פלואוז</div>
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773580199508&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(9)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">1:45 AM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">להוסיף מכנסי התעמלות ל״ברנד״ בגולג</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(10,-1)">−</button>
+              <span class="myday-dur-val">1h</span>
+              <button class="myday-dur-btn" onclick="changeDur(10,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 ATA WEAR  <span style="color:var(--purple);font-weight:600">🟡 Med</span></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:6px">לבדוק כבר גישה לסרצ׳ קונסול</div>
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773745319506&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(10)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">2:45 AM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לעשות קולקציית חג באתא - לבן נשים ולבן גברים</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(11,-1)">−</button>
+              <span class="myday-dur-val">1h 30min</span>
+              <button class="myday-dur-btn" onclick="changeDur(11,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta"><span style="color:var(--purple);font-weight:600">🟡 Med</span></div>
+          <div style="font-size:12px;color:var(--ink2);margin-top:6px">ביום ראשון להוריד את איוטה ולהעלות חג</div>
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773745368856&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(11)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">4:15 AM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">להוסיף איסוף אסמסים גם לפופ-אפ במובייל</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(12,-1)">−</button>
+              <span class="myday-dur-val">1h</span>
+              <button class="myday-dur-btn" onclick="changeDur(12,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 ATA WEAR  <span style="color:var(--purple);font-weight:600">🟡 Med</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773745396688&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(12)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">5:15 AM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--amber)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">להעביר את עינת סברלו לשופיפיי</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(13,-1)">−</button>
+              <span class="myday-dur-val">8h</span>
+              <button class="myday-dur-btn" onclick="changeDur(13,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 Einat Sberlo  <span style="color:var(--amber);font-weight:600">🟡 Med</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773751366311&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(13)">+ Add free time here</div><div class="myday-block">
+        <div class="myday-time">1:15 PM</div>
+        <div class="myday-line"><div class="myday-dot" style="background:var(--purple)"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ">
+          <div class="myday-card-header">
+            <div class="myday-task">לעבוד על פרויקט משפיעניות של אתא</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(14,-1)">−</button>
+              <span class="myday-dur-val">4h</span>
+              <button class="myday-dur-btn" onclick="changeDur(14,1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">👤 ATA WEAR  <span style="color:var(--purple);font-weight:600">🟢 Low</span></div>
+          
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay(&#39;1773586750291&#39;)">✓ Mark Done</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(14)">+ Add free time here</div></div>
     </div>
 
     <!-- AI ASSISTANT -->
     <div class="page" id="page-assistant">
-      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;">AI Assistant</div>
+      <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;">AI Assistant</div>
       <div style="font-size:13px;color:var(--ink3);margin-bottom:20px;">Knows all your clients, KPIs, and tasks.</div>
       <div class="ai-panel">
         <div class="ai-messages" id="ai-messages">
           <div class="ai-msg claude">Hi! I know all your clients, KPIs and tasks. Try asking:<br><br>• "What should I focus on today?"<br>• "Which clients need KPI updates?"<br>• "Summarize where I am with each client"</div>
         </div>
         <div class="ai-input-row">
-          <input type="text" id="ai-input" placeholder="Ask about your clients, KPIs, tasks..." onkeydown="if(event.key==='Enter')aiAsk()" />
+          <input type="text" id="ai-input" placeholder="Ask about your clients, KPIs, tasks..." onkeydown="if(event.key===&#39;Enter&#39;)aiAsk()">
           <button onclick="aiAsk()">Send</button>
         </div>
       </div>
@@ -264,8 +923,8 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
   <div class="modal">
     <h3 id="cm-title">Add Client</h3>
     <div class="field-row">
-      <div class="field"><label>Client Name</label><input type="text" id="cm-name" placeholder="e.g. Sarah Johnson" /></div>
-      <div class="field"><label>Business / Store</label><input type="text" id="cm-biz" placeholder="e.g. Fashion Store" /></div>
+      <div class="field"><label>Client Name</label><input type="text" id="cm-name" placeholder="e.g. Sarah Johnson"></div>
+      <div class="field"><label>Business / Store</label><input type="text" id="cm-biz" placeholder="e.g. Fashion Store"></div>
     </div>
     <div class="field-row">
       <div class="field"><label>Status</label><select id="cm-status">
@@ -274,13 +933,13 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
         <option value="review">Review — In review</option>
         <option value="inactive">Not Active — Paused or ended</option>
       </select></div>
-      <div class="field"><label>Monthly Revenue / Deal Value</label><input type="text" id="cm-revenue" placeholder="e.g. $2,000/month" /></div>
+      <div class="field"><label>Monthly Revenue / Deal Value</label><input type="text" id="cm-revenue" placeholder="e.g. $2,000/month"></div>
     </div>
     <div class="field"><label>Where we left off</label><textarea id="cm-last" placeholder="What happened in the last session or call?"></textarea></div>
     <div class="field"><label>What I promised them</label><textarea id="cm-promise" placeholder="Any deliverables or commitments you made..."></textarea></div>
-    <div class="field"><label>Next step</label><input type="text" id="cm-next" placeholder="What's the next action for this client?" /></div>
+    <div class="field"><label>Next step</label><input type="text" id="cm-next" placeholder="What&#39;s the next action for this client?"></div>
     <div style="border-top:1px solid var(--border);margin:20px 0 16px;padding-top:16px;">
-      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:14px;">📊 KPI Tracking</div>
+      <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:13px;font-weight:700;margin-bottom:14px;">📊 KPI Tracking</div>
       <div class="field"><label>Numbers BEFORE you (baseline)</label><textarea id="cm-kpi-baseline" placeholder="e.g. ROAS: 1.8x, Revenue: $12k/mo, CAC: $45"></textarea></div>
       <div class="field"><label>KPIs we are tracking</label><textarea id="cm-kpi-tracking" placeholder="e.g. ROAS, Monthly Revenue, CAC, Conversion Rate"></textarea></div>
       <div class="field-row">
@@ -291,12 +950,12 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
           <option value="biweekly">Every 2 weeks</option>
           <option value="monthly">Monthly</option>
         </select></div>
-        <div class="field"><label>Current numbers</label><input type="text" id="cm-kpi-current" placeholder="e.g. ROAS: 2.4x, Revenue: $18k" /></div>
+        <div class="field"><label>Current numbers</label><input type="text" id="cm-kpi-current" placeholder="e.g. ROAS: 2.4x, Revenue: $18k"></div>
       </div>
     </div>
-    <input type="hidden" id="cm-id" />
+    <input type="hidden" id="cm-id">
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('client-modal')">Cancel</button>
+      <button class="btn-cancel" onclick="closeModal(&#39;client-modal&#39;)">Cancel</button>
       <button class="btn-danger" id="cm-delete-btn" onclick="deleteClient()" style="display:none">Delete</button>
       <button class="btn-primary" onclick="saveClient()">Save to Google Sheets ↗</button>
     </div>
@@ -307,20 +966,20 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 <div id="task-modal" style="display:none" class="modal-overlay">
   <div class="modal">
     <h3 id="tm-title">Add Task</h3>
-    <div class="field"><label>Task Headline</label><input type="text" id="tm-text" placeholder="Short title for this task" /></div>
+    <div class="field"><label>Task Headline</label><input type="text" id="tm-text" placeholder="Short title for this task"></div>
     <div class="field"><label>Description (optional)</label><textarea id="tm-desc" placeholder="More details, steps, context..."></textarea></div>
     <div class="field-row">
-      <div class="field"><label>Client (optional)</label><select id="tm-client"><option value="">— Not client specific —</option></select></div>
+      <div class="field"><label>Client (optional)</label><select id="tm-client"><option value="">— Not client specific —</option><option value="UPSTEP">UPSTEP</option><option value="ATA WEAR">ATA WEAR</option><option value="KEREN WOLF">KEREN WOLF</option><option value="DR-BRACE">DR-BRACE</option><option value="ENTAIL.AI">ENTAIL.AI</option><option value="KILARUN">KILARUN</option><option value="TEMPDROP">TEMPDROP</option><option value="MYSELF - UZHER.COM">MYSELF - UZHER.COM</option><option value="Einat Sberlo">Einat Sberlo</option></select></div>
       <div class="field"><label>Priority</label><select id="tm-priority">
         <option value="high">🔴 High — Do today</option>
         <option value="med">🟡 Medium — Do soon</option>
         <option value="low">🟢 Low — When possible</option>
       </select></div>
     </div>
-    <div class="field"><label>Due date (optional)</label><input type="date" id="tm-due" /></div>
-    <input type="hidden" id="tm-id" />
+    <div class="field"><label>Due date (optional)</label><input type="date" id="tm-due"></div>
+    <input type="hidden" id="tm-id">
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('task-modal')">Cancel</button>
+      <button class="btn-cancel" onclick="closeModal(&#39;task-modal&#39;)">Cancel</button>
       <button class="btn-danger" id="tm-delete-btn" onclick="deleteTaskFromModal()" style="display:none">Delete</button>
       <button class="btn-primary" onclick="saveTask()">Save to Google Sheets ↗</button>
     </div>
@@ -825,27 +1484,193 @@ async function aiAsk(){
   catch(e){r.textContent='Error: '+e.message;}
 }
 
+// My Day state
+let mydayBlocks = []; // [{type:'task'|'free', task, dur, start}, ...]
+
+function mydayDurations(){return[15,30,60,90,120,150,180,240,300,360,420,480];}
+function durLabel(m){if(m<60)return m+'min';if(m%60===0)return m/60+'h';return Math.floor(m/60)+'h '+m%60+'min';}
+
+function changeDur(idx, delta){
+  const durs=mydayDurations();
+  const block=mydayBlocks[idx];
+  if(!block||block.type==='free')return;
+  const cur=durs.indexOf(block.dur);
+  const next=Math.max(0,Math.min(durs.length-1,cur+delta));
+  block.dur=durs[next];
+  recalcStarts();
+  renderMyDayBlocks();
+}
+
+function addFreeTime(afterIdx){
+  mydayBlocks.splice(afterIdx+1,0,{type:'free',dur:60,label:'Free Time'});
+  recalcStarts();
+  renderMyDayBlocks();
+}
+
+function removeFreeTime(idx){
+  mydayBlocks.splice(idx,1);
+  recalcStarts();
+  renderMyDayBlocks();
+}
+
+function changeFreeTimeDur(idx,delta){
+  const durs=[15,30,60,90,120,150,180,240,300,360,420,480];
+  const block=mydayBlocks[idx];
+  if(!block||block.type!=='free')return;
+  const cur=durs.indexOf(block.dur);
+  const next=Math.max(0,Math.min(durs.length-1,cur+delta));
+  block.dur=durs[next];
+  recalcStarts();
+  renderMyDayBlocks();
+}
+
+function recalcStarts(){
+  let min=0;
+  mydayBlocks.forEach(b=>{b.start=min;min+=b.dur;});
+}
+
+function minToTime(min){
+  const total=600+min;
+  const h=Math.floor(total/60)%24;
+  const m=total%60;
+  const ampm=h>=12?'PM':'AM';
+  const hh=h>12?h-12:h===0?12:h;
+  return `${hh}:${m.toString().padStart(2,'0')} ${ampm}`;
+}
+
+function clientColor(name){
+  const colors=['var(--blue)','var(--purple)','var(--green)','var(--amber)','var(--red)'];
+  const idx=clients.findIndex(c=>c.name===name);
+  return colors[Math.abs(idx)%colors.length]||'var(--ink)';
+}
+
+function overdueLabel(t){
+  const now=new Date();now.setHours(0,0,0,0);
+  if(!t.due||t.due==='true'||t.due==='')return '';
+  const d=new Date(t.due+'T00:00:00');
+  const diff=Math.round((now-d)/(864e5));
+  if(diff===1)return '🔴 1 day overdue';
+  if(diff===2)return '🔴 2 days overdue';
+  if(diff===3)return '🔴 3 days overdue';
+  if(diff>3)return `🔴 ${diff} days overdue`;
+  if(diff===0)return '⚡ Due today';
+  return '';
+}
+
+function renderMyDayBlocks(){
+  const container=document.getElementById('myday-container');
+  const TOTAL=480;
+  const totalUsed=mydayBlocks.reduce((s,b)=>s+b.dur,0);
+  const unscheduled=tasks.filter(t=>!t.done&&!mydayBlocks.find(b=>b.type==='task'&&b.task.id===t.id));
+
+  let html='';
+  mydayBlocks.forEach((block,i)=>{
+    if(block.type==='free'){
+      html+=`<div class="myday-block">
+        <div class="myday-time">${minToTime(block.start)}</div>
+        <div class="myday-line"><div class="myday-dot free"></div><div class="myday-vline"></div></div>
+        <div class="myday-card free-block">
+          <div class="myday-card-header">
+            <div class="myday-task" style="color:var(--green)">🌿 Free Time</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeFreeTimeDur(${i},-1)">−</button>
+              <span class="myday-dur-val">${durLabel(block.dur)}</span>
+              <button class="myday-dur-btn" onclick="changeFreeTimeDur(${i},1)">+</button>
+              <button class="myday-dur-btn" onclick="removeFreeTime(${i})" style="color:var(--red);margin-left:4px">×</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    } else {
+      const t=block.task;
+      const color=clientColor(t.client);
+      const ol=overdueLabel(t);
+      html+=`<div class="myday-block">
+        <div class="myday-time">${minToTime(block.start)}</div>
+        <div class="myday-line"><div class="myday-dot" style="background:${color}"></div><div class="myday-vline"></div></div>
+        <div class="myday-card ${t.done?'done-block':''}">
+          <div class="myday-card-header">
+            <div class="myday-task">${t.text}</div>
+            <div class="myday-duration">
+              <button class="myday-dur-btn" onclick="changeDur(${i},-1)">−</button>
+              <span class="myday-dur-val">${durLabel(block.dur)}</span>
+              <button class="myday-dur-btn" onclick="changeDur(${i},1)">+</button>
+            </div>
+          </div>
+          <div class="myday-meta">${t.client?'👤 '+t.client+'  ':''}${ol?ol+'  ':''}<span style="color:${color};font-weight:600">${({high:'🔴 High',med:'🟡 Med',low:'🟢 Low'})[t.priority]}</span></div>
+          ${t.desc?`<div style="font-size:12px;color:var(--ink2);margin-top:6px">${t.desc}</div>`:''}
+          <div style="margin-top:10px">
+            <button class="done-btn" onclick="toggleTaskMyDay('${t.id}')">${t.done?'✓ Done':'✓ Mark Done'}</button>
+          </div>
+        </div>
+      </div>
+      <div class="myday-add-free" onclick="addFreeTime(${i})">+ Add free time here</div>`;
+    }
+  });
+
+  if(unscheduled.length){
+    html+=`<div class="myday-unscheduled">
+      <div class="myday-unscheduled-title">📋 Doesn't fit today (${unscheduled.length} tasks)</div>
+      <div class="card" style="padding:8px 16px">${unscheduled.map(t=>taskHTML(t,false)).join('')}</div>
+    </div>`;
+  }
+
+  container.innerHTML=html;
+  const totalH=(totalUsed/60).toFixed(1);
+  document.getElementById('myday-summary').textContent=`${mydayBlocks.filter(b=>b.type==='task').length} tasks · ${totalH}h scheduled out of 8h${unscheduled.length?' · '+unscheduled.length+' unscheduled':''}`;
+}
+
+async function toggleTaskMyDay(id){
+  const t=tasks.find(t=>t.id===id);if(!t)return;
+  t.done=!t.done;
+  if(t.done)t.completedDate=new Date().toISOString().split('T')[0];
+  // Update the task reference in mydayBlocks too
+  const block=mydayBlocks.find(b=>b.type==='task'&&b.task.id===id);
+  if(block)block.task=t;
+  renderMyDayBlocks();
+  renderDashboardTasks();
+  renderStats();
+  await saveAllTasks();
+}
+
 async function generateMyDay(){
   const container=document.getElementById('myday-container');
   const summary=document.getElementById('myday-summary');
-  container.innerHTML='<div class="empty-state" style="padding:60px">⏳ Claude is estimating your tasks...</div>';
-  summary.textContent='Building your schedule...';
 
   const open=tasks.filter(t=>!t.done);
   if(!open.length){
+    mydayBlocks=[];
     container.innerHTML='<div class="empty-state" style="padding:60px">No open tasks! Enjoy your day 🎉</div>';
     summary.textContent='Nothing scheduled';
     return;
   }
 
-  // Sort: overdue first (by days late), then today, then priority
-  const now=new Date(); now.setHours(0,0,0,0);
+  // Save existing manual edits: remembered durations + free blocks positions
+  const savedDurs={};
+  const savedFreeBlocks=[];
+  let lastTaskIdx=-1;
+  mydayBlocks.forEach((b,i)=>{
+    if(b.type==='task'){savedDurs[b.task.id]=b.dur;lastTaskIdx=i;}
+    if(b.type==='free'){
+      // remember free block was after which task id
+      const prevTask=mydayBlocks.slice(0,i).filter(x=>x.type==='task').slice(-1)[0];
+      savedFreeBlocks.push({afterTaskId:prevTask?prevTask.task.id:null,dur:b.dur});
+    }
+  });
+
+  const isFirstGen=mydayBlocks.length===0;
+  if(isFirstGen){
+    container.innerHTML='<div class="empty-state" style="padding:60px">⏳ Claude is estimating your tasks...</div>';
+    summary.textContent='Building your schedule...';
+  }
+
+  const now=new Date();now.setHours(0,0,0,0);
   function urgency(t){
-    if(!t.due||t.due==='true'||t.due==='') return 999;
+    if(!t.due||t.due==='true'||t.due==='')return 999;
     const d=new Date(t.due+'T00:00:00');
     const diff=Math.round((now-d)/(864e5));
-    if(diff>0) return -diff; // overdue = very urgent (negative = sort first)
-    if(diff===0) return 0;
+    if(diff>0)return -diff;
+    if(diff===0)return 0;
     return diff;
   }
   const sorted=open.slice().sort((a,b)=>{
@@ -854,91 +1679,43 @@ async function generateMyDay(){
     return ({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1);
   });
 
-  // Ask Claude to estimate time for each task
-  const taskList=sorted.map((t,i)=>`${i+1}. [${t.priority}] ${t.text}${t.desc?' — '+t.desc:''} | Client: ${t.client||'General'} | Due: ${t.due||'none'}`).join('\n');
+  // Only ask Claude for tasks we don't have a saved duration for
+  const needEstimate=sorted.filter(t=>!savedDurs[t.id]);
+  let newEstimates={};
 
-  let estimates=[];
-  try{
-    const prompt=`Given these tasks, estimate how long each will take. Reply ONLY with a JSON array of numbers (minutes), one per task, in the same order. Only use: 15, 30, 60, 90, 120. Example: [30,60,15,90,120]\n\nTasks:\n${taskList}`;
-    const raw=await callClaude([{role:'user',content:prompt}],'You are a time estimation expert. Reply ONLY with a valid JSON array of numbers. No text, no explanation.');
-    const clean=raw.replace(/```json|```/g,'').trim();
-    estimates=JSON.parse(clean);
-    if(!Array.isArray(estimates))throw new Error('not array');
-  }catch(e){
-    estimates=sorted.map(t=>t.priority==='high'?60:t.priority==='low'?30:45);
-  }
-
-  // Build schedule from 10:00 AM, 8 hours = 480 min
-  const TOTAL=480;
-  let minutesUsed=0;
-  const scheduled=[];
-  const unscheduled=[];
-
-  sorted.forEach((t,i)=>{
-    const dur=estimates[i]||45;
-    if(minutesUsed+dur<=TOTAL){
-      scheduled.push({task:t,dur,start:minutesUsed});
-      minutesUsed+=dur;
-    } else {
-      unscheduled.push({task:t,dur});
+  if(needEstimate.length>0){
+    const taskList=needEstimate.map((t,i)=>`${i+1}. [${t.priority}] ${t.text}${t.desc?' — '+t.desc:''} | Client: ${t.client||'General'} | Due: ${t.due||'none'}`).join('\n');
+    try{
+      const prompt=`Given these tasks, estimate how long each will take. Reply ONLY with a JSON array of numbers (minutes), one per task, in the same order. Only use: 15, 30, 60, 90, 120, 150, 180, 240, 300, 360, 420, 480.\n\nTasks:\n${taskList}`;
+      const raw=await callClaude([{role:'user',content:prompt}],'You are a time estimation expert. Reply ONLY with a valid JSON array of numbers. No text, no explanation.');
+      const clean=raw.replace(/```json|```/g,'').trim();
+      const arr=JSON.parse(clean);
+      needEstimate.forEach((t,i)=>{
+        const snapped=[15,30,60,90,120,150,180,240,300,360,420,480].reduce((a,b)=>Math.abs(b-(arr[i]||60))<Math.abs(a-(arr[i]||60))?b:a);
+        newEstimates[t.id]=snapped;
+      });
+    }catch(e){
+      needEstimate.forEach(t=>{newEstimates[t.id]=t.priority==='high'?60:t.priority==='low'?30:60;});
     }
+  }
+
+  // Rebuild blocks preserving saved durations and free blocks
+  mydayBlocks=[];
+  sorted.forEach(t=>{
+    const dur=savedDurs[t.id]||newEstimates[t.id]||60;
+    mydayBlocks.push({type:'task',task:t,dur});
+    // Re-insert free blocks that were after this task
+    savedFreeBlocks.filter(f=>f.afterTaskId===t.id).forEach(f=>{
+      mydayBlocks.push({type:'free',dur:f.dur});
+    });
+  });
+  // Re-insert free blocks that had no preceding task (were at top)
+  savedFreeBlocks.filter(f=>f.afterTaskId===null).forEach(f=>{
+    mydayBlocks.unshift({type:'free',dur:f.dur});
   });
 
-  // Render
-  function minToTime(min){
-    const h=Math.floor((600+min)/60)%24;
-    const m=(600+min)%60;
-    const ampm=h>=12?'PM':'AM';
-    const hh=h>12?h-12:h===0?12:h;
-    return `${hh}:${m.toString().padStart(2,'0')} ${ampm}`;
-  }
-
-  function clientColor(name){
-    const colors=['var(--blue)','var(--purple)','var(--green)','var(--amber)','var(--red)'];
-    const idx=clients.findIndex(c=>c.name===name);
-    return colors[Math.abs(idx)%colors.length]||'var(--ink)';
-  }
-
-  function overdueLabel(t){
-    if(!t.due||t.due==='true'||t.due==='')return '';
-    const d=new Date(t.due+'T00:00:00');
-    const diff=Math.round((now-d)/(864e5));
-    if(diff===1)return '🔴 1 day overdue';
-    if(diff===2)return '🔴 2 days overdue';
-    if(diff===3)return '🔴 3 days overdue';
-    if(diff>3)return `🔴 ${diff} days overdue`;
-    if(diff===0)return '⚡ Due today';
-    return '';
-  }
-
-  let html='';
-  scheduled.forEach(({task:t,dur,start})=>{
-    const color=clientColor(t.client);
-    const ol=overdueLabel(t);
-    html+=`<div class="myday-block">
-      <div class="myday-time">${minToTime(start)}</div>
-      <div class="myday-line"><div class="myday-dot" style="background:${color}"></div><div class="myday-vline"></div></div>
-      <div class="myday-card ${t.done?'done-block':''}" data-task-toggle="${t.id}">
-        <div class="myday-card-header">
-          <div class="myday-task">${t.text}</div>
-          <div class="myday-duration">${dur>=60?dur/60+'h':dur+'min'}</div>
-        </div>
-        <div class="myday-meta">${t.client?'👤 '+t.client+'  ':''}${ol?ol+'  ':''}<span style="color:${color};font-weight:600">${({high:'🔴 High',med:'🟡 Med',low:'🟢 Low'})[t.priority]}</span></div>
-        ${t.desc?`<div style="font-size:12px;color:var(--ink2);margin-top:6px">${t.desc}</div>`:''}
-      </div>
-    </div>`;
-  });
-
-  if(unscheduled.length){
-    html+=`<div class="myday-unscheduled">
-      <div class="myday-unscheduled-title">📋 Doesn't fit today (${unscheduled.length} tasks)</div>
-      <div class="card" style="padding:8px 16px">${unscheduled.map(({task:t})=>taskHTML(t,false)).join('')}</div>
-    </div>`;
-  }
-
-  container.innerHTML=html;
-  const totalH=(minutesUsed/60).toFixed(1);
-  summary.textContent=`${scheduled.length} tasks · ${totalH}h scheduled out of 8h${unscheduled.length?' · '+unscheduled.length+' moved to tomorrow':''}`;
+  recalcStarts();
+  renderMyDayBlocks();
 }
 
 function addAiMsg(role,text){
@@ -947,5 +1724,6 @@ function addAiMsg(role,text){
   el.appendChild(d);el.scrollTop=el.scrollHeight;return d;
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
