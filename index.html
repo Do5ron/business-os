@@ -755,6 +755,7 @@ async function loadAll() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   renderAll(); generateFocus();
+  loadPricingFromSheets();
 }
 
 function injectRecurringTasks() {
@@ -1340,11 +1341,43 @@ function parseAtaCsv(text) {
   });
 }
 
-function renderAtaPricingTable() {
+async function savePricingToSheets() {
+  if (!ataPricingData.length) return;
+  const rows = [
+    ['title','units','revenue','fullPrice','discountAmt','avgPrice','avgFullPrice','avgDisc'],
+    ...ataPricingData.map(p => [p.title, p.units, p.revenue, p.fullPrice||0, p.discountAmt||0, p.avgPrice||0, p.avgFullPrice||0, p.avgDisc||0])
+  ];
+  await gasWrite('ata_pricing', rows);
+}
+
+async function loadPricingFromSheets() {
+  try {
+    const rows = await gasRead('ata_pricing');
+    if (!rows || rows.length < 2) return;
+    const headers = rows[0].map(h => String(h).toLowerCase().replace(/ /g,''));
+    ataPricingData = rows.slice(1).map(r => {
+      const obj = {};
+      headers.forEach((h,i) => obj[h] = r[i]);
+      return {
+        title: String(obj['title']||''),
+        units: Number(obj['units']||0),
+        revenue: Number(obj['revenue']||0),
+        fullPrice: Number(obj['fullprice']||0),
+        discountAmt: Number(obj['discountamt']||0),
+        avgPrice: Number(obj['avgprice']||0),
+        avgFullPrice: Number(obj['avgfullprice']||0),
+        avgDisc: Number(obj['avgdisc']||0),
+      };
+    }).filter(p => p.title && p.units > 0);
+    if (ataPricingData.length) renderAtaPricingTable(false);
+  } catch(e) { console.log('No pricing data yet'); }
+}
+
+function renderAtaPricingTable(save=true) {
   if (!ataPricingData.length) return;
   document.getElementById('ata-pricing-content').style.display = 'block';
   document.getElementById('ata-pricing-title').textContent = `Pricing Analysis — ${ataPricingData.length} products`;
-  document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${ataPricingData.reduce((s,p)=>s+p.revenue,0).toLocaleString()} revenue`;
+  document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${Math.round(ataPricingData.reduce((s,p)=>s+p.revenue,0)).toLocaleString()} revenue`;
 
   const tbody = document.getElementById('ata-pricing-tbody');
   tbody.innerHTML = ataPricingData.map(p => {
@@ -1358,6 +1391,8 @@ function renderAtaPricingTable() {
       <td id="rec-${p.title.replace(/[^a-zA-Z0-9]/g,'_')}"><span style="font-size:11px;color:var(--ink3);">—</span></td>
     </tr>`;
   }).join('');
+
+  if (save) savePricingToSheets();
 }
 
 async function runAtaAI() {
