@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)file:///Users/doronshaibe/Downloads/UZHER.COM2.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UZHER.COM</title>
-<link href="./UZHER.COM2_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#f5f2ec;--bg2:#edeae2;--card:#fff;--border:#ddd9cf;
@@ -24,7 +24,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .setup-inner h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;}
 .setup-inner p{font-size:13px;color:var(--ink2);line-height:1.8;margin-bottom:28px;}
 .setup-inner input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:13px 16px;font-family:'Inconsolata',monospace;font-size:13px;background:var(--bg);color:var(--ink);outline:none;margin-bottom:14px;}
-.setup-inner input:focus{border-color:var(--ink);}
 .setup-inner button{width:100%;background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:14px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
 
 #loading{position:fixed;inset:0;z-index:300;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
@@ -38,6 +37,8 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .nav-tab{padding:6px 16px;border-radius:6px;font-family:'Inconsolata',monospace;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--ink2);transition:all .15s;}
 .nav-tab.active{background:var(--ink);color:var(--bg);}
 .nav-tab:hover:not(.active){background:var(--bg2);}
+.nav-tab.ata-tab{border:1px solid var(--border);}
+.nav-tab.ata-tab.active{background:#1B2C58;color:#fff;border-color:#1B2C58;}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
 .topbar-date{font-size:12px;color:var(--ink3);}
 .sync-badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;}
@@ -61,7 +62,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .focus-card .card-title{color:rgba(255,255,255,.4);}
 .focus-today{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;line-height:1.5;}
 
-/* Tasks */
 .task-filter-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
 .task-filter-tab{padding:5px 14px;border-radius:20px;font-family:'Inconsolata',monospace;font-size:12px;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--ink2);transition:all .15s;}
 .task-filter-tab.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
@@ -86,12 +86,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .delete-btn{font-size:16px;color:var(--ink3);padding:2px 6px;cursor:pointer;flex-shrink:0;border-radius:4px;line-height:1;}
 .delete-btn:hover{color:var(--red);background:var(--red-bg);}
 
-/* Client group */
 .client-group{margin-bottom:20px;}
 .client-group-header{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:8px 0 6px;border-bottom:2px solid var(--border);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;}
 .client-group-name{color:var(--ink2);}
 
-/* Clients */
 .clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
 .client-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .2s;}
 .client-card:hover{border-color:var(--ink);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.06);}
@@ -107,7 +105,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .kpi-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .kpi-chip{background:var(--purple-bg);color:var(--purple);font-size:11px;padding:3px 10px;border-radius:10px;font-weight:600;}
 
-/* My Day */
 .myday-block{display:flex;gap:16px;margin-bottom:12px;align-items:flex-start;}
 .myday-time{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--ink3);width:72px;flex-shrink:0;padding-top:14px;text-align:right;}
 .myday-line{display:flex;flex-direction:column;align-items:center;gap:0;margin-top:14px;}
@@ -124,14 +121,11 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .myday-dur-val{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--ink2);}
 .myday-dur-btn{font-size:14px;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink2);line-height:1;}
 .myday-dur-btn:hover{background:var(--bg2);border-color:var(--ink);}
-.myday-break{display:flex;gap:16px;margin-bottom:12px;align-items:center;}
-.myday-break-label{font-size:12px;color:var(--ink3);font-style:italic;padding:8px 0;}
-.myday-unscheduled{margin-top:28px;}
-.myday-unscheduled-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;}
 .myday-add-free{display:flex;align-items:center;gap:8px;font-family:'Inconsolata',monospace;font-size:12px;color:var(--green);background:var(--green-bg);border:1.5px dashed var(--green);border-radius:var(--radius);padding:10px 16px;cursor:pointer;margin-bottom:12px;margin-left:88px;}
 .myday-add-free:hover{background:var(--card);}
+.myday-unscheduled{margin-top:28px;}
+.myday-unscheduled-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;}
 
-/* AI */
 .ai-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);display:flex;flex-direction:column;height:500px;}
 .ai-messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;}
 .ai-msg{font-size:13px;line-height:1.7;max-width:90%;animation:fadeUp .2s ease;}
@@ -142,7 +136,6 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .ai-input-row input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Inconsolata',monospace;font-size:13px;background:var(--bg);color:var(--ink);outline:none;}
 .ai-input-row button{background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 
-/* Modals */
 .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(26,24,20,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px;width:560px;max-width:94vw;max-height:90vh;overflow-y:auto;}
 .modal h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:20px;}
@@ -163,13 +156,263 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 .page-header h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;}
 .page-header p{font-size:13px;color:var(--ink3);margin-top:2px;}
 .btn-add{background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:12px 22px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+
+/* ── ATA WEAR PAGE ─────────────────────────────────────────────────────────── */
+#page-atawear { direction: ltr; }
+
+.ata-header {
+  background: #1B2C58;
+  border-radius: var(--radius);
+  padding: 20px 28px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ata-header-left h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.ata-header-left p { font-size: 12px; color: rgba(255,255,255,.5); }
+
+.ata-sub-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.ata-sub-tab {
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--ink2);
+  transition: all .15s;
+  font-weight: 600;
+}
+.ata-sub-tab.active {
+  background: #1B2C58;
+  color: #fff;
+  border-color: #1B2C58;
+}
+
+.ata-sub-page { display: none; }
+.ata-sub-page.active { display: block; }
+
+/* Daily dashboard */
+.ata-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.ata-kpi-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+}
+.ata-kpi-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.ata-kpi-label { font-size: 12px; color: var(--ink3); }
+
+/* Bar chart */
+.ata-chart-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 20px;
+}
+.ata-chart-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 16px;
+}
+.ata-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 120px;
+}
+.ata-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  cursor: pointer;
+  position: relative;
+}
+.ata-bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  transition: opacity .15s;
+}
+.ata-bar-col:hover .ata-bar { opacity: .75; }
+.ata-bar-date {
+  font-size: 9px;
+  color: var(--ink3);
+  margin-top: 4px;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  height: 28px;
+}
+.ata-bar-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  display: none;
+  z-index: 10;
+}
+.ata-bar-col:hover .ata-bar-tooltip { display: block; }
+
+/* Item drill-down */
+.ata-items-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.ata-item-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ata-item-row:hover { border-color: #1B2C58; background: #f0f3fa; }
+.ata-item-name { font-size: 13px; font-weight: 600; }
+.ata-item-stats { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+.ata-item-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+
+/* Item detail panel */
+.ata-item-detail {
+  background: var(--card);
+  border: 1px solid #1B2C58;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: none;
+}
+.ata-item-detail.open { display: block; }
+.ata-detail-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #1B2C58;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ata-history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ata-history-table th {
+  text-align: left;
+  color: var(--ink3);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 4px 8px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.ata-history-table td { padding: 6px 8px; border-bottom: 1px solid var(--bg2); }
+.ata-history-table tr:last-child td { border-bottom: none; }
+
+/* Pricing Intelligence */
+.ata-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  margin-bottom: 20px;
+  background: var(--card);
+}
+.ata-upload-zone:hover { border-color: #1B2C58; background: #f0f3fa; }
+.ata-upload-zone input { display: none; }
+.ata-upload-icon { font-size: 32px; margin-bottom: 10px; }
+.ata-upload-text { font-size: 14px; font-weight: 600; color: var(--ink2); }
+.ata-upload-sub { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+.ata-pricing-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ata-pricing-table th {
+  text-align: left;
+  color: var(--ink3);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg2);
+}
+.ata-pricing-table td { padding: 10px 12px; border-bottom: 1px solid var(--bg2); }
+.ata-pricing-table tr:hover td { background: var(--bg); }
+.ata-ai-rec {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--blue);
+  margin-top: 3px;
+}
+
+.ata-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--ink3);
+}
+.ata-legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 4px;
+}
 </style>
 </head>
 <body>
 
-<div id="loading" style="display: none;"><div class="spinner"></div><div style="font-size:13px;color:var(--ink3);">Loading from Google Sheets...</div></div>
+<div id="loading" style="display:none;"><div class="spinner"></div><div style="font-size:13px;color:var(--ink3);">Loading from Google Sheets...</div></div>
 
-<div id="setup" style="display: none;">
+<div id="setup" style="display:none;">
   <div class="setup-inner">
     <h2>UZHER.COM</h2>
     <p>Enter your Anthropic key once — saved in your browser, never in the code.</p>
@@ -178,19 +421,20 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
   </div>
 </div>
 
-<div id="app" style="display: block;">
+<div id="app" style="display:block;">
   <div class="topbar">
     <div class="topbar-brand">⬡ UZHER.COM</div>
     <div class="nav-tabs">
-      <button class="nav-tab active" onclick="showPage(&#39;dashboard&#39;,this)">Dashboard</button>
-      <button class="nav-tab" onclick="showPage(&#39;clients&#39;,this)">Clients</button>
-      <button class="nav-tab" onclick="showPage(&#39;tasks&#39;,this)">Tasks</button>
-      <button class="nav-tab" onclick="showPage(&#39;assistant&#39;,this)">AI Assistant</button>
-      <button class="nav-tab" onclick="showPage(&#39;myday&#39;,this)">My Day</button>
+      <button class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</button>
+      <button class="nav-tab" onclick="showPage('clients',this)">Clients</button>
+      <button class="nav-tab" onclick="showPage('tasks',this)">Tasks</button>
+      <button class="nav-tab" onclick="showPage('assistant',this)">AI Assistant</button>
+      <button class="nav-tab" onclick="showPage('myday',this)">My Day</button>
+      <button class="nav-tab ata-tab" onclick="showPage('atawear',this)">⬡ ATA WEAR</button>
     </div>
     <div class="topbar-right">
       <div id="sync-badge" class="sync-badge sync-ok">✓ Saved to Google</div>
-      <div class="topbar-date" id="topbar-date">Thursday, March 19</div>
+      <div class="topbar-date" id="topbar-date"></div>
     </div>
   </div>
 
@@ -198,77 +442,22 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
-      <div class="stats-row" id="stats-row"><div class="stat-card" onclick="showPage(&#39;clients&#39;,document.querySelectorAll(&#39;.nav-tab&#39;)[1])">
-    <div class="stat-num" style="">9</div><div class="stat-label">Total Clients</div></div><div class="stat-card">
-    <div class="stat-num" style="color:var(--green)">7</div><div class="stat-label">Active Now</div></div><div class="stat-card" onclick="showPage(&#39;tasks&#39;,document.querySelectorAll(&#39;.nav-tab&#39;)[2])">
-    <div class="stat-num" style="">2</div><div class="stat-label">Open Tasks</div></div><div class="stat-card">
-    <div class="stat-num" style="color:var(--red)">1</div><div class="stat-label">High Priority</div></div></div>
+      <div class="stats-row" id="stats-row"></div>
       <div class="dashboard-grid">
         <div class="focus-card"><div class="card-title">🎯 Today's Focus</div><div class="focus-today" id="focus-text">Start by reviewing your highest priority tasks.</div></div>
         <div class="card" style="grid-column:span 2">
           <div class="card-title">⚡ Top Tasks Today
-            <button onclick="openTaskModal()" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-family:&#39;Inconsolata&#39;,monospace;font-size:11px;cursor:pointer;color:var(--ink);">+ Add Task</button>
+            <button onclick="openTaskModal()" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-family:'Inconsolata',monospace;font-size:11px;cursor:pointer;color:var(--ink);">+ Add Task</button>
           </div>
-          <div id="dashboard-tasks"><div style="margin-bottom:10px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink);padding:4px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px">⚡ Today</div>
-      <div class="task-item ">
-    <div class="priority-dot p-high"></div>
-    <div class="task-body" data-task-edit="recurring_kpi_1772747643254">
-      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">📊 Update KPIs — UPSTEP</span><span class="recurring-badge">🔄 kpiFreq</span></div>
-      <div class="task-desc-text">Track: kpiTracking</div>
-      <div class="task-meta">👤 UPSTEP  📅 2026-03-19</div>
-    </div>
-    <button class="done-btn" onclick="toggleTask(&#39;recurring_kpi_1772747643254&#39;)">✓</button>
-    
-  </div>
-    </div><div style="margin-bottom:10px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);padding:4px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px">📌 Other</div>
-      <div class="task-item ">
-    <div class="priority-dot p-med"></div>
-    <div class="task-body" data-task-edit="test1">
-      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">Test</span></div>
-      
-      <div class="task-meta"></div>
-    </div>
-    <button class="done-btn" onclick="toggleTask(&#39;test1&#39;)">✓</button>
-    
-  </div>
-    </div></div>
+          <div id="dashboard-tasks"></div>
         </div>
-        <div class="card"><div class="card-title">👥 Client Pulse</div><div id="dashboard-clients"><div class="task-item" data-client-detail="1772747643254">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">UPSTEP</div><div style="font-size:11px;color:var(--ink3)">Custom Orthotics</div></div>
-        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
-      </div><div class="task-item" data-client-detail="1772747694920">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">ATA WEAR</div><div style="font-size:11px;color:var(--ink3)">Fqshion</div></div>
-        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
-      </div><div class="task-item" data-client-detail="1772782719820">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">KEREN WOLF</div><div style="font-size:11px;color:var(--ink3)">https://kerenwolf.co.il/</div></div>
-        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
-      </div><div class="task-item" data-client-detail="1772782754804">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">DR-BRACE</div><div style="font-size:11px;color:var(--ink3)">https://dr-brace.com/</div></div>
-        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
-      </div><div class="task-item" data-client-detail="1772782774553">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">ENTAIL.AI</div><div style="font-size:11px;color:var(--ink3)">https://entail.ai/</div></div>
-        <div class="client-status status-inactive" style="margin-left:auto;margin-bottom:0;pointer-events:none">○ Not Active</div>
-      </div><div class="task-item" data-client-detail="1772782809486">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">KILARUN</div><div style="font-size:11px;color:var(--ink3)">https://kilarun.com/</div></div>
-        <div class="client-status status-inactive" style="margin-left:auto;margin-bottom:0;pointer-events:none">○ Not Active</div>
-      </div><div class="task-item" data-client-detail="1772782829852">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">TEMPDROP</div><div style="font-size:11px;color:var(--ink3)">https://www.tempdrop.com/</div></div>
-        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
-      </div><div class="task-item" data-client-detail="1773244631874">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">MYSELF - UZHER.COM</div><div style="font-size:11px;color:var(--ink3)">https://www.uzher.com/</div></div>
-        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
-      </div><div class="task-item" data-client-detail="1773751342295">
-        <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">Einat Sberlo</div><div style="font-size:11px;color:var(--ink3)">Hair Products</div></div>
-        <div class="client-status status-active" style="margin-left:auto;margin-bottom:0;pointer-events:none">● Active</div>
-      </div></div></div>
+        <div class="card"><div class="card-title">👥 Client Pulse</div><div id="dashboard-clients"></div></div>
         <div class="card" style="grid-column:span 2">
           <div class="card-title">💬 Quick Ask</div>
           <div id="quick-messages" style="min-height:50px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;"></div>
           <div style="display:flex;gap:10px;">
-            <input type="text" id="quick-input" placeholder="Ask anything about your day or clients..." style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:&#39;Inconsolata&#39;,monospace;font-size:13px;background:var(--bg);outline:none;" onkeydown="if(event.key===&#39;Enter&#39;)quickAsk()">
-            <button onclick="quickAsk()" style="background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:&#39;Syne&#39;,sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Ask</button>
+            <input type="text" id="quick-input" placeholder="Ask anything about your day or clients..." style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Inconsolata',monospace;font-size:13px;background:var(--bg);outline:none;" onkeydown="if(event.key==='Enter')quickAsk()">
+            <button onclick="quickAsk()" style="background:var(--ink);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Ask</button>
           </div>
         </div>
       </div>
@@ -277,144 +466,20 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
     <!-- CLIENTS -->
     <div class="page" id="page-clients">
       <div class="page-header"><div><h2>Clients</h2><p>Click a client to view or edit</p></div><button class="btn-add" onclick="openClientModal()">+ Add Client</button></div>
-      <div class="clients-grid" id="clients-grid"><div class="client-card" data-client-detail="1772747643254">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">UPSTEP</div><div class="client-biz">Custom Orthotics</div></div>
-          <div class="client-status status-active">● Active</div>
-        </div>
-        <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:8px;pointer-events:none">💰 -</div>
-        <div class="kpi-row" style="pointer-events:none"><span class="kpi-chip">📊 kpiTracking</span></div>
-        <div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-top:10px;pointer-events:none"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)">Last session</strong><br>https://www.upstep.com/</div>
-        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>Tax</div>
-        <div style="margin-top:10px;font-size:12px;color:var(--blue);pointer-events:none"><strong>→ Next:</strong> next</div>
-      </div><div class="client-card" data-client-detail="1772747694920">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">ATA WEAR</div><div class="client-biz">Fqshion</div></div>
-          <div class="client-status status-active">● Active</div>
-        </div>
-        
-        
-        <div style="font-size:12px;color:var(--ink2);line-height:1.6;margin-top:10px;pointer-events:none"><strong style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)">Last session</strong><br>https://atawear.co.il/</div>
-        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>Optimization</div>
-        
-      </div><div class="client-card" data-client-detail="1772782719820">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">KEREN WOLF</div><div class="client-biz">https://kerenwolf.co.il/</div></div>
-          <div class="client-status status-active">● Active</div>
-        </div>
-        
-        
-        
-        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>Optimization</div>
-        
-      </div><div class="client-card" data-client-detail="1772782754804">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">DR-BRACE</div><div class="client-biz">https://dr-brace.com/</div></div>
-          <div class="client-status status-active">● Active</div>
-        </div>
-        
-        
-        
-        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>UI/UX</div>
-        
-      </div><div class="client-card" data-client-detail="1772782774553">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">ENTAIL.AI</div><div class="client-biz">https://entail.ai/</div></div>
-          <div class="client-status status-inactive">○ Not Active</div>
-        </div>
-        
-        
-        
-        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>CRO</div>
-        
-      </div><div class="client-card" data-client-detail="1772782809486">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">KILARUN</div><div class="client-biz">https://kilarun.com/</div></div>
-          <div class="client-status status-inactive">○ Not Active</div>
-        </div>
-        
-        
-        
-        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>CRO</div>
-        
-      </div><div class="client-card" data-client-detail="1772782829852">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">TEMPDROP</div><div class="client-biz">https://www.tempdrop.com/</div></div>
-          <div class="client-status status-active">● Active</div>
-        </div>
-        
-        
-        
-        <div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>CRO</div>
-        
-      </div><div class="client-card" data-client-detail="1773244631874">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">MYSELF - UZHER.COM</div><div class="client-biz">https://www.uzher.com/</div></div>
-          <div class="client-status status-active">● Active</div>
-        </div>
-        
-        
-        
-        
-        
-      </div><div class="client-card" data-client-detail="1773751342295">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
-          <div><div class="client-name">Einat Sberlo</div><div class="client-biz">Hair Products</div></div>
-          <div class="client-status status-active">● Active</div>
-        </div>
-        
-        
-        
-        
-        
-      </div></div>
+      <div class="clients-grid" id="clients-grid"></div>
     </div>
 
     <!-- TASKS -->
     <div class="page" id="page-tasks">
-      <div class="page-header"><div><h2>Tasks</h2><p>Click a task to edit · Check the box to complete</p></div><button class="btn-add" onclick="openTaskModal()">+ Add Task</button></div>
+      <div class="page-header"><div><h2>Tasks</h2><p>Click a task to edit</p></div><button class="btn-add" onclick="openTaskModal()">+ Add Task</button></div>
       <div class="task-filter-tabs" id="task-filter-tabs">
-        <button class="task-filter-tab active" onclick="setTaskFilter(&#39;open&#39;,this)">Open</button>
-        <button class="task-filter-tab" onclick="setTaskFilter(&#39;done&#39;,this)">Completed</button>
-        <button class="task-filter-tab" onclick="setTaskFilter(&#39;all&#39;,this)">All</button>
+        <button class="task-filter-tab active" onclick="setTaskFilter('open',this)">Open</button>
+        <button class="task-filter-tab" onclick="setTaskFilter('done',this)">Completed</button>
+        <button class="task-filter-tab" onclick="setTaskFilter('all',this)">All</button>
         <div style="width:1px;background:var(--border);margin:0 4px;"></div>
         <button class="task-filter-tab active" id="group-btn" onclick="toggleGrouping(this)">📁 By Client</button>
       </div>
-      <div id="tasks-container"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
-    <div><div class="client-group">
-      <div class="client-group-header">
-        <span class="client-group-name" style="color:var(--ink)">⚡ Today</span>
-        <span style="font-size:11px;color:var(--ink3)">1 task</span>
-      </div>
-      <div class="card" style="padding:8px 16px"><div class="task-item ">
-    <div class="priority-dot p-high"></div>
-    <div class="task-body" data-task-edit="recurring_kpi_1772747643254">
-      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">📊 Update KPIs — UPSTEP</span><span class="recurring-badge">🔄 kpiFreq</span></div>
-      <div class="task-desc-text">Track: kpiTracking</div>
-      <div class="task-meta">👤 UPSTEP  📅 2026-03-19</div>
-    </div>
-    <button class="done-btn" onclick="toggleTask(&#39;recurring_kpi_1772747643254&#39;)">✓</button>
-    <span class="delete-btn" data-task-delete="recurring_kpi_1772747643254">×</span>
-  </div></div>
-    </div></div>
-    <div><div class="client-group">
-      <div class="client-group-header">
-        <span class="client-group-name" style="color:var(--ink3)">📌 No Due Date</span>
-        <span style="font-size:11px;color:var(--ink3)">1 task</span>
-      </div>
-      <div class="card" style="padding:8px 16px"><div class="task-item ">
-    <div class="priority-dot p-med"></div>
-    <div class="task-body" data-task-edit="test1">
-      <div style="display:flex;align-items:center;gap:4px"><span class="task-title-text">Test</span></div>
-      
-      <div class="task-meta"></div>
-    </div>
-    <button class="done-btn" onclick="toggleTask(&#39;test1&#39;)">✓</button>
-    <span class="delete-btn" data-task-delete="test1">×</span>
-  </div></div>
-    </div></div>
-  </div>
-  <button class="add-btn" onclick="openTaskModal()">+ Add new task</button></div>
+      <div id="tasks-container"></div>
     </div>
 
     <!-- MY DAY -->
@@ -428,21 +493,109 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 
     <!-- AI ASSISTANT -->
     <div class="page" id="page-assistant">
-      <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;">AI Assistant</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px;">AI Assistant</div>
       <div style="font-size:13px;color:var(--ink3);margin-bottom:20px;">Knows all your clients, KPIs, and tasks.</div>
       <div class="ai-panel">
         <div class="ai-messages" id="ai-messages">
           <div class="ai-msg claude">Hi! I know all your clients, KPIs and tasks. Try asking:<br><br>• "What should I focus on today?"<br>• "Which clients need KPI updates?"<br>• "Summarize where I am with each client"</div>
         </div>
         <div class="ai-input-row">
-          <input type="text" id="ai-input" placeholder="Ask about your clients, KPIs, tasks..." onkeydown="if(event.key===&#39;Enter&#39;)aiAsk()">
+          <input type="text" id="ai-input" placeholder="Ask about your clients, KPIs, tasks..." onkeydown="if(event.key==='Enter')aiAsk()">
           <button onclick="aiAsk()">Send</button>
         </div>
       </div>
     </div>
 
-  </div>
-</div>
+    <!-- ATA WEAR -->
+    <div class="page" id="page-atawear">
+      <div class="ata-header">
+        <div class="ata-header-left">
+          <h2>⬡ ATA WEAR</h2>
+          <p>atawear.co.il · Pricing & Sales Intelligence</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div id="ata-sync-status" style="font-size:12px;color:rgba(255,255,255,.6);">—</div>
+          <button onclick="loadAtaDaily()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 16px;font-family:'Inconsolata',monospace;font-size:12px;cursor:pointer;font-weight:600;">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div class="ata-sub-tabs">
+        <button class="ata-sub-tab active" onclick="showAtaTab('daily',this)">📊 Daily Dashboard</button>
+        <button class="ata-sub-tab" onclick="showAtaTab('pricing',this)">💡 Pricing Intelligence</button>
+      </div>
+
+      <!-- DAILY DASHBOARD -->
+      <div class="ata-sub-page active" id="ata-daily">
+        <div class="ata-kpi-row" id="ata-kpi-row">
+          <div class="ata-kpi-card"><div class="ata-kpi-num" id="ata-units">—</div><div class="ata-kpi-label">Units Sold (Yesterday)</div></div>
+          <div class="ata-kpi-card"><div class="ata-kpi-num" id="ata-cashflow">—</div><div class="ata-kpi-label">Cashflow (Yesterday)</div></div>
+          <div class="ata-kpi-card"><div class="ata-kpi-num" id="ata-disc">—</div><div class="ata-kpi-label">Avg Discount (Yesterday)</div></div>
+        </div>
+
+        <div class="ata-chart-wrap">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div class="ata-chart-title">30-Day Sales Chart</div>
+            <div class="ata-legend">
+              <span><span class="ata-legend-dot" style="background:var(--green);"></span>0–15%</span>
+              <span><span class="ata-legend-dot" style="background:var(--amber);"></span>16–30%</span>
+              <span><span class="ata-legend-dot" style="background:var(--red);"></span>31%+</span>
+            </div>
+          </div>
+          <div class="ata-bars" id="ata-bars"><div class="empty-state" style="width:100%;padding:20px;">Loading chart...</div></div>
+        </div>
+
+        <div id="ata-item-detail-panel" class="ata-item-detail"></div>
+
+        <div class="card">
+          <div class="card-title">Item Drill-Down — Click to see history</div>
+          <div class="ata-items-grid" id="ata-items-grid"><div class="empty-state">Loading items...</div></div>
+        </div>
+      </div>
+
+      <!-- PRICING INTELLIGENCE -->
+      <div class="ata-sub-page" id="ata-pricing">
+        <div class="ata-upload-zone" onclick="document.getElementById('ata-csv-input').click()">
+          <input type="file" id="ata-csv-input" accept=".csv" onchange="handleAtaCsv(this)">
+          <div class="ata-upload-icon">📄</div>
+          <div class="ata-upload-text">Upload Shopify Sales CSV</div>
+          <div class="ata-upload-sub">Sales by product report · any date range</div>
+        </div>
+
+        <div id="ata-pricing-content" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;" id="ata-pricing-title">Pricing Analysis</div>
+              <div style="font-size:12px;color:var(--ink3);margin-top:2px;" id="ata-pricing-sub"></div>
+            </div>
+            <button id="ata-ai-btn" onclick="runAtaAI()" style="background:#1B2C58;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✨ Get AI Recommendations</button>
+          </div>
+
+          <div id="ata-ai-result" style="display:none;background:var(--blue-bg);border:1px solid var(--blue);border-radius:var(--radius);padding:20px;margin-bottom:20px;">
+            <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--blue);margin-bottom:10px;">✨ AI Discount Strategy</div>
+            <div id="ata-ai-text" style="font-size:13px;line-height:1.8;white-space:pre-wrap;"></div>
+          </div>
+
+          <div class="card" style="overflow-x:auto;">
+            <table class="ata-pricing-table" id="ata-pricing-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Units Sold</th>
+                  <th>Avg Price</th>
+                  <th>Avg Discount</th>
+                  <th>Revenue</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="ata-pricing-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
 
 <!-- Client Modal -->
 <div id="client-modal" style="display:none" class="modal-overlay">
@@ -454,20 +607,20 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
     </div>
     <div class="field-row">
       <div class="field"><label>Status</label><select id="cm-status">
-        <option value="active">Active — Working together</option>
-        <option value="waiting">Waiting — Waiting on them</option>
-        <option value="review">Review — In review</option>
-        <option value="inactive">Not Active — Paused or ended</option>
+        <option value="active">Active</option>
+        <option value="waiting">Waiting</option>
+        <option value="review">Review</option>
+        <option value="inactive">Not Active</option>
       </select></div>
-      <div class="field"><label>Monthly Revenue / Deal Value</label><input type="text" id="cm-revenue" placeholder="e.g. $2,000/month"></div>
+      <div class="field"><label>Monthly Revenue</label><input type="text" id="cm-revenue" placeholder="e.g. $2,000/month"></div>
     </div>
-    <div class="field"><label>Where we left off</label><textarea id="cm-last" placeholder="What happened in the last session or call?"></textarea></div>
-    <div class="field"><label>What I promised them</label><textarea id="cm-promise" placeholder="Any deliverables or commitments you made..."></textarea></div>
-    <div class="field"><label>Next step</label><input type="text" id="cm-next" placeholder="What&#39;s the next action for this client?"></div>
+    <div class="field"><label>Where we left off</label><textarea id="cm-last"></textarea></div>
+    <div class="field"><label>What I promised them</label><textarea id="cm-promise"></textarea></div>
+    <div class="field"><label>Next step</label><input type="text" id="cm-next"></div>
     <div style="border-top:1px solid var(--border);margin:20px 0 16px;padding-top:16px;">
-      <div style="font-family:&#39;Syne&#39;,sans-serif;font-size:13px;font-weight:700;margin-bottom:14px;">📊 KPI Tracking</div>
-      <div class="field"><label>Numbers BEFORE you (baseline)</label><textarea id="cm-kpi-baseline" placeholder="e.g. ROAS: 1.8x, Revenue: $12k/mo, CAC: $45"></textarea></div>
-      <div class="field"><label>KPIs we are tracking</label><textarea id="cm-kpi-tracking" placeholder="e.g. ROAS, Monthly Revenue, CAC, Conversion Rate"></textarea></div>
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:14px;">📊 KPI Tracking</div>
+      <div class="field"><label>Numbers BEFORE you</label><textarea id="cm-kpi-baseline"></textarea></div>
+      <div class="field"><label>KPIs we are tracking</label><textarea id="cm-kpi-tracking"></textarea></div>
       <div class="field-row">
         <div class="field"><label>Update frequency</label><select id="cm-kpi-freq">
           <option value="">— No recurring task —</option>
@@ -476,14 +629,14 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
           <option value="biweekly">Every 2 weeks</option>
           <option value="monthly">Monthly</option>
         </select></div>
-        <div class="field"><label>Current numbers</label><input type="text" id="cm-kpi-current" placeholder="e.g. ROAS: 2.4x, Revenue: $18k"></div>
+        <div class="field"><label>Current numbers</label><input type="text" id="cm-kpi-current"></div>
       </div>
     </div>
     <input type="hidden" id="cm-id">
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal(&#39;client-modal&#39;)">Cancel</button>
+      <button class="btn-cancel" onclick="closeModal('client-modal')">Cancel</button>
       <button class="btn-danger" id="cm-delete-btn" onclick="deleteClient()" style="display:none">Delete</button>
-      <button class="btn-primary" onclick="saveClient()">Save to Google Sheets ↗</button>
+      <button class="btn-primary" onclick="saveClient()">Save ↗</button>
     </div>
   </div>
 </div>
@@ -492,162 +645,173 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
 <div id="task-modal" style="display:none" class="modal-overlay">
   <div class="modal">
     <h3 id="tm-title">Add Task</h3>
-    <div class="field"><label>Task Headline</label><input type="text" id="tm-text" placeholder="Short title for this task"></div>
-    <div class="field"><label>Description (optional)</label><textarea id="tm-desc" placeholder="More details, steps, context..."></textarea></div>
+    <div class="field"><label>Task Headline</label><input type="text" id="tm-text"></div>
+    <div class="field"><label>Description</label><textarea id="tm-desc"></textarea></div>
     <div class="field-row">
-      <div class="field"><label>Client (optional)</label><select id="tm-client"><option value="">— Not client specific —</option><option value="UPSTEP">UPSTEP</option><option value="ATA WEAR">ATA WEAR</option><option value="KEREN WOLF">KEREN WOLF</option><option value="DR-BRACE">DR-BRACE</option><option value="ENTAIL.AI">ENTAIL.AI</option><option value="KILARUN">KILARUN</option><option value="TEMPDROP">TEMPDROP</option><option value="MYSELF - UZHER.COM">MYSELF - UZHER.COM</option><option value="Einat Sberlo">Einat Sberlo</option></select></div>
+      <div class="field"><label>Client</label><select id="tm-client"><option value="">— Not client specific —</option></select></div>
       <div class="field"><label>Priority</label><select id="tm-priority">
-        <option value="high">🔴 High — Do today</option>
-        <option value="med">🟡 Medium — Do soon</option>
-        <option value="low">🟢 Low — When possible</option>
+        <option value="high">🔴 High</option>
+        <option value="med">🟡 Medium</option>
+        <option value="low">🟢 Low</option>
       </select></div>
     </div>
-    <div class="field"><label>Due date (optional)</label><input type="date" id="tm-due"></div>
+    <div class="field"><label>Due date</label><input type="date" id="tm-due"></div>
     <input type="hidden" id="tm-id">
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal(&#39;task-modal&#39;)">Cancel</button>
+      <button class="btn-cancel" onclick="closeModal('task-modal')">Cancel</button>
       <button class="btn-danger" id="tm-delete-btn" onclick="deleteTaskFromModal()" style="display:none">Delete</button>
-      <button class="btn-primary" onclick="saveTask()">Save to Google Sheets ↗</button>
+      <button class="btn-primary" onclick="saveTask()">Save ↗</button>
     </div>
   </div>
 </div>
 
-<!-- Detail Modal -->
 <div id="detail-modal" style="display:none" class="modal-overlay"><div class="modal" id="detail-content"></div></div>
 
 <script>
+// ── Config ────────────────────────────────────────────────────────────────────
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzd_qImuLJRNMUGUcxdb_a2FnetKSoMlmk313L6fPFZJbRfyoOrjW2gAkewG3w9SQZG/exec';
+const ATA_GAS_URL = 'https://script.google.com/macros/s/AKfycbyUYoMROyM9nha9Vr38oRw6o3v9PZ5UP5xvf3wWUg_Cx0XyIm9fCQfzNpPuu01TXPKO/exec';
+
 let API_KEY = '';
 let clients = [], tasks = [], aiHistory = [], quickHistory = [];
 let taskFilter = 'open';
 let groupByClient = true;
+let mydayBlocks = [];
+let ataDailyData = null;
+let ataPricingData = [];
 
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('api-key-input').addEventListener('keydown', e => { if(e.key==='Enter') startApp(); });
+const savedKey = localStorage.getItem('bos_api_key');
+if (savedKey) {
+  API_KEY = savedKey;
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('loading').style.display = 'flex';
+  loadAll();
+} else {
+  document.getElementById('setup').style.display = 'flex';
+}
+
+function startApp() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if (!k.startsWith('sk-ant-')) { alert('Please enter a valid Anthropic API key'); return; }
+  API_KEY = k; localStorage.setItem('bos_api_key', k);
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('loading').style.display = 'flex';
+  loadAll();
+}
+
+// ── Google Sheets ─────────────────────────────────────────────────────────────
 function syncBadge(s) {
   const el = document.getElementById('sync-badge'); if(!el) return;
   const map = {saving:['sync-saving','⟳ Saving...'],ok:['sync-ok','✓ Saved to Google'],err:['sync-err','✗ Sync error']};
-  el.className='sync-badge '+map[s][0]; el.textContent=map[s][1];
+  el.className = 'sync-badge ' + map[s][0]; el.textContent = map[s][1];
 }
-
 async function gasRead(sheet) {
-  const r = await fetch(GAS_URL+'?action=read&sheet='+sheet);
-  if(!r.ok) throw new Error('Read error');
+  const r = await fetch(GAS_URL + '?action=read&sheet=' + sheet);
+  if (!r.ok) throw new Error('Read error');
   return r.json();
 }
 async function gasWrite(sheet, data) {
   syncBadge('saving');
   try {
-    const body = JSON.stringify({sheet, data: JSON.stringify(data)});
-    await fetch(GAS_URL, {method:'POST', body, headers:{'Content-Type':'text/plain'}});
+    await fetch(GAS_URL, {method:'POST', body: JSON.stringify({sheet, data: JSON.stringify(data)}), headers:{'Content-Type':'text/plain'}});
     syncBadge('ok');
-  } catch(e){syncBadge('err');}
+  } catch(e) { syncBadge('err'); }
 }
 
+// ── Data parsers ──────────────────────────────────────────────────────────────
 function parseClients(rows) {
-  const s=(rows[0]&&rows[0][0]==='id')?1:0;
-  return rows.slice(s).map(r=>({
-    id:String(r[0])||'',name:r[1]||'',biz:r[2]||'',status:r[3]||'active',
-    revenue:r[4]||'',last:r[5]||'',promise:r[6]||'',next:r[7]||'',
-    kpiBaseline:r[8]||'',kpiTracking:r[9]||'',kpiFreq:r[10]||'',kpiCurrent:r[11]||''
-  })).filter(c=>c.name);
+  const s = (rows[0]&&rows[0][0]==='id') ? 1 : 0;
+  return rows.slice(s).map(r => ({
+    id:String(r[0])||'', name:r[1]||'', biz:r[2]||'', status:r[3]||'active',
+    revenue:r[4]||'', last:r[5]||'', promise:r[6]||'', next:r[7]||'',
+    kpiBaseline:r[8]||'', kpiTracking:r[9]||'', kpiFreq:r[10]||'', kpiCurrent:r[11]||''
+  })).filter(c => c.name);
 }
 function parseTasks(rows) {
-  const s=(rows[0]&&rows[0][0]==='id')?1:0;
-  return rows.slice(s).map(r=>({
-    id:String(r[0])||'',text:r[1]||'',desc:r[2]||'',client:r[3]||'',priority:r[4]||'med',
-    due:String(r[5]||'').replace(/T.*$/,''),
+  const s = (rows[0]&&rows[0][0]==='id') ? 1 : 0;
+  return rows.slice(s).map(r => ({
+    id:String(r[0])||'', text:r[1]||'', desc:r[2]||'', client:r[3]||'', priority:r[4]||'med',
+    due:String(r[5]||'').replace(/T.*$/, ''),
     done:r[6]==='true'||r[6]===true,
     recurring:r[7]||''
-  })).filter(t=>t.text);
+  })).filter(t => t.text);
 }
-function clientToRow(c){return[c.id,c.name,c.biz,c.status,c.revenue,c.last,c.promise,c.next,c.kpiBaseline||'',c.kpiTracking||'',c.kpiFreq||'',c.kpiCurrent||''];}
-function taskToRow(t){return[t.id,t.text,t.desc||'',t.client,t.priority,t.due,String(t.done),t.recurring||''];}
+function clientToRow(c) { return [c.id,c.name,c.biz,c.status,c.revenue,c.last,c.promise,c.next,c.kpiBaseline||'',c.kpiTracking||'',c.kpiFreq||'',c.kpiCurrent||'']; }
+function taskToRow(t) { return [t.id,t.text,t.desc||'',t.client,t.priority,t.due,String(t.done),t.recurring||'']; }
 
-document.getElementById('api-key-input').addEventListener('keydown',e=>{if(e.key==='Enter')startApp();});
-const savedKey=localStorage.getItem('bos_api_key');
-if(savedKey){API_KEY=savedKey;document.getElementById('setup').style.display='none';document.getElementById('loading').style.display='flex';loadAll();}
+async function saveAllClients() { await gasWrite('clients', [['id','name','biz','status','revenue','last','promise','next','kpiBaseline','kpiTracking','kpiFreq','kpiCurrent'],...clients.map(clientToRow)]); }
+async function saveAllTasks() { await gasWrite('tasks', [['id','text','desc','client','priority','due','done','recurring'],...tasks.map(taskToRow)]); }
 
-function startApp(){
-  const k=document.getElementById('api-key-input').value.trim();
-  if(!k.startsWith('sk-ant-')){alert('Please enter a valid Anthropic API key');return;}
-  API_KEY=k;localStorage.setItem('bos_api_key',k);
-  document.getElementById('setup').style.display='none';
-  document.getElementById('loading').style.display='flex';
-  loadAll();
-}
-
-async function loadAll(){
-  try{
-    const [cr,tr]=await Promise.all([gasRead('clients').catch(()=>[]),gasRead('tasks').catch(()=>[])]);
-    clients=parseClients(Array.isArray(cr)?cr:[]);
-    tasks=parseTasks(Array.isArray(tr)?tr:[]);
+async function loadAll() {
+  try {
+    const [cr, tr] = await Promise.all([gasRead('clients').catch(()=>[]), gasRead('tasks').catch(()=>[])]);
+    clients = parseClients(Array.isArray(cr) ? cr : []);
+    tasks = parseTasks(Array.isArray(tr) ? tr : []);
     injectRecurringTasks();
-  }catch(e){console.error(e);clients=[];tasks=[];syncBadge('err');}
-  document.getElementById('loading').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  renderAll();generateFocus();
+  } catch(e) { console.error(e); clients=[]; tasks=[]; syncBadge('err'); }
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  renderAll(); generateFocus();
 }
 
-function injectRecurringTasks(){
-  const today=new Date().toISOString().split('T')[0];
-  clients.forEach(c=>{
-    if(!c.kpiFreq||!c.kpiTracking)return;
-    const rid='recurring_kpi_'+c.id;
-    const exists=tasks.find(t=>t.id===rid);
-    if(!exists){
-      tasks.push({id:rid,text:'📊 Update KPIs — '+c.name,desc:'Track: '+c.kpiTracking,client:c.name,priority:'high',due:today,done:false,recurring:c.kpiFreq});
-    } else if(exists.done && shouldReset(exists,c.kpiFreq)){
-      exists.done=false; exists.due=today;
+function injectRecurringTasks() {
+  const today = new Date().toISOString().split('T')[0];
+  clients.forEach(c => {
+    if (!c.kpiFreq || !c.kpiTracking) return;
+    const rid = 'recurring_kpi_' + c.id;
+    const exists = tasks.find(t => t.id === rid);
+    if (!exists) {
+      tasks.push({id:rid, text:'📊 Update KPIs — '+c.name, desc:'Track: '+c.kpiTracking, client:c.name, priority:'high', due:today, done:false, recurring:c.kpiFreq});
+    } else if (exists.done && shouldReset(exists, c.kpiFreq)) {
+      exists.done = false; exists.due = today;
     }
   });
 }
-
-function shouldReset(task,freq){
-  if(!task.completedDate)return false;
-  const days=(new Date()-new Date(task.completedDate))/(864e5);
-  return(freq==='daily'&&days>=1)||(freq==='weekly'&&days>=7)||(freq==='biweekly'&&days>=14)||(freq==='monthly'&&days>=30);
+function shouldReset(task, freq) {
+  if (!task.completedDate) return false;
+  const days = (new Date() - new Date(task.completedDate)) / 864e5;
+  return (freq==='daily'&&days>=1)||(freq==='weekly'&&days>=7)||(freq==='biweekly'&&days>=14)||(freq==='monthly'&&days>=30);
 }
 
-async function saveAllClients(){await gasWrite('clients',[['id','name','biz','status','revenue','last','promise','next','kpiBaseline','kpiTracking','kpiFreq','kpiCurrent'],...clients.map(clientToRow)]);}
-async function saveAllTasks(){await gasWrite('tasks',[['id','text','desc','client','priority','due','done','recurring'],...tasks.map(taskToRow)]);}
-
-function showPage(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
-  if(id==='myday')generateMyDay();
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'myday') generateMyDay();
+  if (id === 'atawear') { loadAtaDaily(); }
 }
-function setTaskFilter(f,btn){
-  taskFilter=f;
-  document.querySelectorAll('.task-filter-tab:not(#group-btn)').forEach(t=>t.classList.remove('active'));
+
+function showAtaTab(id, btn) {
+  document.querySelectorAll('.ata-sub-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ata-sub-page').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  renderTasks();
-}
-function toggleGrouping(btn){
-  groupByClient=!groupByClient;
-  btn.classList.toggle('active',groupByClient);
-  renderTasks();
+  document.getElementById('ata-' + id).classList.add('active');
 }
 
-function renderAll(){renderStats();renderDashboardTasks();renderDashboardClients();renderClientsPage();renderTasks();updateClientDropdown();}
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderAll() { renderStats(); renderDashboardTasks(); renderDashboardClients(); renderClientsPage(); renderTasks(); updateClientDropdown(); }
 
-function renderStats(){
-  document.getElementById('stats-row').innerHTML=[
+function renderStats() {
+  document.getElementById('stats-row').innerHTML = [
     [clients.length,'Total Clients','','clients',1],
     [clients.filter(c=>c.status==='active').length,'Active Now','color:var(--green)','',null],
     [tasks.filter(t=>!t.done).length,'Open Tasks','','tasks',2],
     [tasks.filter(t=>!t.done&&t.priority==='high').length,'High Priority','color:var(--red)','',null]
-  ].map(([n,l,s,pg,ni])=>`<div class="stat-card" ${pg?`onclick="showPage('${pg}',document.querySelectorAll('.nav-tab')[${ni}])"`:''}>
+  ].map(([n,l,s,pg,ni]) => `<div class="stat-card" ${pg?`onclick="showPage('${pg}',document.querySelectorAll('.nav-tab')[${ni}])"`:''}>
     <div class="stat-num" style="${s}">${n}</div><div class="stat-label">${l}</div></div>`).join('');
 }
 
-function pSort(a,b){return({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1);}
-function statusLabel(s){return s==='active'?'● Active':s==='waiting'?'⏳ Waiting':s==='inactive'?'○ Not Active':'👀 Review';}
+function pSort(a,b) { return ({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1); }
+function statusLabel(s) { return s==='active'?'● Active':s==='waiting'?'⏳ Waiting':s==='inactive'?'○ Not Active':'👀 Review'; }
 
-function taskHTML(t, showDelete=true){
-  const recurBadge=t.recurring?`<span class="recurring-badge">🔄 ${t.recurring}</span>`:'';
-  const due=t.due&&t.due!=='true'?t.due:'';
+function taskHTML(t, showDelete=true) {
+  const recurBadge = t.recurring ? `<span class="recurring-badge">🔄 ${t.recurring}</span>` : '';
+  const due = t.due && t.due !== 'true' ? t.due : '';
   return `<div class="task-item ${t.done?'done':''}">
     <div class="priority-dot p-${t.priority}"></div>
     <div class="task-body" data-task-edit="${t.id}">
@@ -660,53 +824,39 @@ function taskHTML(t, showDelete=true){
   </div>`;
 }
 
-function renderDashboardTasks(){
-  const now=new Date(); now.setHours(0,0,0,0);
-  const open=tasks.filter(t=>!t.done);
-
-  // Group overdue by days
+function renderDashboardTasks() {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const open = tasks.filter(t => !t.done);
   const od1=[],od2=[],od3=[],od4=[],todayT=[],rest=[];
-  open.forEach(t=>{
-    if(!t.due||t.due==='true'||t.due===''){rest.push(t);return;}
-    const d=new Date(t.due+'T00:00:00');
-    if(d<now){
-      const dl=Math.round((now-d)/(864e5));
+  open.forEach(t => {
+    if (!t.due||t.due==='true'||t.due==='') { rest.push(t); return; }
+    const d = new Date(t.due+'T00:00:00');
+    if (d < now) {
+      const dl = Math.round((now-d)/864e5);
       if(dl===1)od1.push(t);else if(dl===2)od2.push(t);else if(dl===3)od3.push(t);else od4.push(t);
-    } else if(d.toDateString()===now.toDateString()) todayT.push(t);
+    } else if (d.toDateString()===now.toDateString()) todayT.push(t);
     else rest.push(t);
   });
-
-  function group(label,items,color){
-    if(!items.length)return '';
-    return `<div style="margin-bottom:10px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${color};padding:4px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px">${label}</div>
-      ${items.sort(pSort).map(t=>taskHTML(t,false)).join('')}
-    </div>`;
+  function group(label, items, color) {
+    if (!items.length) return '';
+    return `<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${color};padding:4px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px">${label}</div>${items.sort(pSort).map(t=>taskHTML(t,false)).join('')}</div>`;
   }
-
-  const html=
-    group('🔴 Overdue · 1 day',od1,'var(--red)')+
-    group('🔴 Overdue · 2 days',od2,'var(--red)')+
-    group('🔴 Overdue · 3 days',od3,'var(--red)')+
-    group('🔴 Overdue · 4+ days',od4,'var(--red)')+
-    group('⚡ Today',todayT,'var(--ink)')+
-    group('📌 Other',rest.sort(pSort).slice(0,3),'var(--ink3)');
-
-  document.getElementById('dashboard-tasks').innerHTML=html||'<div class="empty-state">No open tasks yet.</div>';
+  const html = group('🔴 Overdue · 1 day',od1,'var(--red)')+group('🔴 Overdue · 2 days',od2,'var(--red)')+group('🔴 Overdue · 3 days',od3,'var(--red)')+group('🔴 Overdue · 4+ days',od4,'var(--red)')+group('⚡ Today',todayT,'var(--ink)')+group('📌 Other',rest.sort(pSort).slice(0,3),'var(--ink3)');
+  document.getElementById('dashboard-tasks').innerHTML = html || '<div class="empty-state">No open tasks yet.</div>';
 }
 
-function renderDashboardClients(){
-  document.getElementById('dashboard-clients').innerHTML=clients.length
-    ?clients.map(c=>`<div class="task-item" data-client-detail="${c.id}">
+function renderDashboardClients() {
+  document.getElementById('dashboard-clients').innerHTML = clients.length
+    ? clients.map(c => `<div class="task-item" data-client-detail="${c.id}">
         <div style="flex:1;pointer-events:none"><div style="font-size:13px;font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--ink3)">${c.biz||''}</div></div>
         <div class="client-status status-${c.status}" style="margin-left:auto;margin-bottom:0;pointer-events:none">${statusLabel(c.status)}</div>
       </div>`).join('')
-    :'<div class="empty-state">No clients yet.</div>';
+    : '<div class="empty-state">No clients yet.</div>';
 }
 
-function renderClientsPage(){
-  document.getElementById('clients-grid').innerHTML=clients.length
-    ?clients.map(c=>`<div class="client-card" data-client-detail="${c.id}">
+function renderClientsPage() {
+  document.getElementById('clients-grid').innerHTML = clients.length
+    ? clients.map(c => `<div class="client-card" data-client-detail="${c.id}">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none">
           <div><div class="client-name">${c.name}</div><div class="client-biz">${c.biz||''}</div></div>
           <div class="client-status status-${c.status}">${statusLabel(c.status)}</div>
@@ -717,539 +867,498 @@ function renderClientsPage(){
         ${c.promise?`<div class="client-promise" style="pointer-events:none"><strong>📌 Promised</strong>${c.promise}</div>`:''}
         ${c.next?`<div style="margin-top:10px;font-size:12px;color:var(--blue);pointer-events:none"><strong>→ Next:</strong> ${c.next}</div>`:''}
       </div>`).join('')
-    :'<div class="empty-state">No clients yet. Add your first client!</div>';
+    : '<div class="empty-state">No clients yet. Add your first client!</div>';
 }
 
-function renderTasks(){
-  let filtered=taskFilter==='open'?tasks.filter(t=>!t.done):taskFilter==='done'?tasks.filter(t=>t.done):[...tasks];
-  const container=document.getElementById('tasks-container');
-
-  if(taskFilter==='done'){
-    const sorted=filtered.sort((a,b)=>pSort(a,b));
-    container.innerHTML=`<div class="card">${sorted.length?sorted.map(t=>taskHTML(t,true)).join(''):'<div class="empty-state">No completed tasks.</div>'}</div>
-      <button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
+function renderTasks() {
+  let filtered = taskFilter==='open' ? tasks.filter(t=>!t.done) : taskFilter==='done' ? tasks.filter(t=>t.done) : [...tasks];
+  const container = document.getElementById('tasks-container');
+  if (taskFilter==='done') {
+    container.innerHTML = `<div class="card">${filtered.length?filtered.sort(pSort).map(t=>taskHTML(t,true)).join(''):'<div class="empty-state">No completed tasks.</div>'}</div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
     return;
   }
-
-  if(!groupByClient){
-    const sorted=filtered.sort((a,b)=>pSort(a,b));
-    container.innerHTML=`<div class="card">${sorted.length?sorted.map(t=>taskHTML(t,true)).join(''):'<div class="empty-state">No tasks here.</div>'}</div>
-      <button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
+  if (!groupByClient) {
+    container.innerHTML = `<div class="card">${filtered.length?filtered.sort(pSort).map(t=>taskHTML(t,true)).join(''):'<div class="empty-state">No tasks here.</div>'}</div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
     return;
   }
-
-  // Group by due date status
-  const today=new Date(); today.setHours(0,0,0,0);
-  const tomorrow=new Date(today); tomorrow.setDate(today.getDate()+1);
-  const nextWeek=new Date(today); nextWeek.setDate(today.getDate()+7);
-
+  const today=new Date();today.setHours(0,0,0,0);
+  const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);
+  const nextWeek=new Date(today);nextWeek.setDate(today.getDate()+7);
   const groups={od1:[],od2:[],od3:[],od4:[],today:[],tomorrow:[],thisweek:[],later:[],none:[]};
-
-  filtered.forEach(t=>{
-    if(!t.due||t.due==='true'||t.due===''){groups.none.push(t);return;}
-    const d=new Date(t.due+'T00:00:00');
-    if(d<today){
-      const daysLate=Math.round((today-d)/(864e5));
-      if(daysLate===1) groups.od1.push(t);
-      else if(daysLate===2) groups.od2.push(t);
-      else if(daysLate===3) groups.od3.push(t);
-      else groups.od4.push(t);
-    }
-    else if(d.toDateString()===today.toDateString()) groups.today.push(t);
-    else if(d.toDateString()===tomorrow.toDateString()) groups.tomorrow.push(t);
-    else if(d<=nextWeek) groups.thisweek.push(t);
+  filtered.forEach(t => {
+    if (!t.due||t.due==='true'||t.due==='') { groups.none.push(t); return; }
+    const d = new Date(t.due+'T00:00:00');
+    if (d<today) { const dl=Math.round((today-d)/864e5); if(dl===1)groups.od1.push(t);else if(dl===2)groups.od2.push(t);else if(dl===3)groups.od3.push(t);else groups.od4.push(t); }
+    else if (d.toDateString()===today.toDateString()) groups.today.push(t);
+    else if (d.toDateString()===tomorrow.toDateString()) groups.tomorrow.push(t);
+    else if (d<=nextWeek) groups.thisweek.push(t);
     else groups.later.push(t);
   });
-
   const sections=[
-    {key:'od1',label:'🔴 Overdue · 1 day',color:'var(--red)'},
-    {key:'od2',label:'🔴 Overdue · 2 days',color:'var(--red)'},
-    {key:'od3',label:'🔴 Overdue · 3 days',color:'var(--red)'},
-    {key:'od4',label:'🔴 Overdue · 4+ days',color:'var(--red)'},
-    {key:'today',label:'⚡ Today',color:'var(--ink)'},
-    {key:'tomorrow',label:'📅 Tomorrow',color:'var(--amber)'},
-    {key:'thisweek',label:'📆 This Week',color:'var(--blue)'},
-    {key:'later',label:'🕐 Later',color:'var(--ink3)'},
+    {key:'od1',label:'🔴 Overdue · 1 day',color:'var(--red)'},{key:'od2',label:'🔴 Overdue · 2 days',color:'var(--red)'},
+    {key:'od3',label:'🔴 Overdue · 3 days',color:'var(--red)'},{key:'od4',label:'🔴 Overdue · 4+ days',color:'var(--red)'},
+    {key:'today',label:'⚡ Today',color:'var(--ink)'},{key:'tomorrow',label:'📅 Tomorrow',color:'var(--amber)'},
+    {key:'thisweek',label:'📆 This Week',color:'var(--blue)'},{key:'later',label:'🕐 Later',color:'var(--ink3)'},
     {key:'none',label:'📌 No Due Date',color:'var(--ink3)'},
   ];
-
-  const activeSections=sections.filter(s=>groups[s.key].length>0);
-  const left=activeSections.filter((_,i)=>i%2===0);
-  const right=activeSections.filter((_,i)=>i%2===1);
-
-  function sectionHTML(s){
-    const items=groups[s.key].sort(pSort);
-    return `<div class="client-group">
-      <div class="client-group-header">
-        <span class="client-group-name" style="color:${s.color}">${s.label}</span>
-        <span style="font-size:11px;color:var(--ink3)">${items.length} task${items.length!==1?'s':''}</span>
-      </div>
-      <div class="card" style="padding:8px 16px">${items.map(t=>taskHTML(t,true)).join('')}</div>
-    </div>`;
+  const activeSections = sections.filter(s=>groups[s.key].length>0);
+  const left = activeSections.filter((_,i)=>i%2===0);
+  const right = activeSections.filter((_,i)=>i%2===1);
+  function sectionHTML(s) {
+    const items = groups[s.key].sort(pSort);
+    return `<div class="client-group"><div class="client-group-header"><span class="client-group-name" style="color:${s.color}">${s.label}</span><span style="font-size:11px;color:var(--ink3)">${items.length} task${items.length!==1?'s':''}</span></div><div class="card" style="padding:8px 16px">${items.map(t=>taskHTML(t,true)).join('')}</div></div>`;
   }
-
-  if(!activeSections.length){
-    container.innerHTML='<div class="card"><div class="empty-state">No tasks here.</div></div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button>';
-    return;
-  }
-
-  container.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
-    <div>${left.map(sectionHTML).join('')}</div>
-    <div>${right.map(sectionHTML).join('')}</div>
-  </div>
-  <button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
+  if (!activeSections.length) { container.innerHTML='<div class="card"><div class="empty-state">No tasks here.</div></div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button>'; return; }
+  container.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start"><div>${left.map(sectionHTML).join('')}</div><div>${right.map(sectionHTML).join('')}</div></div><button class="add-btn" onclick="openTaskModal()">+ Add new task</button>`;
 }
 
-function updateClientDropdown(){
-  document.getElementById('tm-client').innerHTML='<option value="">— Not client specific —</option>'+clients.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+function setTaskFilter(f,btn) {
+  taskFilter=f;
+  document.querySelectorAll('.task-filter-tab:not(#group-btn)').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderTasks();
+}
+function toggleGrouping(btn) { groupByClient=!groupByClient; btn.classList.toggle('active',groupByClient); renderTasks(); }
+function updateClientDropdown() {
+  document.getElementById('tm-client').innerHTML = '<option value="">— Not client specific —</option>' + clients.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
 }
 
-// ── Global click handler ──────────────────────────────────────────────────────
-document.addEventListener('click', function(e){
-  // Edit client from detail modal (check FIRST)
-  const ec=e.target.closest('[data-edit-client]');
-  if(ec){closeModal('detail-modal');openClientModal(ec.dataset.editClient);return;}
-
-  // Add task from detail modal (check FIRST)
-  const atc=e.target.closest('[data-add-task-client]');
-  if(atc){closeModal('detail-modal');openTaskModal(atc.dataset.addTaskClient);return;}
-
-  // Checkbox = toggle done
-  const cb=e.target.closest('[data-task-toggle]');
-  if(cb){toggleTask(cb.dataset.taskToggle);return;}
-
-  // Task body = edit
-  const body=e.target.closest('[data-task-edit]');
-  if(body){openTaskModal(null,body.dataset.taskEdit);return;}
-
-  // Delete button
-  const del=e.target.closest('[data-task-delete]');
-  if(del){deleteTask(del.dataset.taskDelete);return;}
-
-  // Client card/row = detail modal
-  const cl=e.target.closest('[data-client-detail]');
-  if(cl){openClientDetail(cl.dataset.clientDetail);return;}
+// ── Click handler ─────────────────────────────────────────────────────────────
+document.addEventListener('click', function(e) {
+  const ec = e.target.closest('[data-edit-client]');
+  if (ec) { closeModal('detail-modal'); openClientModal(ec.dataset.editClient); return; }
+  const atc = e.target.closest('[data-add-task-client]');
+  if (atc) { closeModal('detail-modal'); openTaskModal(atc.dataset.addTaskClient); return; }
+  const body = e.target.closest('[data-task-edit]');
+  if (body) { openTaskModal(null, body.dataset.taskEdit); return; }
+  const del = e.target.closest('[data-task-delete]');
+  if (del) { deleteTask(del.dataset.taskDelete); return; }
+  const cl = e.target.closest('[data-client-detail]');
+  if (cl) { openClientDetail(cl.dataset.clientDetail); return; }
 });
 
-async function toggleTask(id){
-  const t=tasks.find(t=>t.id===id);if(!t)return;
-  t.done=!t.done;
-  if(t.done)t.completedDate=new Date().toISOString().split('T')[0];
-  renderAll();await saveAllTasks();
+async function toggleTask(id) {
+  const t = tasks.find(t=>t.id===id); if(!t) return;
+  t.done = !t.done;
+  if (t.done) t.completedDate = new Date().toISOString().split('T')[0];
+  renderAll(); await saveAllTasks();
 }
-async function deleteTask(id){
-  if(!confirm('Delete this task?'))return;
-  tasks=tasks.filter(t=>t.id!==id);renderAll();await saveAllTasks();
+async function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  tasks = tasks.filter(t=>t.id!==id); renderAll(); await saveAllTasks();
 }
-async function deleteTaskFromModal(){
-  const id=document.getElementById('tm-id').value;
-  if(!id||!confirm('Delete this task?'))return;
-  closeModal('task-modal');
-  tasks=tasks.filter(t=>t.id!==id);renderAll();await saveAllTasks();
+async function deleteTaskFromModal() {
+  const id = document.getElementById('tm-id').value;
+  if (!id || !confirm('Delete this task?')) return;
+  closeModal('task-modal'); tasks = tasks.filter(t=>t.id!==id); renderAll(); await saveAllTasks();
 }
 
 // ── Modals ────────────────────────────────────────────────────────────────────
-function openClientModal(id){
-  const c=id?clients.find(c=>c.id===id):null;
-  document.getElementById('cm-title').textContent=c?'Edit Client':'Add Client';
-  ['name','biz','last','promise','next','revenue'].forEach(f=>document.getElementById('cm-'+f).value=c?.[f]||'');
-  document.getElementById('cm-status').value=c?.status||'active';
-  document.getElementById('cm-id').value=c?.id||'';
-  document.getElementById('cm-kpi-baseline').value=c?.kpiBaseline||'';
-  document.getElementById('cm-kpi-tracking').value=c?.kpiTracking||'';
-  document.getElementById('cm-kpi-freq').value=c?.kpiFreq||'';
-  document.getElementById('cm-kpi-current').value=c?.kpiCurrent||'';
-  document.getElementById('cm-delete-btn').style.display=c?'block':'none';
-  document.getElementById('client-modal').style.display='flex';
+function openClientModal(id) {
+  const c = id ? clients.find(c=>c.id===id) : null;
+  document.getElementById('cm-title').textContent = c ? 'Edit Client' : 'Add Client';
+  ['name','biz','last','promise','next','revenue'].forEach(f => document.getElementById('cm-'+f).value = c?.[f]||'');
+  document.getElementById('cm-status').value = c?.status||'active';
+  document.getElementById('cm-id').value = c?.id||'';
+  document.getElementById('cm-kpi-baseline').value = c?.kpiBaseline||'';
+  document.getElementById('cm-kpi-tracking').value = c?.kpiTracking||'';
+  document.getElementById('cm-kpi-freq').value = c?.kpiFreq||'';
+  document.getElementById('cm-kpi-current').value = c?.kpiCurrent||'';
+  document.getElementById('cm-delete-btn').style.display = c ? 'block' : 'none';
+  document.getElementById('client-modal').style.display = 'flex';
 }
-
-function openTaskModal(clientName, taskId){
+function openTaskModal(clientName, taskId) {
   updateClientDropdown();
-  const t=taskId?tasks.find(t=>t.id===taskId):null;
-  document.getElementById('tm-title').textContent=t?'Edit Task':'Add Task';
-  document.getElementById('tm-id').value=t?.id||'';
-  document.getElementById('tm-text').value=t?.text||'';
-  document.getElementById('tm-desc').value=t?.desc||'';
-  document.getElementById('tm-priority').value=t?.priority||'high';
-  document.getElementById('tm-due').value=t?.due||'';
-  document.getElementById('tm-client').value=t?.client||clientName||'';
-  document.getElementById('tm-delete-btn').style.display=t?'block':'none';
-  document.getElementById('task-modal').style.display='flex';
+  const t = taskId ? tasks.find(t=>t.id===taskId) : null;
+  document.getElementById('tm-title').textContent = t ? 'Edit Task' : 'Add Task';
+  document.getElementById('tm-id').value = t?.id||'';
+  document.getElementById('tm-text').value = t?.text||'';
+  document.getElementById('tm-desc').value = t?.desc||'';
+  document.getElementById('tm-priority').value = t?.priority||'high';
+  document.getElementById('tm-due').value = t?.due||'';
+  document.getElementById('tm-client').value = t?.client||clientName||'';
+  document.getElementById('tm-delete-btn').style.display = t ? 'block' : 'none';
+  document.getElementById('task-modal').style.display = 'flex';
 }
+function closeModal(id) { document.getElementById(id).style.display='none'; }
 
-function closeModal(id){document.getElementById(id).style.display='none';}
-
-async function saveClient(){
-  const existId=document.getElementById('cm-id').value;
-  const id=existId||Date.now().toString();
-  const c={id,
-    name:document.getElementById('cm-name').value.trim(),
-    biz:document.getElementById('cm-biz').value.trim(),
-    status:document.getElementById('cm-status').value,
-    revenue:document.getElementById('cm-revenue').value.trim(),
-    last:document.getElementById('cm-last').value.trim(),
-    promise:document.getElementById('cm-promise').value.trim(),
-    next:document.getElementById('cm-next').value.trim(),
-    kpiBaseline:document.getElementById('cm-kpi-baseline').value.trim(),
-    kpiTracking:document.getElementById('cm-kpi-tracking').value.trim(),
-    kpiFreq:document.getElementById('cm-kpi-freq').value,
-    kpiCurrent:document.getElementById('cm-kpi-current').value.trim()
-  };
-  if(!c.name){alert('Please enter a client name');return;}
+async function saveClient() {
+  const existId = document.getElementById('cm-id').value;
+  const id = existId || Date.now().toString();
+  const c = {id, name:document.getElementById('cm-name').value.trim(), biz:document.getElementById('cm-biz').value.trim(), status:document.getElementById('cm-status').value, revenue:document.getElementById('cm-revenue').value.trim(), last:document.getElementById('cm-last').value.trim(), promise:document.getElementById('cm-promise').value.trim(), next:document.getElementById('cm-next').value.trim(), kpiBaseline:document.getElementById('cm-kpi-baseline').value.trim(), kpiTracking:document.getElementById('cm-kpi-tracking').value.trim(), kpiFreq:document.getElementById('cm-kpi-freq').value, kpiCurrent:document.getElementById('cm-kpi-current').value.trim()};
+  if (!c.name) { alert('Please enter a client name'); return; }
   closeModal('client-modal');
-  const idx=clients.findIndex(x=>x.id===id);
-  if(idx>=0)clients[idx]={...clients[idx],...c};else clients.push(c);
-  const rid='recurring_kpi_'+id;
-  tasks=tasks.filter(t=>t.id!==rid);
-  if(c.kpiFreq&&c.kpiTracking){
-    tasks.push({id:rid,text:'📊 Update KPIs — '+c.name,desc:'Track: '+c.kpiTracking,client:c.name,priority:'high',due:new Date().toISOString().split('T')[0],done:false,recurring:c.kpiFreq});
-  }
-  renderAll();await saveAllClients();await saveAllTasks();
+  const idx = clients.findIndex(x=>x.id===id);
+  if (idx>=0) clients[idx] = {...clients[idx],...c}; else clients.push(c);
+  const rid = 'recurring_kpi_' + id;
+  tasks = tasks.filter(t=>t.id!==rid);
+  if (c.kpiFreq && c.kpiTracking) tasks.push({id:rid,text:'📊 Update KPIs — '+c.name,desc:'Track: '+c.kpiTracking,client:c.name,priority:'high',due:new Date().toISOString().split('T')[0],done:false,recurring:c.kpiFreq});
+  renderAll(); await saveAllClients(); await saveAllTasks();
 }
-
-async function saveTask(){
-  const existId=document.getElementById('tm-id').value;
-  const id=existId||Date.now().toString();
-  const existing=tasks.find(t=>t.id===id);
-  const t={
-    id,
-    text:document.getElementById('tm-text').value.trim(),
-    desc:document.getElementById('tm-desc').value.trim(),
-    client:document.getElementById('tm-client').value,
-    priority:document.getElementById('tm-priority').value,
-    due:document.getElementById('tm-due').value,
-    done:existing?existing.done:false,
-    recurring:existing?existing.recurring:''
-  };
-  if(!t.text){alert('Please enter a task headline');return;}
+async function saveTask() {
+  const existId = document.getElementById('tm-id').value;
+  const id = existId || Date.now().toString();
+  const existing = tasks.find(t=>t.id===id);
+  const t = {id, text:document.getElementById('tm-text').value.trim(), desc:document.getElementById('tm-desc').value.trim(), client:document.getElementById('tm-client').value, priority:document.getElementById('tm-priority').value, due:document.getElementById('tm-due').value, done:existing?existing.done:false, recurring:existing?existing.recurring:''};
+  if (!t.text) { alert('Please enter a task headline'); return; }
   closeModal('task-modal');
-  const idx=tasks.findIndex(x=>x.id===id);
-  if(idx>=0)tasks[idx]=t;else tasks.push(t);
-  renderAll();await saveAllTasks();
+  const idx = tasks.findIndex(x=>x.id===id);
+  if (idx>=0) tasks[idx]=t; else tasks.push(t);
+  renderAll(); await saveAllTasks();
+}
+async function deleteClient() {
+  const id = document.getElementById('cm-id').value;
+  if (!id||!confirm('Delete this client?')) return;
+  closeModal('client-modal'); clients=clients.filter(c=>c.id!==id); tasks=tasks.filter(t=>t.id!=='recurring_kpi_'+id); renderAll(); await saveAllClients(); await saveAllTasks();
 }
 
-async function deleteClient(){
-  const id=document.getElementById('cm-id').value;
-  if(!id||!confirm('Delete this client?'))return;
-  closeModal('client-modal');
-  clients=clients.filter(c=>c.id!==id);
-  tasks=tasks.filter(t=>t.id!=='recurring_kpi_'+id);
-  renderAll();await saveAllClients();await saveAllTasks();
-}
-
-function openClientDetail(id){
-  const c=clients.find(c=>c.id===id);if(!c)return;
-  const ct=tasks.filter(t=>t.client===c.name&&!t.done);
-  document.getElementById('detail-content').innerHTML=`
+function openClientDetail(id) {
+  const c = clients.find(c=>c.id===id); if(!c) return;
+  const ct = tasks.filter(t=>t.client===c.name&&!t.done);
+  document.getElementById('detail-content').innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
-      <div><h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">${c.name}</h3>
-      <div style="font-size:13px;color:var(--ink3);margin-top:2px">${c.biz||''}</div>
-      ${c.revenue?`<div style="font-size:13px;color:var(--green);font-weight:600;margin-top:4px">💰 ${c.revenue}</div>`:''}</div>
+      <div><h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">${c.name}</h3><div style="font-size:13px;color:var(--ink3);margin-top:2px">${c.biz||''}</div>${c.revenue?`<div style="font-size:13px;color:var(--green);font-weight:600;margin-top:4px">💰 ${c.revenue}</div>`:''}</div>
       <div class="client-status status-${c.status}">${statusLabel(c.status)}</div>
     </div>
-    ${c.kpiTracking?`<div style="margin-bottom:14px;background:var(--purple-bg);border-radius:8px;padding:14px">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin-bottom:8px">📊 KPI Tracking ${c.kpiFreq?'('+c.kpiFreq+')':''}</div>
-      ${c.kpiBaseline?`<div style="font-size:12px;color:var(--ink2);margin-bottom:6px"><strong style="color:var(--ink3)">Baseline:</strong> ${c.kpiBaseline}</div>`:''}
-      <div style="font-size:12px;color:var(--ink2);margin-bottom:6px"><strong style="color:var(--ink3)">Tracking:</strong> ${c.kpiTracking}</div>
-      ${c.kpiCurrent?`<div style="font-size:12px;color:var(--purple);font-weight:600"><strong>Current:</strong> ${c.kpiCurrent}</div>`:''}
-    </div>`:''}
+    ${c.kpiTracking?`<div style="margin-bottom:14px;background:var(--purple-bg);border-radius:8px;padding:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin-bottom:8px">📊 KPI Tracking ${c.kpiFreq?'('+c.kpiFreq+')':''}</div>${c.kpiBaseline?`<div style="font-size:12px;color:var(--ink2);margin-bottom:6px"><strong style="color:var(--ink3)">Baseline:</strong> ${c.kpiBaseline}</div>`:''}<div style="font-size:12px;color:var(--ink2);margin-bottom:6px"><strong style="color:var(--ink3)">Tracking:</strong> ${c.kpiTracking}</div>${c.kpiCurrent?`<div style="font-size:12px;color:var(--purple);font-weight:600"><strong>Current:</strong> ${c.kpiCurrent}</div>`:''}</div>`:''}
     ${c.last?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:6px">Where we left off</div><div style="font-size:13px;line-height:1.7;background:var(--bg);padding:12px;border-radius:8px">${c.last}</div></div>`:''}
     ${c.promise?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:6px">📌 What I promised</div><div style="font-size:13px;line-height:1.7;background:var(--amber-bg);padding:12px;border-radius:8px;color:var(--amber)">${c.promise}</div></div>`:''}
-    ${c.next?`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:6px">→ Next step</div><div style="font-size:13px;line-height:1.7;background:var(--blue-bg);padding:12px;border-radius:8px;color:var(--blue)">${c.next}</div></div>`:''}
-    ${ct.length?`<div style="margin-top:16px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Open Tasks</div>
-      ${ct.map(t=>`<div class="task-item" style="cursor:default"><div class="priority-dot p-${t.priority}"></div><div style="flex:1"><div class="task-title-text">${t.text}</div>${t.desc?`<div class="task-desc-text">${t.desc}</div>`:''}</div></div>`).join('')}</div>`:''}
+    ${ct.length?`<div style="margin-top:16px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:10px">Open Tasks</div>${ct.map(t=>`<div class="task-item" style="cursor:default"><div class="priority-dot p-${t.priority}"></div><div style="flex:1"><div class="task-title-text">${t.text}</div></div></div>`).join('')}</div>`:''}
     <div style="display:flex;gap:10px;margin-top:24px">
       <button class="btn-cancel" onclick="closeModal('detail-modal')">Close</button>
-      <button class="btn-cancel" onclick="closeModal('detail-modal');openTaskModal('${c.name}')">+ Add Task</button>
       <button class="btn-primary" onclick="closeModal('detail-modal');openClientModal('${c.id}')">Edit Client</button>
     </div>`;
-  document.getElementById('detail-modal').style.display='flex';
+  document.getElementById('detail-modal').style.display = 'flex';
 }
 
-document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.style.display='none';}));
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.style.display='none'; }));
 
-function buildContext(){
-  const c=clients.map(c=>`${c.name} (${c.biz||'?'}) | ${c.status} | Revenue: ${c.revenue||'N/A'} | KPIs: ${c.kpiTracking||'N/A'} | Baseline: ${c.kpiBaseline||'N/A'} | Current: ${c.kpiCurrent||'N/A'} | Last: ${c.last||'N/A'} | Promised: ${c.promise||'N/A'} | Next: ${c.next||'N/A'}`).join('\n');
-  const t=tasks.filter(x=>!x.done).map(t=>`${t.text}${t.desc?' — '+t.desc:''} | ${t.priority} | Client: ${t.client||'General'} | Due: ${t.due||'none'}${t.recurring?' | Recurring: '+t.recurring:''}`).join('\n');
+// ── AI ────────────────────────────────────────────────────────────────────────
+function buildContext() {
+  const c = clients.map(c=>`${c.name} (${c.biz||'?'}) | ${c.status} | Revenue: ${c.revenue||'N/A'} | KPIs: ${c.kpiTracking||'N/A'} | Current: ${c.kpiCurrent||'N/A'} | Last: ${c.last||'N/A'} | Promised: ${c.promise||'N/A'}`).join('\n');
+  const t = tasks.filter(x=>!x.done).map(t=>`${t.text} | ${t.priority} | Client: ${t.client||'General'} | Due: ${t.due||'none'}`).join('\n');
   return `CLIENTS:\n${c||'none'}\n\nOPEN TASKS:\n${t||'none'}`;
 }
-
-async function callClaude(messages,system){
-  const body={model:'claude-opus-4-5',max_tokens:1024,messages};
-  if(system)body.system=system;
-  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
-  const d=await r.json();if(d.error)throw new Error(d.error.message);
+async function callClaude(messages, system) {
+  const body = {model:'claude-sonnet-4-20250514', max_tokens:1000, messages};
+  if (system) body.system = system;
+  const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST', headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'}, body:JSON.stringify(body)});
+  const d = await r.json(); if(d.error) throw new Error(d.error.message);
   return d.content[0].text;
 }
-
-async function generateFocus(){
-  if(!clients.length&&!tasks.length){document.getElementById('focus-text').textContent='Add your clients and tasks to get a personalized daily focus.';return;}
-  try{
-    const r=await callClaude([{role:'user',content:`Based on this data, give me ONE clear sentence on what to focus on today. No markdown. Data: ${buildContext()}`}],"You are a sharp business advisor. One sentence only. No asterisks or markdown.");
-    document.getElementById('focus-text').textContent=r.replace(/\*\*/g,'');
-  }catch(e){document.getElementById('focus-text').textContent='Start by reviewing your highest priority tasks.';}
+async function generateFocus() {
+  if (!clients.length && !tasks.length) { document.getElementById('focus-text').textContent='Add your clients and tasks to get a personalized daily focus.'; return; }
+  try {
+    const r = await callClaude([{role:'user',content:`Based on this data, give me ONE clear sentence on what to focus on today. No markdown. Data: ${buildContext()}`}], "You are a sharp business advisor. One sentence only. No asterisks or markdown.");
+    document.getElementById('focus-text').textContent = r.replace(/\*\*/g,'');
+  } catch(e) { document.getElementById('focus-text').textContent='Start by reviewing your highest priority tasks.'; }
 }
-
-async function quickAsk(){
-  const inp=document.getElementById('quick-input');const text=inp.value.trim();if(!text)return;inp.value='';
+async function quickAsk() {
+  const inp=document.getElementById('quick-input'); const text=inp.value.trim(); if(!text) return; inp.value='';
   const msgs=document.getElementById('quick-messages');
   const u=document.createElement('div');u.className='ai-msg user';u.textContent=text;msgs.appendChild(u);
   const r=document.createElement('div');r.className='ai-msg claude';r.textContent='...';msgs.appendChild(r);
   quickHistory.push({role:'user',content:text+'\n\nContext:\n'+buildContext()});
-  try{const rep=await callClaude(quickHistory,"You are a sharp business assistant. Be concise.");r.textContent=rep;quickHistory.push({role:'assistant',content:rep});}
+  try { const rep=await callClaude(quickHistory,"You are a sharp business assistant. Be concise."); r.textContent=rep; quickHistory.push({role:'assistant',content:rep}); }
   catch(e){r.textContent='Error: '+e.message;}
   msgs.scrollTop=msgs.scrollHeight;
 }
-
-async function aiAsk(){
-  const inp=document.getElementById('ai-input');const text=inp.value.trim();if(!text)return;inp.value='';
+async function aiAsk() {
+  const inp=document.getElementById('ai-input'); const text=inp.value.trim(); if(!text) return; inp.value='';
   addAiMsg('user',text);
   aiHistory.push({role:'user',content:text+'\n\nMy business context:\n'+buildContext()});
   const r=addAiMsg('claude','...');
-  try{const rep=await callClaude(aiHistory,"You are a sharp business assistant for an ecommerce consultant. Be practical and concise.");r.textContent=rep;aiHistory.push({role:'assistant',content:rep});}
+  try { const rep=await callClaude(aiHistory,"You are a sharp business assistant for an ecommerce consultant. Be practical and concise."); r.textContent=rep; aiHistory.push({role:'assistant',content:rep}); }
   catch(e){r.textContent='Error: '+e.message;}
 }
-
-// My Day state
-let mydayBlocks = []; // [{type:'task'|'free', task, dur, start}, ...]
-
-function mydayDurations(){return[15,30,60,90,120,150,180,240,300,360,420,480];}
-function durLabel(m){if(m<60)return m+'min';if(m%60===0)return m/60+'h';return Math.floor(m/60)+'h '+m%60+'min';}
-
-function changeDur(idx, delta){
-  const durs=mydayDurations();
-  const block=mydayBlocks[idx];
-  if(!block||block.type==='free')return;
-  const cur=durs.indexOf(block.dur);
-  const next=Math.max(0,Math.min(durs.length-1,cur+delta));
-  block.dur=durs[next];
-  recalcStarts();
-  renderMyDayBlocks();
-}
-
-function addFreeTime(afterIdx){
-  mydayBlocks.splice(afterIdx+1,0,{type:'free',dur:60,label:'Free Time'});
-  recalcStarts();
-  renderMyDayBlocks();
-}
-
-function removeFreeTime(idx){
-  mydayBlocks.splice(idx,1);
-  recalcStarts();
-  renderMyDayBlocks();
-}
-
-function changeFreeTimeDur(idx,delta){
-  const durs=[15,30,60,90,120,150,180,240,300,360,420,480];
-  const block=mydayBlocks[idx];
-  if(!block||block.type!=='free')return;
-  const cur=durs.indexOf(block.dur);
-  const next=Math.max(0,Math.min(durs.length-1,cur+delta));
-  block.dur=durs[next];
-  recalcStarts();
-  renderMyDayBlocks();
-}
-
-function recalcStarts(){
-  let min=0;
-  mydayBlocks.forEach(b=>{b.start=min;min+=b.dur;});
-}
-
-function minToTime(min){
-  const total=600+min;
-  const h=Math.floor(total/60)%24;
-  const m=total%60;
-  const ampm=h>=12?'PM':'AM';
-  const hh=h>12?h-12:h===0?12:h;
-  return `${hh}:${m.toString().padStart(2,'0')} ${ampm}`;
-}
-
-function clientColor(name){
-  const colors=['var(--blue)','var(--purple)','var(--green)','var(--amber)','var(--red)'];
-  const idx=clients.findIndex(c=>c.name===name);
-  return colors[Math.abs(idx)%colors.length]||'var(--ink)';
-}
-
-function overdueLabel(t){
-  const now=new Date();now.setHours(0,0,0,0);
-  if(!t.due||t.due==='true'||t.due==='')return '';
-  const d=new Date(t.due+'T00:00:00');
-  const diff=Math.round((now-d)/(864e5));
-  if(diff===1)return '🔴 1 day overdue';
-  if(diff===2)return '🔴 2 days overdue';
-  if(diff===3)return '🔴 3 days overdue';
-  if(diff>3)return `🔴 ${diff} days overdue`;
-  if(diff===0)return '⚡ Due today';
-  return '';
-}
-
-function renderMyDayBlocks(){
-  const container=document.getElementById('myday-container');
-  const TOTAL=480;
-  const totalUsed=mydayBlocks.reduce((s,b)=>s+b.dur,0);
-  const unscheduled=tasks.filter(t=>!t.done&&!mydayBlocks.find(b=>b.type==='task'&&b.task.id===t.id));
-
-  let html='';
-  mydayBlocks.forEach((block,i)=>{
-    if(block.type==='free'){
-      html+=`<div class="myday-block">
-        <div class="myday-time">${minToTime(block.start)}</div>
-        <div class="myday-line"><div class="myday-dot free"></div><div class="myday-vline"></div></div>
-        <div class="myday-card free-block">
-          <div class="myday-card-header">
-            <div class="myday-task" style="color:var(--green)">🌿 Free Time</div>
-            <div class="myday-duration">
-              <button class="myday-dur-btn" onclick="changeFreeTimeDur(${i},-1)">−</button>
-              <span class="myday-dur-val">${durLabel(block.dur)}</span>
-              <button class="myday-dur-btn" onclick="changeFreeTimeDur(${i},1)">+</button>
-              <button class="myday-dur-btn" onclick="removeFreeTime(${i})" style="color:var(--red);margin-left:4px">×</button>
-            </div>
-          </div>
-        </div>
-      </div>`;
-    } else {
-      const t=block.task;
-      const color=clientColor(t.client);
-      const ol=overdueLabel(t);
-      html+=`<div class="myday-block">
-        <div class="myday-time">${minToTime(block.start)}</div>
-        <div class="myday-line"><div class="myday-dot" style="background:${color}"></div><div class="myday-vline"></div></div>
-        <div class="myday-card ${t.done?'done-block':''}">
-          <div class="myday-card-header">
-            <div class="myday-task">${t.text}</div>
-            <div class="myday-duration">
-              <button class="myday-dur-btn" onclick="changeDur(${i},-1)">−</button>
-              <span class="myday-dur-val">${durLabel(block.dur)}</span>
-              <button class="myday-dur-btn" onclick="changeDur(${i},1)">+</button>
-            </div>
-          </div>
-          <div class="myday-meta">${t.client?'👤 '+t.client+'  ':''}${ol?ol+'  ':''}<span style="color:${color};font-weight:600">${({high:'🔴 High',med:'🟡 Med',low:'🟢 Low'})[t.priority]}</span></div>
-          ${t.desc?`<div style="font-size:12px;color:var(--ink2);margin-top:6px">${t.desc}</div>`:''}
-          <div style="margin-top:10px">
-            <button class="done-btn" onclick="toggleTaskMyDay('${t.id}')">${t.done?'✓ Done':'✓ Mark Done'}</button>
-          </div>
-        </div>
-      </div>
-      <div class="myday-add-free" onclick="addFreeTime(${i})">+ Add free time here</div>`;
-    }
-  });
-
-  if(unscheduled.length){
-    html+=`<div class="myday-unscheduled">
-      <div class="myday-unscheduled-title">📋 Doesn't fit today (${unscheduled.length} tasks)</div>
-      <div class="card" style="padding:8px 16px">${unscheduled.map(t=>taskHTML(t,false)).join('')}</div>
-    </div>`;
-  }
-
-  container.innerHTML=html;
-  const totalH=(totalUsed/60).toFixed(1);
-  document.getElementById('myday-summary').textContent=`${mydayBlocks.filter(b=>b.type==='task').length} tasks · ${totalH}h scheduled out of 8h${unscheduled.length?' · '+unscheduled.length+' unscheduled':''}`;
-}
-
-async function toggleTaskMyDay(id){
-  const t=tasks.find(t=>t.id===id);if(!t)return;
-  t.done=!t.done;
-  if(t.done)t.completedDate=new Date().toISOString().split('T')[0];
-  // Update the task reference in mydayBlocks too
-  const block=mydayBlocks.find(b=>b.type==='task'&&b.task.id===id);
-  if(block)block.task=t;
-  renderMyDayBlocks();
-  renderDashboardTasks();
-  renderStats();
-  await saveAllTasks();
-}
-
-async function generateMyDay(){
-  const container=document.getElementById('myday-container');
-  const summary=document.getElementById('myday-summary');
-
-  const open=tasks.filter(t=>!t.done);
-  if(!open.length){
-    mydayBlocks=[];
-    container.innerHTML='<div class="empty-state" style="padding:60px">No open tasks! Enjoy your day 🎉</div>';
-    summary.textContent='Nothing scheduled';
-    return;
-  }
-
-  // Save existing manual edits: remembered durations + free blocks positions
-  const savedDurs={};
-  const savedFreeBlocks=[];
-  let lastTaskIdx=-1;
-  mydayBlocks.forEach((b,i)=>{
-    if(b.type==='task'){savedDurs[b.task.id]=b.dur;lastTaskIdx=i;}
-    if(b.type==='free'){
-      // remember free block was after which task id
-      const prevTask=mydayBlocks.slice(0,i).filter(x=>x.type==='task').slice(-1)[0];
-      savedFreeBlocks.push({afterTaskId:prevTask?prevTask.task.id:null,dur:b.dur});
-    }
-  });
-
-  const isFirstGen=mydayBlocks.length===0;
-  if(isFirstGen){
-    container.innerHTML='<div class="empty-state" style="padding:60px">⏳ Claude is estimating your tasks...</div>';
-    summary.textContent='Building your schedule...';
-  }
-
-  const now=new Date();now.setHours(0,0,0,0);
-  function urgency(t){
-    if(!t.due||t.due==='true'||t.due==='')return 999;
-    const d=new Date(t.due+'T00:00:00');
-    const diff=Math.round((now-d)/(864e5));
-    if(diff>0)return -diff;
-    if(diff===0)return 0;
-    return diff;
-  }
-  const sorted=open.slice().sort((a,b)=>{
-    const ua=urgency(a),ub=urgency(b);
-    if(ua!==ub)return ua-ub;
-    return ({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1);
-  });
-
-  // Only ask Claude for tasks we don't have a saved duration for
-  const needEstimate=sorted.filter(t=>!savedDurs[t.id]);
-  let newEstimates={};
-
-  if(needEstimate.length>0){
-    const taskList=needEstimate.map((t,i)=>`${i+1}. [${t.priority}] ${t.text}${t.desc?' — '+t.desc:''} | Client: ${t.client||'General'} | Due: ${t.due||'none'}`).join('\n');
-    try{
-      const prompt=`Given these tasks, estimate how long each will take. Reply ONLY with a JSON array of numbers (minutes), one per task, in the same order. Only use: 15, 30, 60, 90, 120, 150, 180, 240, 300, 360, 420, 480.\n\nTasks:\n${taskList}`;
-      const raw=await callClaude([{role:'user',content:prompt}],'You are a time estimation expert. Reply ONLY with a valid JSON array of numbers. No text, no explanation.');
-      const clean=raw.replace(/```json|```/g,'').trim();
-      const arr=JSON.parse(clean);
-      needEstimate.forEach((t,i)=>{
-        const snapped=[15,30,60,90,120,150,180,240,300,360,420,480].reduce((a,b)=>Math.abs(b-(arr[i]||60))<Math.abs(a-(arr[i]||60))?b:a);
-        newEstimates[t.id]=snapped;
-      });
-    }catch(e){
-      needEstimate.forEach(t=>{newEstimates[t.id]=t.priority==='high'?60:t.priority==='low'?30:60;});
-    }
-  }
-
-  // Rebuild blocks preserving saved durations and free blocks
-  mydayBlocks=[];
-  sorted.forEach(t=>{
-    const dur=savedDurs[t.id]||newEstimates[t.id]||60;
-    mydayBlocks.push({type:'task',task:t,dur});
-    // Re-insert free blocks that were after this task
-    savedFreeBlocks.filter(f=>f.afterTaskId===t.id).forEach(f=>{
-      mydayBlocks.push({type:'free',dur:f.dur});
-    });
-  });
-  // Re-insert free blocks that had no preceding task (were at top)
-  savedFreeBlocks.filter(f=>f.afterTaskId===null).forEach(f=>{
-    mydayBlocks.unshift({type:'free',dur:f.dur});
-  });
-
-  recalcStarts();
-  renderMyDayBlocks();
-}
-
-function addAiMsg(role,text){
+function addAiMsg(role,text) {
   const el=document.getElementById('ai-messages');
   const d=document.createElement('div');d.className='ai-msg '+role;d.textContent=text;
   el.appendChild(d);el.scrollTop=el.scrollHeight;return d;
 }
+
+// ── My Day ────────────────────────────────────────────────────────────────────
+function mydayDurations(){return[15,30,60,90,120,150,180,240,300,360,420,480];}
+function durLabel(m){if(m<60)return m+'min';if(m%60===0)return m/60+'h';return Math.floor(m/60)+'h '+m%60+'min';}
+function changeDur(idx,delta){const durs=mydayDurations();const block=mydayBlocks[idx];if(!block||block.type==='free')return;const cur=durs.indexOf(block.dur);block.dur=durs[Math.max(0,Math.min(durs.length-1,cur+delta))];recalcStarts();renderMyDayBlocks();}
+function addFreeTime(afterIdx){mydayBlocks.splice(afterIdx+1,0,{type:'free',dur:60,label:'Free Time'});recalcStarts();renderMyDayBlocks();}
+function removeFreeTime(idx){mydayBlocks.splice(idx,1);recalcStarts();renderMyDayBlocks();}
+function changeFreeTimeDur(idx,delta){const durs=[15,30,60,90,120,150,180,240,300,360,420,480];const block=mydayBlocks[idx];if(!block||block.type!=='free')return;const cur=durs.indexOf(block.dur);block.dur=durs[Math.max(0,Math.min(durs.length-1,cur+delta))];recalcStarts();renderMyDayBlocks();}
+function recalcStarts(){let min=0;mydayBlocks.forEach(b=>{b.start=min;min+=b.dur;});}
+function minToTime(min){const total=600+min;const h=Math.floor(total/60)%24;const m=total%60;const ampm=h>=12?'PM':'AM';const hh=h>12?h-12:h===0?12:h;return `${hh}:${m.toString().padStart(2,'0')} ${ampm}`;}
+function clientColor(name){const colors=['var(--blue)','var(--purple)','var(--green)','var(--amber)','var(--red)'];const idx=clients.findIndex(c=>c.name===name);return colors[Math.abs(idx)%colors.length]||'var(--ink)';}
+function overdueLabel(t){const now=new Date();now.setHours(0,0,0,0);if(!t.due||t.due==='true'||t.due==='')return '';const d=new Date(t.due+'T00:00:00');const diff=Math.round((now-d)/864e5);if(diff===1)return '🔴 1 day overdue';if(diff===2)return '🔴 2 days overdue';if(diff>2)return `🔴 ${diff} days overdue`;if(diff===0)return '⚡ Due today';return '';}
+
+function renderMyDayBlocks() {
+  const container = document.getElementById('myday-container');
+  const unscheduled = tasks.filter(t=>!t.done&&!mydayBlocks.find(b=>b.type==='task'&&b.task.id===t.id));
+  let html = '';
+  mydayBlocks.forEach((block,i) => {
+    if (block.type==='free') {
+      html += `<div class="myday-block"><div class="myday-time">${minToTime(block.start)}</div><div class="myday-line"><div class="myday-dot free"></div><div class="myday-vline"></div></div><div class="myday-card free-block"><div class="myday-card-header"><div class="myday-task" style="color:var(--green)">🌿 Free Time</div><div class="myday-duration"><button class="myday-dur-btn" onclick="changeFreeTimeDur(${i},-1)">−</button><span class="myday-dur-val">${durLabel(block.dur)}</span><button class="myday-dur-btn" onclick="changeFreeTimeDur(${i},1)">+</button><button class="myday-dur-btn" onclick="removeFreeTime(${i})" style="color:var(--red);margin-left:4px">×</button></div></div></div></div>`;
+    } else {
+      const t=block.task; const color=clientColor(t.client); const ol=overdueLabel(t);
+      html += `<div class="myday-block"><div class="myday-time">${minToTime(block.start)}</div><div class="myday-line"><div class="myday-dot" style="background:${color}"></div><div class="myday-vline"></div></div><div class="myday-card ${t.done?'done-block':''}"><div class="myday-card-header"><div class="myday-task">${t.text}</div><div class="myday-duration"><button class="myday-dur-btn" onclick="changeDur(${i},-1)">−</button><span class="myday-dur-val">${durLabel(block.dur)}</span><button class="myday-dur-btn" onclick="changeDur(${i},1)">+</button></div></div><div class="myday-meta">${t.client?'👤 '+t.client+'  ':''}${ol?ol+'  ':''}<span style="color:${color};font-weight:600">${({high:'🔴 High',med:'🟡 Med',low:'🟢 Low'})[t.priority]}</span></div>${t.desc?`<div style="font-size:12px;color:var(--ink2);margin-top:6px">${t.desc}</div>`:''}<div style="margin-top:10px"><button class="done-btn" onclick="toggleTaskMyDay('${t.id}')">${t.done?'✓ Done':'✓ Mark Done'}</button></div></div></div><div class="myday-add-free" onclick="addFreeTime(${i})">+ Add free time here</div>`;
+    }
+  });
+  if (unscheduled.length) html += `<div class="myday-unscheduled"><div class="myday-unscheduled-title">📋 Doesn't fit today (${unscheduled.length} tasks)</div><div class="card" style="padding:8px 16px">${unscheduled.map(t=>taskHTML(t,false)).join('')}</div></div>`;
+  container.innerHTML = html;
+  const totalUsed = mydayBlocks.reduce((s,b)=>s+b.dur,0);
+  document.getElementById('myday-summary').textContent = `${mydayBlocks.filter(b=>b.type==='task').length} tasks · ${(totalUsed/60).toFixed(1)}h scheduled${unscheduled.length?' · '+unscheduled.length+' unscheduled':''}`;
+}
+
+async function toggleTaskMyDay(id) {
+  const t=tasks.find(t=>t.id===id);if(!t)return;
+  t.done=!t.done;if(t.done)t.completedDate=new Date().toISOString().split('T')[0];
+  const block=mydayBlocks.find(b=>b.type==='task'&&b.task.id===id);if(block)block.task=t;
+  renderMyDayBlocks();renderDashboardTasks();renderStats();await saveAllTasks();
+}
+
+async function generateMyDay() {
+  const container=document.getElementById('myday-container');
+  const open=tasks.filter(t=>!t.done);
+  if (!open.length) { mydayBlocks=[]; container.innerHTML='<div class="empty-state" style="padding:60px">No open tasks! 🎉</div>'; document.getElementById('myday-summary').textContent='Nothing scheduled'; return; }
+  const savedDurs={};
+  mydayBlocks.forEach(b=>{if(b.type==='task')savedDurs[b.task.id]=b.dur;});
+  if (!Object.keys(savedDurs).length) container.innerHTML='<div class="empty-state" style="padding:60px">⏳ Building your day...</div>';
+  const now=new Date();now.setHours(0,0,0,0);
+  const sorted=open.slice().sort((a,b)=>{
+    function urgency(t){if(!t.due||t.due==='true'||t.due==='')return 999;const d=new Date(t.due+'T00:00:00');return Math.round((now-d)/864e5);}
+    const ua=urgency(a),ub=urgency(b);
+    if(ua!==ub)return ua-ub;
+    return ({high:0,med:1,low:2}[a.priority]||1)-({high:0,med:1,low:2}[b.priority]||1);
+  });
+  const needEstimate=sorted.filter(t=>!savedDurs[t.id]);
+  let newEstimates={};
+  if (needEstimate.length>0) {
+    const taskList=needEstimate.map((t,i)=>`${i+1}. [${t.priority}] ${t.text}${t.desc?' — '+t.desc:''}`).join('\n');
+    try {
+      const raw=await callClaude([{role:'user',content:`Estimate how long each task takes. Reply ONLY with a JSON array of numbers (minutes). Use: 15,30,60,90,120,180,240.\n\n${taskList}`}],'Reply ONLY with a valid JSON array of numbers. No text.');
+      const arr=JSON.parse(raw.replace(/```json|```/g,'').trim());
+      needEstimate.forEach((t,i)=>{const snapped=[15,30,60,90,120,180,240].reduce((a,b)=>Math.abs(b-(arr[i]||60))<Math.abs(a-(arr[i]||60))?b:a);newEstimates[t.id]=snapped;});
+    } catch(e) { needEstimate.forEach(t=>{newEstimates[t.id]=60;}); }
+  }
+  mydayBlocks=sorted.map(t=>({type:'task',task:t,dur:savedDurs[t.id]||newEstimates[t.id]||60}));
+  recalcStarts();renderMyDayBlocks();
+}
+
+// ── ATA WEAR: Daily Dashboard ─────────────────────────────────────────────────
+async function loadAtaDaily() {
+  const statusEl = document.getElementById('ata-sync-status');
+  statusEl.textContent = '⟳ Loading...';
+  try {
+    const r = await fetch(ATA_GAS_URL + '?action=getDailyData');
+    const data = await r.json();
+    ataDailyData = data;
+    renderAtaDaily(data);
+    statusEl.textContent = '✓ Updated ' + new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+  } catch(e) {
+    statusEl.textContent = '✗ Could not load data';
+    renderAtaDailyFallback();
+  }
+}
+
+function renderAtaDaily(data) {
+  // KPI cards
+  const yesterday = data.yesterday || {};
+  document.getElementById('ata-units').textContent = yesterday.units || '—';
+  document.getElementById('ata-cashflow').textContent = yesterday.cashflow ? '₪' + Number(yesterday.cashflow).toLocaleString() : '—';
+  const disc = yesterday.avgDisc;
+  const discEl = document.getElementById('ata-disc');
+  discEl.textContent = disc ? Math.round(disc) + '%' : '—';
+  discEl.style.color = !disc ? 'var(--ink)' : disc <= 15 ? 'var(--green)' : disc <= 30 ? 'var(--amber)' : 'var(--red)';
+
+  // Chart
+  const days = data.days || [];
+  renderAtaChart(days);
+
+  // Items grid
+  const items = data.items || [];
+  renderAtaItems(items);
+}
+
+function renderAtaDailyFallback() {
+  document.getElementById('ata-bars').innerHTML = '<div class="empty-state" style="width:100%">Connect your Google Sheets backend to see chart data.<br><small style="margin-top:8px;display:block;">Make sure your ATA WEAR Google Apps Script is deployed and the URL is correct.</small></div>';
+  document.getElementById('ata-items-grid').innerHTML = '<div class="empty-state" style="grid-column:span 2">No data available. Check your Google Sheets connection.</div>';
+}
+
+function discColor(pct) {
+  if (pct <= 15) return '#2d6a4f';
+  if (pct <= 30) return '#b45309';
+  return '#991b1b';
+}
+
+function renderAtaChart(days) {
+  if (!days.length) { document.getElementById('ata-bars').innerHTML = '<div class="empty-state" style="width:100%">No chart data</div>'; return; }
+  const maxUnits = Math.max(...days.map(d => d.units || 0), 1);
+  const html = days.slice(-30).map(d => {
+    const h = Math.max(((d.units||0) / maxUnits) * 100, d.units>0?4:1);
+    const color = discColor(d.avgDisc || 0);
+    const dateLabel = d.date ? d.date.slice(5) : '';
+    return `<div class="ata-bar-col">
+      <div class="ata-bar-tooltip">${d.date}: ${d.units||0} units · ₪${Number(d.cashflow||0).toLocaleString()} · ${Math.round(d.avgDisc||0)}% disc</div>
+      <div class="ata-bar" style="height:${h}%;background:${color};"></div>
+      <div class="ata-bar-date">${dateLabel}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('ata-bars').innerHTML = html;
+}
+
+function renderAtaItems(items) {
+  if (!items.length) { document.getElementById('ata-items-grid').innerHTML = '<div class="empty-state" style="grid-column:span 2">No item data</div>'; return; }
+  const html = items.map(item => {
+    const disc = item.avgDisc || 0;
+    const badgeClass = disc <= 15 ? 'badge-green' : disc <= 30 ? 'badge-amber' : 'badge-red';
+    return `<div class="ata-item-row" onclick="showAtaItemDetail('${encodeURIComponent(item.title)}')">
+      <div>
+        <div class="ata-item-name">${item.title}</div>
+        <div class="ata-item-stats">${item.units||0} units · ₪${Number(item.cashflow||0).toLocaleString()}</div>
+      </div>
+      <div class="ata-item-badge ${badgeClass}">${Math.round(disc)}%</div>
+    </div>`;
+  }).join('');
+  document.getElementById('ata-items-grid').innerHTML = html;
+}
+
+function showAtaItemDetail(encodedTitle) {
+  const title = decodeURIComponent(encodedTitle);
+  if (!ataDailyData) return;
+  const item = (ataDailyData.items||[]).find(i => i.title === title);
+  const panel = document.getElementById('ata-item-detail-panel');
+  if (!item) { panel.classList.remove('open'); return; }
+
+  const history = item.history || [];
+  const rowsHtml = history.length
+    ? history.slice(-14).map(h => `<tr><td>${h.date||''}</td><td>${h.units||0}</td><td>₪${Number(h.price||0).toFixed(0)}</td><td style="color:${discColor(h.disc||0)}">${Math.round(h.disc||0)}%</td></tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:var(--ink3)">No history</td></tr>';
+
+  panel.innerHTML = `
+    <div class="ata-detail-title">
+      <span>${title}</span>
+      <button onclick="document.getElementById('ata-item-detail-panel').classList.remove('open')" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--ink3);">×</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+      <div style="background:var(--bg);padding:10px;border-radius:8px;text-align:center;">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;">${item.units||0}</div>
+        <div style="font-size:11px;color:var(--ink3);">Total Units</div>
+      </div>
+      <div style="background:var(--bg);padding:10px;border-radius:8px;text-align:center;">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;">₪${Number(item.cashflow||0).toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--ink3);">Total Revenue</div>
+      </div>
+      <div style="background:var(--bg);padding:10px;border-radius:8px;text-align:center;">
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:${discColor(item.avgDisc||0)}">${Math.round(item.avgDisc||0)}%</div>
+        <div style="font-size:11px;color:var(--ink3);">Avg Discount</div>
+      </div>
+    </div>
+    <table class="ata-history-table">
+      <thead><tr><th>Date</th><th>Units</th><th>Avg Price</th><th>Discount</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>`;
+  panel.classList.add('open');
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── ATA WEAR: Pricing Intelligence ────────────────────────────────────────────
+function handleAtaCsv(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    ataPricingData = parseAtaCsv(text);
+    renderAtaPricingTable();
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parseAtaCsv(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  if (!lines.length) return [];
+  const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.replace(/"/g,'').trim());
+    const row = {};
+    headers.forEach((h,j) => row[h] = cols[j]||'');
+    rows.push(row);
+  }
+  // Aggregate by product
+  const map = {};
+  rows.forEach(r => {
+    const title = r['product title'] || r['product'] || r['title'] || r['product name'] || Object.values(r)[0] || '';
+    if (!title) return;
+    const units = parseFloat(r['net quantity'] || r['units'] || r['quantity'] || 0);
+    const revenue = parseFloat(r['net sales'] || r['sales'] || r['revenue'] || 0);
+    const fullPrice = parseFloat(r['gross sales'] || r['full price'] || 0);
+    if (!map[title]) map[title] = {title, units:0, revenue:0, fullPrice:0, count:0};
+    map[title].units += units;
+    map[title].revenue += revenue;
+    map[title].fullPrice += fullPrice;
+    map[title].count++;
+  });
+  return Object.values(map).filter(p => p.units > 0).sort((a,b) => b.units-a.units).map(p => {
+    const avgPrice = p.units > 0 ? p.revenue / p.units : 0;
+    const avgFullPrice = p.units > 0 ? p.fullPrice / p.units : 0;
+    const avgDisc = avgFullPrice > 0 ? Math.max(0, Math.round((1 - avgPrice/avgFullPrice)*100)) : 0;
+    return {...p, avgPrice, avgFullPrice, avgDisc};
+  });
+}
+
+function renderAtaPricingTable() {
+  if (!ataPricingData.length) return;
+  document.getElementById('ata-pricing-content').style.display = 'block';
+  document.getElementById('ata-pricing-title').textContent = `Pricing Analysis — ${ataPricingData.length} products`;
+  document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${ataPricingData.reduce((s,p)=>s+p.revenue,0).toLocaleString()} revenue`;
+
+  const tbody = document.getElementById('ata-pricing-tbody');
+  tbody.innerHTML = ataPricingData.map(p => {
+    const badgeClass = p.avgDisc <= 15 ? 'badge-green' : p.avgDisc <= 30 ? 'badge-amber' : 'badge-red';
+    return `<tr>
+      <td><div style="font-weight:600;">${p.title}</div></td>
+      <td>${p.units}</td>
+      <td>₪${Math.round(p.avgPrice)}</td>
+      <td><span class="ata-item-badge ${badgeClass}" style="font-size:12px;padding:2px 8px;">${p.avgDisc}%</span></td>
+      <td>₪${Math.round(p.revenue).toLocaleString()}</td>
+      <td id="rec-${p.title.replace(/[^a-zA-Z0-9]/g,'_')}"><span style="font-size:11px;color:var(--ink3);">—</span></td>
+    </tr>`;
+  }).join('');
+}
+
+async function runAtaAI() {
+  if (!ataPricingData.length) { alert('Upload a CSV first'); return; }
+  const btn = document.getElementById('ata-ai-btn');
+  btn.textContent = '⏳ Analyzing...'; btn.disabled = true;
+
+  const summary = ataPricingData.slice(0,20).map(p =>
+    `${p.title}: ${p.units} units, avg discount ${p.avgDisc}%, revenue ₪${Math.round(p.revenue)}`
+  ).join('\n');
+
+  const prompt = `You are a pricing strategist for ATAWEAR, an Israeli fashion brand.
+
+Here is the sales data:
+${summary}
+
+Analyze the discount patterns and give:
+1. Overall strategy recommendation (2-3 sentences)
+2. For items with 40%+ average discount: flag as "PRICE TOO HIGH or TEST LOWER FULL PRICE"
+3. For items with 0-15% discount and good volume: flag as "HEALTHY - KEEP FULL PRICE"
+4. Suggest one concrete action to improve margins
+
+Be direct and practical. Write in English. No fluff.`;
+
+  try {
+    const result = document.getElementById('ata-ai-result');
+    const textEl = document.getElementById('ata-ai-text');
+    result.style.display = 'block';
+    textEl.textContent = '⏳ Claude is analyzing your pricing...';
+
+    const rep = await callClaude([{role:'user',content:prompt}], 'You are a sharp ecommerce pricing strategist. Be concise and actionable.');
+    textEl.textContent = rep;
+  } catch(e) {
+    document.getElementById('ata-ai-text').textContent = 'Error: ' + e.message;
+  }
+  btn.textContent = '✨ Get AI Recommendations'; btn.disabled = false;
+}
 </script>
-
-
-</body></html>
+</body>
+</html>
