@@ -1578,8 +1578,9 @@ function renderAtaPricingTable(save=true) {
       const maxUnits = Math.max(...dailyData.map(d=>d.units), 1);
       const maxPrice = Math.max(...dailyData.map(d=>d.avgPrice), 1);
       const minPrice = Math.min(...dailyData.map(d=>d.avgPrice).filter(p=>p>0));
-      const W = 600, H = 120, pad = 40;
+      const W = 800, H = 220, pad = 50;
       const xStep = (W - pad*2) / Math.max(dailyData.length - 1, 1);
+      const chartId = 'chart-' + Math.random().toString(36).slice(2,8);
 
       // Units line points
       const unitPts = dailyData.map((d,i) => {
@@ -1596,51 +1597,83 @@ function renderAtaPricingTable(save=true) {
         return `${x},${y}`;
       }).join(' ');
 
-      // X axis labels (show every Nth date)
-      const step = Math.max(1, Math.floor(dailyData.length / 6));
+      // X axis labels
+      const step = Math.max(1, Math.floor(dailyData.length / 8));
       const labels = dailyData.map((d,i) => {
         if (i % step !== 0 && i !== dailyData.length-1) return '';
         const x = pad + i * xStep;
-        const label = d.date.slice(5); // MM-DD
-        return `<text x="${x}" y="${H-4}" text-anchor="middle" font-size="9" fill="#a09d97">${label}</text>`;
+        return `<text x="${x}" y="${H-6}" text-anchor="middle" font-size="10" fill="#a09d97">${d.date.slice(5)}</text>`;
+      }).join('');
+
+      // Hover dots with tooltips
+      const hoverDots = dailyData.map((d,i) => {
+        const x = pad + i * xStep;
+        const uy = H - pad - ((d.units / maxUnits) * (H - pad*2));
+        const priceRange = maxPrice - minPrice || 1;
+        const py = H - pad - (((d.avgPrice - minPrice) / priceRange) * (H - pad*2));
+        const tipX = x > W - 160 ? x - 150 : x + 10;
+        const tipY = Math.min(uy, py) - 10;
+        return `<g class="chart-point" style="cursor:pointer;">
+          <rect x="${x-16}" y="0" width="32" height="${H}" fill="transparent"/>
+          <line x1="${x}" y1="${pad}" x2="${x}" y2="${H-pad}" stroke="#ddd9cf" stroke-width="1" opacity="0" class="hover-line"/>
+          <circle cx="${x}" cy="${uy}" r="5" fill="#1B2C58" opacity="0" class="hover-dot-u"/>
+          <circle cx="${x}" cy="${py}" r="5" fill="#b45309" opacity="0" class="hover-dot-p"/>
+          <g class="hover-tip" opacity="0">
+            <rect x="${tipX}" y="${Math.max(5,tipY-40)}" width="145" height="52" rx="6" fill="#1a1814" opacity=".92"/>
+            <text x="${tipX+8}" y="${Math.max(5,tipY-40)+16}" font-size="10" fill="#fff" font-weight="700">${d.date}</text>
+            <text x="${tipX+8}" y="${Math.max(5,tipY-40)+30}" font-size="10" fill="#7dd3fc">${d.units} units sold</text>
+            <text x="${tipX+8}" y="${Math.max(5,tipY-40)+44}" font-size="10" fill="#fbbf24">avg ₪${d.avgPrice}</text>
+          </g>
+          <script>
+            (function(){
+              var g = document.currentScript.parentElement;
+              g.addEventListener('mouseenter', function(){
+                g.querySelector('.hover-line').setAttribute('opacity','1');
+                g.querySelector('.hover-dot-u').setAttribute('opacity','1');
+                g.querySelector('.hover-dot-p').setAttribute('opacity','1');
+                g.querySelector('.hover-tip').setAttribute('opacity','1');
+              });
+              g.addEventListener('mouseleave', function(){
+                g.querySelector('.hover-line').setAttribute('opacity','0');
+                g.querySelector('.hover-dot-u').setAttribute('opacity','0');
+                g.querySelector('.hover-dot-p').setAttribute('opacity','0');
+                g.querySelector('.hover-tip').setAttribute('opacity','0');
+              });
+            })();
+          <\/script>
+        </g>`;
       }).join('');
 
       return `<div style="margin-top:16px;">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:8px;">Daily Sales & Price</div>
-        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;overflow:visible;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:10px;">Daily Sales & Price</div>
+        <div style="overflow-x:auto;">
+        <svg viewBox="0 0 ${W} ${H}" style="min-width:500px;width:100%;height:${H}px;overflow:visible;">
           <!-- Grid lines -->
-          ${[0.25,0.5,0.75,1].map(t => {
+          ${[0,0.25,0.5,0.75,1].map(t => {
             const y = H - pad - t*(H-pad*2);
-            return `<line x1="${pad}" y1="${y}" x2="${W-pad}" y2="${y}" stroke="#ddd9cf" stroke-width="1"/>`;
+            const val = Math.round(t * maxUnits);
+            return `<line x1="${pad}" y1="${y}" x2="${W-pad}" y2="${y}" stroke="#ddd9cf" stroke-width="1"/>
+              <text x="${pad-6}" y="${y+4}" text-anchor="end" font-size="10" fill="#a09d97">${val}</text>`;
           }).join('')}
-          <!-- Units area -->
-          <polyline points="${unitPts}" fill="none" stroke="#1B2C58" stroke-width="2" stroke-linejoin="round"/>
-          ${dailyData.map((d,i) => {
-            const x = pad + i * xStep;
-            const y = H - pad - ((d.units / maxUnits) * (H - pad*2));
-            return `<circle cx="${x}" cy="${y}" r="3" fill="#1B2C58"/>
-              <title>${d.date}: ${d.units} units</title>`;
-          }).join('')}
+          <!-- Units line -->
+          <polyline points="${unitPts}" fill="none" stroke="#1B2C58" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
           <!-- Price line -->
-          <polyline points="${pricePts}" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4,3" stroke-linejoin="round"/>
-          ${dailyData.map((d,i) => {
-            const x = pad + i * xStep;
-            const priceRange = maxPrice - minPrice || 1;
-            const y = H - pad - (((d.avgPrice - minPrice) / priceRange) * (H - pad*2));
-            return `<circle cx="${x}" cy="${y}" r="2.5" fill="#b45309"/>`;
+          <polyline points="${pricePts}" fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="6,3" stroke-linejoin="round" stroke-linecap="round"/>
+          <!-- Y axis price labels (right) -->
+          ${[0,0.5,1].map(t => {
+            const y = H - pad - t*(H-pad*2);
+            const val = Math.round(minPrice + t*(maxPrice-minPrice));
+            return `<text x="${W-pad+6}" y="${y+4}" text-anchor="start" font-size="10" fill="#b45309">₪${val}</text>`;
           }).join('')}
           <!-- X labels -->
           ${labels}
-          <!-- Y axis units -->
-          <text x="${pad-4}" y="${H-pad}" text-anchor="end" font-size="9" fill="#a09d97">${0}</text>
-          <text x="${pad-4}" y="${pad}" text-anchor="end" font-size="9" fill="#a09d97">${maxUnits}</text>
-          <!-- Y axis price (right) -->
-          <text x="${W-pad+4}" y="${H-pad}" text-anchor="start" font-size="9" fill="#b45309">₪${minPrice}</text>
-          <text x="${W-pad+4}" y="${pad}" text-anchor="start" font-size="9" fill="#b45309">₪${maxPrice}</text>
+          <!-- Hover zones (on top) -->
+          ${hoverDots}
         </svg>
-        <div style="display:flex;gap:16px;font-size:11px;color:var(--ink3);margin-top:4px;">
-          <span><span style="display:inline-block;width:12px;height:2px;background:#1B2C58;vertical-align:middle;margin-right:4px;"></span>Units sold</span>
-          <span><span style="display:inline-block;width:12px;height:2px;background:#b45309;vertical-align:middle;margin-right:4px;border-top:1px dashed #b45309;"></span>Avg price</span>
+        </div>
+        <div style="display:flex;gap:20px;font-size:11px;color:var(--ink3);margin-top:8px;">
+          <span><span style="display:inline-block;width:16px;height:2.5px;background:#1B2C58;vertical-align:middle;margin-right:5px;border-radius:2px;"></span>Units sold</span>
+          <span><span style="display:inline-block;width:16px;height:0;border-top:2px dashed #b45309;vertical-align:middle;margin-right:5px;"></span>Avg price</span>
         </div>
       </div>`;
     })() : '';
