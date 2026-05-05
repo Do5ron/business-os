@@ -1389,10 +1389,19 @@ function parseAtaCsv(text) {
     // Track price distribution
     if (units > 0 && revenue > 0) {
       const unitPrice = Math.round(revenue / units);
-      const bucket = Math.round(unitPrice / 10) * 10; // round to nearest 10
+      const bucket = Math.round(unitPrice / 10) * 10;
       if (!map[sc].priceDistrib) map[sc].priceDistrib = {};
       if (!map[sc].priceDistrib[bucket]) map[sc].priceDistrib[bucket] = 0;
       map[sc].priceDistrib[bucket] += units;
+    }
+
+    // Track daily data
+    const day = String(r['day']||r['date']||'').split('T')[0];
+    if (day && units > 0) {
+      if (!map[sc].dailyData) map[sc].dailyData = {};
+      if (!map[sc].dailyData[day]) map[sc].dailyData[day] = {units:0, revenue:0};
+      map[sc].dailyData[day].units += units;
+      map[sc].dailyData[day].revenue += revenue;
     }
   });
 
@@ -1430,6 +1439,9 @@ function parseAtaCsv(text) {
       sizeEntries,
       sizes: sizeEntries.map(e => e[0]),
       priceDistrib,
+      dailyData: Object.entries(p.dailyData||{}).sort((a,b)=>a[0].localeCompare(b[0])).map(([date,d])=>({
+        date, units:d.units, avgPrice: d.units>0 ? Math.round(d.revenue/d.units) : 0
+      })),
       dateFrom, dateTo,
       variants: {}, colors: []
     };
@@ -1439,13 +1451,14 @@ function parseAtaCsv(text) {
 async function savePricingToSheets() {
   if (!ataPricingData.length) return;
   const rows = [
-    ['title','baseProduct','color','units','revenue','fullPrice','discountAmt','avgPrice','avgFullPrice','avgCogs','avgDisc','sizeEntries','priceDistrib','dateFrom','dateTo'],
+    ['title','baseProduct','color','units','revenue','fullPrice','discountAmt','avgPrice','avgFullPrice','avgCogs','avgDisc','sizeEntries','priceDistrib','dailyData','dateFrom','dateTo'],
     ...ataPricingData.map(p => [
       p.title, p.baseProduct||'', p.color||'',
       p.units, p.revenue, p.fullPrice||0, p.discountAmt||0,
       p.avgPrice||0, p.avgFullPrice||0, p.avgCogs||0, p.avgDisc||0,
       JSON.stringify(p.sizeEntries||[]),
       JSON.stringify(p.priceDistrib||[]),
+      JSON.stringify(p.dailyData||[]),
       p.dateFrom||'', p.dateTo||''
     ])
   ];
@@ -1460,9 +1473,10 @@ async function loadPricingFromSheets() {
     ataPricingData = rows.slice(1).map(r => {
       const obj = {};
       headers.forEach((h,i) => obj[h] = r[i]);
-      let sizeEntries = [], priceDistrib = [];
+      let sizeEntries = [], priceDistrib = [], dailyData = [];
       try { sizeEntries = JSON.parse(obj['sizeentries']||'[]'); } catch(e) {}
       try { priceDistrib = JSON.parse(obj['pricedistrib']||'[]'); } catch(e) {}
+      try { dailyData = JSON.parse(obj['dailydata']||'[]'); } catch(e) {}
       return {
         title: String(obj['title']||''),
         sc: String(obj['title']||''),
@@ -1478,7 +1492,7 @@ async function loadPricingFromSheets() {
         avgDisc: Number(obj['avgdisc']||0),
         sizeEntries,
         sizes: sizeEntries.map(e => e[0]),
-        priceDistrib,
+        priceDistrib, dailyData,
         variants: {}, colors: [],
         dateFrom: String(obj['datefrom']||''),
         dateTo: String(obj['dateto']||'')
@@ -1560,6 +1574,78 @@ function renderAtaPricingTable(save=true) {
     const maxSizeUnits = sizeEntries.length ? Math.max(...sizeEntries.map(e=>e[1])) : 1;
     const bestSize = sizeEntries.length ? sizeEntries.reduce((a,b)=>a[1]>=b[1]?a:b)[0] : '';
 
+    const dailyData = p.dailyData || [];
+    const dailyChartHTML = dailyData.length > 1 ? (() => {
+      const maxUnits = Math.max(...dailyData.map(d=>d.units), 1);
+      const maxPrice = Math.max(...dailyData.map(d=>d.avgPrice), 1);
+      const minPrice = Math.min(...dailyData.map(d=>d.avgPrice).filter(p=>p>0));
+      const W = 600, H = 120, pad = 40;
+      const xStep = (W - pad*2) / Math.max(dailyData.length - 1, 1);
+
+      // Units line points
+      const unitPts = dailyData.map((d,i) => {
+        const x = pad + i * xStep;
+        const y = H - pad - ((d.units / maxUnits) * (H - pad*2));
+        return `${x},${y}`;
+      }).join(' ');
+
+      // Price line points
+      const pricePts = dailyData.map((d,i) => {
+        const x = pad + i * xStep;
+        const priceRange = maxPrice - minPrice || 1;
+        const y = H - pad - (((d.avgPrice - minPrice) / priceRange) * (H - pad*2));
+        return `${x},${y}`;
+      }).join(' ');
+
+      // X axis labels (show every Nth date)
+      const step = Math.max(1, Math.floor(dailyData.length / 6));
+      const labels = dailyData.map((d,i) => {
+        if (i % step !== 0 && i !== dailyData.length-1) return '';
+        const x = pad + i * xStep;
+        const label = d.date.slice(5); // MM-DD
+        return `<text x="${x}" y="${H-4}" text-anchor="middle" font-size="9" fill="#a09d97">${label}</text>`;
+      }).join('');
+
+      return `<div style="margin-top:16px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:8px;">Daily Sales & Price</div>
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;overflow:visible;">
+          <!-- Grid lines -->
+          ${[0.25,0.5,0.75,1].map(t => {
+            const y = H - pad - t*(H-pad*2);
+            return `<line x1="${pad}" y1="${y}" x2="${W-pad}" y2="${y}" stroke="#ddd9cf" stroke-width="1"/>`;
+          }).join('')}
+          <!-- Units area -->
+          <polyline points="${unitPts}" fill="none" stroke="#1B2C58" stroke-width="2" stroke-linejoin="round"/>
+          ${dailyData.map((d,i) => {
+            const x = pad + i * xStep;
+            const y = H - pad - ((d.units / maxUnits) * (H - pad*2));
+            return `<circle cx="${x}" cy="${y}" r="3" fill="#1B2C58"/>
+              <title>${d.date}: ${d.units} units</title>`;
+          }).join('')}
+          <!-- Price line -->
+          <polyline points="${pricePts}" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4,3" stroke-linejoin="round"/>
+          ${dailyData.map((d,i) => {
+            const x = pad + i * xStep;
+            const priceRange = maxPrice - minPrice || 1;
+            const y = H - pad - (((d.avgPrice - minPrice) / priceRange) * (H - pad*2));
+            return `<circle cx="${x}" cy="${y}" r="2.5" fill="#b45309"/>`;
+          }).join('')}
+          <!-- X labels -->
+          ${labels}
+          <!-- Y axis units -->
+          <text x="${pad-4}" y="${H-pad}" text-anchor="end" font-size="9" fill="#a09d97">${0}</text>
+          <text x="${pad-4}" y="${pad}" text-anchor="end" font-size="9" fill="#a09d97">${maxUnits}</text>
+          <!-- Y axis price (right) -->
+          <text x="${W-pad+4}" y="${H-pad}" text-anchor="start" font-size="9" fill="#b45309">₪${minPrice}</text>
+          <text x="${W-pad+4}" y="${pad}" text-anchor="start" font-size="9" fill="#b45309">₪${maxPrice}</text>
+        </svg>
+        <div style="display:flex;gap:16px;font-size:11px;color:var(--ink3);margin-top:4px;">
+          <span><span style="display:inline-block;width:12px;height:2px;background:#1B2C58;vertical-align:middle;margin-right:4px;"></span>Units sold</span>
+          <span><span style="display:inline-block;width:12px;height:2px;background:#b45309;vertical-align:middle;margin-right:4px;border-top:1px dashed #b45309;"></span>Avg price</span>
+        </div>
+      </div>`;
+    })() : '';
+
     const priceDistrib = p.priceDistrib || [];
     const maxPriceUnits = priceDistrib.length ? Math.max(...priceDistrib.map(e=>e[1])) : 1;
     const metaFullPrice = (ataProductMeta[p.title]||{}).fullPrice || 0;
@@ -1602,6 +1688,7 @@ function renderAtaPricingTable(save=true) {
             </div>
             <div style="font-size:11px;color:var(--ink3);margin-top:8px;">🏆 Best size: <strong style="color:var(--green)">${bestSize}</strong></div>
             ` : ''}
+            ${dailyChartHTML}
             ${priceDistribHTML}
           </div>
         </td>
