@@ -1353,6 +1353,11 @@ function parseAtaCsv(text) {
     }
   });
 
+  // Track date range across all rows
+  const allDates = rows.map(r => String(r['day']||r['date']||'')).filter(Boolean).sort();
+  const dateFrom = allDates[0] || '';
+  const dateTo = allDates[allDates.length-1] || '';
+
   return Object.values(map).filter(p => p.units > 0).sort((a,b) => b.units-a.units).map(p => {
     const avgPrice = p.units > 0 ? p.revenue / p.units : 0;
     const avgFullPrice = p.units > 0 ? p.fullPrice / p.units : 0;
@@ -1370,15 +1375,22 @@ function parseAtaCsv(text) {
     });
     const colors = [...new Set(variants.map(v => v.color))].filter(Boolean).sort();
 
-    return {...p, avgPrice, avgFullPrice, avgDisc, variants, sizes, colors};
+    return {...p, avgPrice, avgFullPrice, avgDisc, variants, sizes, colors, dateFrom, dateTo};
   });
 }
 
 async function savePricingToSheets() {
   if (!ataPricingData.length) return;
   const rows = [
-    ['title','units','revenue','fullPrice','discountAmt','avgPrice','avgFullPrice','avgDisc'],
-    ...ataPricingData.map(p => [p.title, p.units, p.revenue, p.fullPrice||0, p.discountAmt||0, p.avgPrice||0, p.avgFullPrice||0, p.avgDisc||0])
+    ['title','units','revenue','fullPrice','discountAmt','avgPrice','avgFullPrice','avgDisc','variants','sizes','colors','dateFrom','dateTo'],
+    ...ataPricingData.map(p => [
+      p.title, p.units, p.revenue, p.fullPrice||0, p.discountAmt||0,
+      p.avgPrice||0, p.avgFullPrice||0, p.avgDisc||0,
+      JSON.stringify(p.variants||{}),
+      JSON.stringify(p.sizes||[]),
+      JSON.stringify(p.colors||[]),
+      p.dateFrom||'', p.dateTo||''
+    ])
   ];
   await gasWrite('ata_pricing', rows);
 }
@@ -1391,6 +1403,10 @@ async function loadPricingFromSheets() {
     ataPricingData = rows.slice(1).map(r => {
       const obj = {};
       headers.forEach((h,i) => obj[h] = r[i]);
+      let variants = {}, sizes = [], colors = [];
+      try { variants = JSON.parse(obj['variants']||'{}'); } catch(e) {}
+      try { sizes = JSON.parse(obj['sizes']||'[]'); } catch(e) {}
+      try { colors = JSON.parse(obj['colors']||'[]'); } catch(e) {}
       return {
         title: String(obj['title']||''),
         units: Number(obj['units']||0),
@@ -1400,6 +1416,9 @@ async function loadPricingFromSheets() {
         avgPrice: Number(obj['avgprice']||0),
         avgFullPrice: Number(obj['avgfullprice']||0),
         avgDisc: Number(obj['avgdisc']||0),
+        variants, sizes, colors,
+        dateFrom: String(obj['datefrom']||''),
+        dateTo: String(obj['dateto']||'')
       };
     }).filter(p => p.title && p.units > 0);
     if (ataPricingData.length) renderAtaPricingTable(false);
@@ -1410,7 +1429,9 @@ function renderAtaPricingTable(save=true) {
   if (!ataPricingData.length) return;
   document.getElementById('ata-pricing-content').style.display = 'block';
   document.getElementById('ata-pricing-title').textContent = `Pricing Analysis — ${ataPricingData.length} products`;
-  document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${Math.round(ataPricingData.reduce((s,p)=>s+p.revenue,0)).toLocaleString()} revenue`;
+  const firstP = ataPricingData[0] || {};
+  const dateRange = (firstP.dateFrom && firstP.dateTo) ? ` · ${firstP.dateFrom.split('T')[0]} — ${firstP.dateTo.split('T')[0]}` : '';
+  document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${Math.round(ataPricingData.reduce((s,p)=>s+p.revenue,0)).toLocaleString()} revenue${dateRange}`;
 
   const tbody = document.getElementById('ata-pricing-tbody');
   tbody.innerHTML = ataPricingData.map(p => {
@@ -1423,7 +1444,7 @@ function renderAtaPricingTable(save=true) {
     }
     const badgeClass = disc <= 15 ? 'badge-green' : disc <= 30 ? 'badge-amber' : 'badge-red';
     const margin = (meta.fullPrice > 0 && meta.cogs > 0) ? Math.round(((p.avgPrice - meta.cogs) / p.avgPrice) * 100) : null;
-    const publishLabel = meta.publishDate ? `<div style="font-size:11px;color:var(--ink3);">${meta.publishDate}</div>` : '';
+    const publishLabel = meta.publishDate ? `<div style="font-size:11px;color:var(--ink3);">${meta.publishDate.split('T')[0]}</div>` : '';
 
     // Build size breakdown HTML
     let variantHtml = '';
