@@ -591,13 +591,25 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
               <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;" id="ata-pricing-title">Pricing Analysis</div>
               <div style="font-size:12px;color:var(--ink3);margin-top:2px;" id="ata-pricing-sub"></div>
             </div>
-            <div style="display:flex;gap:8px;align-items:center;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input type="text" id="ata-search" oninput="renderAtaPricingTable(false)" placeholder="🔍 Search SC..." style="border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Inconsolata',monospace;font-size:12px;background:var(--bg);outline:none;width:180px;">
               <select id="ata-sort" onchange="renderAtaPricingTable(false)" style="border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Inconsolata',monospace;font-size:12px;background:var(--bg);cursor:pointer;">
                 <option value="units">Sort: Units Sold</option>
                 <option value="velocity">Sort: Velocity</option>
                 <option value="revenue">Sort: Revenue</option>
                 <option value="disc">Sort: Discount %</option>
+                <option value="publishDate">Sort: Publish Date</option>
+                <option value="firstSeen">Sort: First Seen</option>
+                <option value="margin">Sort: Margin %</option>
               </select>
+              <select id="ata-filter-date" onchange="renderAtaPricingTable(false)" style="border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Inconsolata',monospace;font-size:12px;background:var(--bg);cursor:pointer;">
+                <option value="all">All products</option>
+                <option value="thismonth">Published this month</option>
+                <option value="lastmonth">Published last month</option>
+                <option value="nodate">No publish date</option>
+                <option value="nofirstseen">First seen this month</option>
+              </select>
+              <button onclick="manageExcluded()" id="ata-excluded-btn" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-bg);border-radius:8px;padding:8px 14px;font-family:'Inconsolata',monospace;font-size:12px;cursor:pointer;display:none;">✕ Hidden (<span id="ata-excluded-count">0</span>)</button>
               <button id="ata-ai-btn" onclick="runAtaAI()" style="background:#1B2C58;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✨ Get AI Recommendations</button>
             </div>
           </div>
@@ -711,7 +723,8 @@ let groupByClient = true;
 let mydayBlocks = [];
 let ataDailyData = null;
 let ataPricingData = [];
-let ataProductMeta = {}; // title -> {publishDate, fullPrice, cogs, firstSeen}
+let ataProductMeta = {};
+let ataExcluded = JSON.parse(localStorage.getItem('ata_excluded')||'[]'); // title -> {publishDate, fullPrice, cogs, firstSeen}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.getElementById('api-key-input').addEventListener('keydown', e => { if(e.key==='Enter') startApp(); });
@@ -978,7 +991,29 @@ document.addEventListener('click', function(e) {
 
   const tv = e.target.closest('[data-toggle-variants]');
   if (tv) { toggleVariants(tv.dataset.toggleVariants); return; }
+
+  const exBtn = e.target.closest('[data-exclude-product]');
+  if (exBtn) {
+    const title = exBtn.dataset.excludeProduct;
+    if (!ataExcluded.includes(title)) {
+      ataExcluded.push(title);
+      localStorage.setItem('ata_excluded', JSON.stringify(ataExcluded));
+    }
+    renderAtaPricingTable(false);
+    return;
+  }
 });
+
+// Show excluded items manager
+function manageExcluded() {
+  if (!ataExcluded.length) { alert('No hidden items.'); return; }
+  const list = ataExcluded.join('\n');
+  if (confirm('Hidden items:\n\n' + list + '\n\nClick OK to restore all.')) {
+    ataExcluded = [];
+    localStorage.setItem('ata_excluded', '[]');
+    renderAtaPricingTable(false);
+  }
+}
 
 async function toggleTask(id) {
   const t = tasks.find(t=>t.id===id); if(!t) return;
@@ -1391,55 +1426,63 @@ function handleAtaCsv(input) {
         // New SC — add it
         existingMap[np.title] = np;
       } else {
-        // Existing SC — merge
+        // Existing SC — only merge NEW date ranges (prevent duplicates)
         const ep = existingMap[np.title];
 
-        // Merge units and revenue
-        ep.units += np.units;
-        ep.revenue += np.revenue;
-        ep.fullPrice += np.fullPrice;
-        ep.discountAmt += np.discountAmt;
-        ep.cogsTotal = (ep.cogsTotal||0) + (np.cogsTotal||0);
+        // Check date overlap — only merge if new CSV has dates not already covered
+        const epFrom = ep.dateFrom || '';
+        const epTo = ep.dateTo || '';
+        const npFrom = np.dateFrom || '';
+        const npTo = np.dateTo || '';
+        const hasOverlap = epFrom && epTo && npFrom && npTo && npFrom <= epTo && npTo >= epFrom;
 
-        // Recalculate averages
-        ep.avgPrice = ep.units > 0 ? ep.revenue / ep.units : 0;
-        ep.avgFullPrice = ep.units > 0 ? ep.fullPrice / ep.units : 0;
-        ep.avgCogs = ep.units > 0 ? ep.cogsTotal / ep.units : 0;
-        if (ep.fullPrice > 0) ep.avgDisc = Math.max(0, Math.round((ep.discountAmt / ep.fullPrice) * 100));
+        if (hasOverlap && npFrom >= epFrom && npTo <= epTo) {
+          // New data is fully contained in existing range — skip to avoid duplicates
+          // Still merge daily map to fill any gaps
+        } else {
+          // New date range — merge units and revenue
+          ep.units += np.units;
+          ep.revenue += np.revenue;
+          ep.fullPrice += np.fullPrice;
+          ep.discountAmt += np.discountAmt;
+          ep.cogsTotal = (ep.cogsTotal||0) + (np.cogsTotal||0);
+
+          // Recalculate averages
+          ep.avgPrice = ep.units > 0 ? ep.revenue / ep.units : 0;
+          ep.avgFullPrice = ep.units > 0 ? ep.fullPrice / ep.units : 0;
+          ep.avgCogs = ep.units > 0 ? ep.cogsTotal / ep.units : 0;
+          if (ep.fullPrice > 0) ep.avgDisc = Math.max(0, Math.round((ep.discountAmt / ep.fullPrice) * 100));
+
+          // Merge size entries
+          const sizeMap = {};
+          (ep.sizeEntries||[]).forEach(([s,u]) => sizeMap[s] = (sizeMap[s]||0) + u);
+          (np.sizeEntries||[]).forEach(([s,u]) => sizeMap[s] = (sizeMap[s]||0) + u);
+          const SIZE_ORDER = ['XS','S','M','L','XL','XXL','2XL','3XL','One Size'];
+          ep.sizeEntries = Object.entries(sizeMap).sort((a,b) => {
+            const ai = SIZE_ORDER.indexOf(a[0]), bi = SIZE_ORDER.indexOf(b[0]);
+            if (ai>=0&&bi>=0) return ai-bi; if(ai>=0) return -1; if(bi>=0) return 1;
+            return a[0].localeCompare(b[0]);
+          });
+          ep.sizes = ep.sizeEntries.map(e=>e[0]);
+
+          // Merge price distribution
+          const pdMap = {};
+          (ep.priceDistrib||[]).forEach(([p,u]) => pdMap[p] = (pdMap[p]||0) + u);
+          (np.priceDistrib||[]).forEach(([p,u]) => pdMap[p] = (pdMap[p]||0) + u);
+          ep.priceDistrib = Object.entries(pdMap).map(([p,u])=>[Number(p),u]).sort((a,b)=>a[0]-b[0]);
+        }
 
         // Merge date range
-        const dates = [ep.dateFrom, ep.dateTo, np.dateFrom, np.dateTo].filter(Boolean).sort();
-        ep.dateFrom = dates[0] || ep.dateFrom;
-        ep.dateTo = dates[dates.length-1] || ep.dateTo;
+        const dates = [epFrom, epTo, npFrom, npTo].filter(Boolean).sort();
+        ep.dateFrom = dates[0] || epFrom;
+        ep.dateTo = dates[dates.length-1] || epTo;
 
-        // Merge size entries
-        const sizeMap = {};
-        (ep.sizeEntries||[]).forEach(([s,u]) => sizeMap[s] = (sizeMap[s]||0) + u);
-        (np.sizeEntries||[]).forEach(([s,u]) => sizeMap[s] = (sizeMap[s]||0) + u);
-        const SIZE_ORDER = ['XS','S','M','L','XL','XXL','2XL','3XL','One Size'];
-        ep.sizeEntries = Object.entries(sizeMap).sort((a,b) => {
-          const ai = SIZE_ORDER.indexOf(a[0]), bi = SIZE_ORDER.indexOf(b[0]);
-          if (ai>=0&&bi>=0) return ai-bi; if(ai>=0) return -1; if(bi>=0) return 1;
-          return a[0].localeCompare(b[0]);
-        });
-        ep.sizes = ep.sizeEntries.map(e=>e[0]);
-
-        // Merge price distribution
-        const pdMap = {};
-        (ep.priceDistrib||[]).forEach(([p,u]) => pdMap[p] = (pdMap[p]||0) + u);
-        (np.priceDistrib||[]).forEach(([p,u]) => pdMap[p] = (pdMap[p]||0) + u);
-        ep.priceDistrib = Object.entries(pdMap).map(([p,u])=>[Number(p),u]).sort((a,b)=>a[0]-b[0]);
-
-        // Merge daily data (by date key — if same date exists, add units)
+        // Merge daily data — skip dates already present (prevent duplicates)
         const dailyMap = {};
         (ep.dailyData||[]).forEach(d => dailyMap[d.date] = {...d});
         (np.dailyData||[]).forEach(d => {
-          if (dailyMap[d.date]) {
-            const total = dailyMap[d.date].units + d.units;
-            const revenue = (dailyMap[d.date].avgPrice * dailyMap[d.date].units) + (d.avgPrice * d.units);
-            dailyMap[d.date] = {date:d.date, units:total, avgPrice:total>0?Math.round(revenue/total):0};
-          } else {
-            dailyMap[d.date] = {...d};
+          if (!dailyMap[d.date]) {
+            dailyMap[d.date] = {...d}; // only add NEW dates
           }
         });
         ep.dailyData = Object.values(dailyMap).sort((a,b)=>a.date.localeCompare(b.date));
@@ -1694,10 +1737,49 @@ function renderAtaPricingTable(save=true) {
   }
 
   const sortBy = document.getElementById('ata-sort')?.value || 'units';
-  const rankedData = calcBestSellers(ataPricingData, ataProductMeta).sort((a,b) => {
+  const searchQ = (document.getElementById('ata-search')?.value || '').toLowerCase().trim();
+  const filterDate = document.getElementById('ata-filter-date')?.value || 'all';
+  const now = new Date();
+  const thisMonthStr = now.toISOString().slice(0,7);
+  const lastMonth = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  const lastMonthStr = lastMonth.toISOString().slice(0,7);
+
+  const rankedData = calcBestSellers(
+    ataPricingData.filter(p => {
+      // Exclude hidden items
+      if (ataExcluded.includes(p.title)) return false;
+      // Search filter
+      if (searchQ && !p.title.toLowerCase().includes(searchQ)) return false;
+      // Date filter
+      const meta = ataProductMeta[p.title] || {};
+      const pd = (meta.publishDate||'').split('T')[0];
+      const fs = (meta.firstSeen||'').split('T')[0];
+      if (filterDate === 'thismonth') return pd.startsWith(thisMonthStr);
+      if (filterDate === 'lastmonth') return pd.startsWith(lastMonthStr);
+      if (filterDate === 'nodate') return !pd;
+      if (filterDate === 'nofirstseen') return fs.startsWith(thisMonthStr);
+      return true;
+    }),
+    ataProductMeta
+  ).sort((a,b) => {
+    const ma = ataProductMeta[a.title]||{}, mb = ataProductMeta[b.title]||{};
     if (sortBy === 'velocity') return (b.velocity||0) - (a.velocity||0);
     if (sortBy === 'revenue') return b.revenue - a.revenue;
     if (sortBy === 'disc') return b.avgDisc - a.avgDisc;
+    if (sortBy === 'publishDate') {
+      const pa = (ma.publishDate||'9999'), pb2 = (mb.publishDate||'9999');
+      return pb2.localeCompare(pa);
+    }
+    if (sortBy === 'firstSeen') {
+      const fa = (ma.firstSeen||'9999'), fb = (mb.firstSeen||'9999');
+      return fb.localeCompare(fa);
+    }
+    if (sortBy === 'margin') {
+      const ca = ma.cogs>0?ma.cogs:a.avgCogs, cb = mb.cogs>0?mb.cogs:b.avgCogs;
+      const mra = a.avgPrice>0&&ca>0?((a.avgPrice-ca)/a.avgPrice):0;
+      const mrb = b.avgPrice>0&&cb>0?((b.avgPrice-cb)/b.avgPrice):0;
+      return mrb - mra;
+    }
     return b.units - a.units;
   });
 
@@ -1770,11 +1852,11 @@ function renderAtaPricingTable(save=true) {
       }).join(' ');
 
       // X axis labels
-      const step = Math.max(1, Math.floor(filledDaily.length / 8));
+      const step = Math.max(1, Math.floor(filledDaily.length / 12));
       const labels = filledDaily.map((d,i) => {
         if (i % step !== 0 && i !== filledDaily.length-1) return '';
         const x = pad + i * xStep;
-        return `<text x="${x}" y="${H-6}" text-anchor="middle" font-size="10" fill="#a09d97">${d.date.slice(5)}</text>`;
+        return `<text x="${x}" y="${H-4}" text-anchor="end" font-size="9" fill="#a09d97" transform="rotate(-40 ${x} ${H-4})">${d.date.slice(5)}</text>`;
       }).join('');
 
       // Hover zones — use data attributes, wired up after SVG is inserted
@@ -1902,12 +1984,20 @@ function renderAtaPricingTable(save=true) {
       <td><span class="ata-item-badge ${badgeClass}" style="font-size:12px;padding:2px 8px;">${disc}%</span></td>
       <td>
         <div>₪${Math.round(p.revenue).toLocaleString()}</div>
-        ${margin !== null ? `<div style="font-size:11px;color:var(--green);">margin ${margin}%</div>` : ''}
+        ${margin !== null ? `<div style="font-size:11px;color:var(--green);">margin ${margin}% (₪${Math.round(p.avgPrice - cogsToUse)})</div>` : ''}
       </td>
-      <td><button class="ata-edit-btn" data-edit-product="${p.title}">✏️ Edit</button></td>
+      <td style="display:flex;gap:4px;flex-direction:column;">
+        <button class="ata-edit-btn" data-edit-product="${p.title}">✏️ Edit</button>
+        <button class="ata-edit-btn" data-exclude-product="${p.title}" style="border-color:var(--red);color:var(--red);font-size:10px;">✕ Hide</button>
+      </td>
     </tr>${sizeRow}`;
   }).join('');
 
+  // Update hidden count
+  const excBtn = document.getElementById('ata-excluded-btn');
+  const excCount = document.getElementById('ata-excluded-count');
+  if (excBtn) { excBtn.style.display = ataExcluded.length ? 'block' : 'none'; }
+  if (excCount) excCount.textContent = ataExcluded.length;
   if (save) savePricingToSheets();
 }
 
