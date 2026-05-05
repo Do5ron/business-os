@@ -406,6 +406,17 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
   display: inline-block;
   margin-right: 4px;
 }
+
+/* Product editor */
+.ata-edit-btn{font-size:11px;padding:3px 10px;border-radius:6px;border:1.5px solid #1B2C58;background:transparent;color:#1B2C58;cursor:pointer;font-family:'Inconsolata',monospace;font-weight:600;}
+.ata-edit-btn:hover{background:#1B2C58;color:#fff;}
+.ata-new-badge{font-size:10px;background:var(--amber-bg);color:var(--amber);padding:2px 6px;border-radius:4px;font-weight:700;margin-left:6px;}
+.ata-product-editor{background:#f0f3fa;border:1.5px solid #1B2C58;border-radius:8px;padding:14px 18px;margin-top:6px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;}
+.ata-product-editor label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1B2C58;display:block;margin-bottom:4px;}
+.ata-product-editor input{width:100%;border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-family:'Inconsolata',monospace;font-size:13px;background:#fff;color:var(--ink);outline:none;}
+.ata-product-editor input:focus{border-color:#1B2C58;}
+.ata-save-btn{background:#1B2C58;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+
 </style>
 </head>
 <body>
@@ -582,9 +593,9 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
                   <th>Product</th>
                   <th>Units Sold</th>
                   <th>Avg Price</th>
-                  <th>Avg Discount</th>
+                  <th>Discount</th>
                   <th>Revenue</th>
-                  <th>Status</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody id="ata-pricing-tbody"></tbody>
@@ -679,6 +690,7 @@ let groupByClient = true;
 let mydayBlocks = [];
 let ataDailyData = null;
 let ataPricingData = [];
+let ataProductMeta = {}; // title -> {publishDate, fullPrice, cogs, firstSeen}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.getElementById('api-key-input').addEventListener('keydown', e => { if(e.key==='Enter') startApp(); });
@@ -756,6 +768,7 @@ async function loadAll() {
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   renderAll(); generateFocus();
   loadPricingFromSheets();
+  loadProductMeta();
 }
 
 function injectRecurringTasks() {
@@ -1267,6 +1280,14 @@ function handleAtaCsv(input) {
   reader.onload = function(e) {
     const text = e.target.result;
     ataPricingData = parseAtaCsv(text);
+    // Register new products in meta
+    const today = new Date().toISOString().split('T')[0];
+    ataPricingData.forEach(p => {
+      if (!ataProductMeta[p.title]) {
+        ataProductMeta[p.title] = {publishDate:'', fullPrice:0, cogs:0, firstSeen:today};
+      }
+    });
+    saveProductMeta();
     renderAtaPricingTable();
   };
   reader.readAsText(file, 'UTF-8');
@@ -1381,18 +1402,122 @@ function renderAtaPricingTable(save=true) {
 
   const tbody = document.getElementById('ata-pricing-tbody');
   tbody.innerHTML = ataPricingData.map(p => {
-    const badgeClass = p.avgDisc <= 15 ? 'badge-green' : p.avgDisc <= 30 ? 'badge-amber' : 'badge-red';
-    return `<tr>
-      <td><div style="font-weight:600;">${p.title}</div></td>
+    const meta = ataProductMeta[p.title] || {};
+    const isNew = !meta.publishDate && !meta.fullPrice;
+    const safeId = p.title.replace(/[^a-zA-Z0-9]/g,'_');
+    // Use real full price from meta if available
+    let disc = p.avgDisc;
+    if (meta.fullPrice > 0 && p.avgPrice > 0) {
+      disc = Math.max(0, Math.round((1 - p.avgPrice / meta.fullPrice) * 100));
+    }
+    const badgeClass = disc <= 15 ? 'badge-green' : disc <= 30 ? 'badge-amber' : 'badge-red';
+    const margin = (meta.fullPrice > 0 && meta.cogs > 0) ? Math.round(((p.avgPrice - meta.cogs) / p.avgPrice) * 100) : null;
+    const publishLabel = meta.publishDate ? `<div style="font-size:11px;color:var(--ink3);">${meta.publishDate}</div>` : '';
+    return `<tr id="row-${safeId}">
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-weight:600;">${p.title}</span>
+          ${isNew ? '<span class="ata-new-badge">NEW</span>' : ''}
+        </div>
+        ${publishLabel}
+      </td>
       <td>${p.units}</td>
-      <td>₪${Math.round(p.avgPrice)}</td>
-      <td><span class="ata-item-badge ${badgeClass}" style="font-size:12px;padding:2px 8px;">${p.avgDisc}%</span></td>
-      <td>₪${Math.round(p.revenue).toLocaleString()}</td>
-      <td id="rec-${p.title.replace(/[^a-zA-Z0-9]/g,'_')}"><span style="font-size:11px;color:var(--ink3);">—</span></td>
+      <td>
+        <div>₪${Math.round(p.avgPrice)}</div>
+        ${meta.fullPrice ? `<div style="font-size:11px;color:var(--ink3);text-decoration:line-through;">₪${meta.fullPrice}</div>` : ''}
+      </td>
+      <td><span class="ata-item-badge ${badgeClass}" style="font-size:12px;padding:2px 8px;">${disc}%</span></td>
+      <td>
+        <div>₪${Math.round(p.revenue).toLocaleString()}</div>
+        ${margin !== null ? `<div style="font-size:11px;color:var(--green);">margin ${margin}%</div>` : ''}
+      </td>
+      <td><button class="ata-edit-btn" onclick="toggleProductEditor('${p.title.replace(/'/g,"\'")}')">✏️ Edit</button></td>
     </tr>`;
   }).join('');
 
   if (save) savePricingToSheets();
+}
+
+
+// ── ATA WEAR: Product Meta (publish date, full price, COGS) ──────────────────
+async function loadProductMeta() {
+  try {
+    const rows = await gasRead('ata_products');
+    if (!rows || rows.length < 2) return;
+    const headers = rows[0].map(h => String(h).toLowerCase().replace(/ /g,''));
+    rows.slice(1).forEach(r => {
+      const obj = {};
+      headers.forEach((h,i) => obj[h] = r[i]);
+      const title = String(obj['title']||'');
+      if (!title) return;
+      ataProductMeta[title] = {
+        publishDate: obj['publishdate']||'',
+        fullPrice: Number(obj['fullprice']||0),
+        cogs: Number(obj['cogs']||0),
+        firstSeen: obj['firstseen']||''
+      };
+    });
+  } catch(e) { console.log('No product meta yet'); }
+}
+
+async function saveProductMeta() {
+  const rows = [
+    ['title','publishDate','fullPrice','cogs','firstSeen'],
+    ...Object.entries(ataProductMeta).map(([title, m]) => [title, m.publishDate||'', m.fullPrice||0, m.cogs||0, m.firstSeen||''])
+  ];
+  await gasWrite('ata_products', rows);
+}
+
+function toggleProductEditor(title) {
+  const safeId = title.replace(/[^a-zA-Z0-9]/g,'_');
+  const existing = document.getElementById('editor-' + safeId);
+  if (existing) { existing.remove(); return; }
+  const meta = ataProductMeta[title] || {};
+  const tr = document.getElementById('row-' + safeId);
+  if (!tr) return;
+  const colCount = tr.cells.length;
+  const editorRow = document.createElement('tr');
+  editorRow.id = 'editor-' + safeId;
+  editorRow.innerHTML = `<td colspan="${colCount}" style="padding:0 8px 10px;">
+    <div class="ata-product-editor">
+      <div>
+        <label>Publish Date</label>
+        <input type="date" id="ep-date-${safeId}" value="${meta.publishDate||''}">
+      </div>
+      <div>
+        <label>Full Price ₪</label>
+        <input type="number" id="ep-price-${safeId}" value="${meta.fullPrice||''}" placeholder="e.g. 220">
+      </div>
+      <div>
+        <label>COGS ₪</label>
+        <input type="number" id="ep-cogs-${safeId}" value="${meta.cogs||''}" placeholder="e.g. 42">
+      </div>
+      <button class="ata-save-btn" onclick="saveProductEditor('${title.replace(/'/g,"\'")}')">Save</button>
+    </div>
+  </td>`;
+  tr.after(editorRow);
+}
+
+async function saveProductEditor(title) {
+  const safeId = title.replace(/[^a-zA-Z0-9]/g,'_');
+  const publishDate = document.getElementById('ep-date-' + safeId)?.value || '';
+  const fullPrice = parseFloat(document.getElementById('ep-price-' + safeId)?.value || 0);
+  const cogs = parseFloat(document.getElementById('ep-cogs-' + safeId)?.value || 0);
+  ataProductMeta[title] = {
+    ...ataProductMeta[title],
+    publishDate, fullPrice, cogs,
+    firstSeen: ataProductMeta[title]?.firstSeen || new Date().toISOString().split('T')[0]
+  };
+  // Recalculate avgDisc using real full price if provided
+  const p = ataPricingData.find(x => x.title === title);
+  if (p && fullPrice > 0) {
+    p.avgDisc = Math.max(0, Math.round((1 - p.avgPrice / fullPrice) * 100));
+  }
+  await saveProductMeta();
+  await savePricingToSheets();
+  // Remove editor and re-render row
+  document.getElementById('editor-' + safeId)?.remove();
+  renderAtaPricingTable(false);
 }
 
 async function runAtaAI() {
