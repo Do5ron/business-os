@@ -577,9 +577,13 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
         <label class="ata-upload-zone" for="ata-csv-input" style="cursor:pointer;display:block;">
           <input type="file" id="ata-csv-input" accept=".csv" onchange="handleAtaCsv(this)" style="display:none;">
           <div class="ata-upload-icon">📄</div>
-          <div class="ata-upload-text">Upload Shopify Sales CSV</div>
-          <div class="ata-upload-sub">Discount by product report · any date range</div>
+          <div class="ata-upload-text">Upload Shopify Sales CSV — Merges with existing data</div>
+          <div class="ata-upload-sub">Discount by product report · upload multiple periods safely</div>
         </label>
+        <div id="ata-data-status" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;align-items:center;justify-content:space-between;">
+          <div><span style="font-size:12px;font-weight:600;">📅 Loaded: </span><span id="ata-date-range" style="font-size:12px;color:var(--ink2);"></span></div>
+          <button onclick="clearAtaData()" style="font-size:11px;color:var(--red);background:var(--red-bg);border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font-family:'Inconsolata',monospace;">✕ Clear all data</button>
+        </div>
 
         <div id="ata-pricing-content" style="display:none;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -1304,14 +1308,79 @@ function handleAtaCsv(input) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const text = e.target.result;
-    ataPricingData = parseAtaCsv(text);
-    // Register new products in meta
+    const newData = parseAtaCsv(text);
     const today = new Date().toISOString().split('T')[0];
-    ataPricingData.forEach(p => {
-      if (!ataProductMeta[p.title]) {
-        ataProductMeta[p.title] = {publishDate:'', fullPrice:0, cogs:0, firstSeen:today};
+
+    // Merge with existing data
+    const existingMap = {};
+    ataPricingData.forEach(p => existingMap[p.title] = p);
+
+    newData.forEach(np => {
+      if (!existingMap[np.title]) {
+        // New SC — add it
+        existingMap[np.title] = np;
+      } else {
+        // Existing SC — merge
+        const ep = existingMap[np.title];
+
+        // Merge units and revenue
+        ep.units += np.units;
+        ep.revenue += np.revenue;
+        ep.fullPrice += np.fullPrice;
+        ep.discountAmt += np.discountAmt;
+        ep.cogsTotal = (ep.cogsTotal||0) + (np.cogsTotal||0);
+
+        // Recalculate averages
+        ep.avgPrice = ep.units > 0 ? ep.revenue / ep.units : 0;
+        ep.avgFullPrice = ep.units > 0 ? ep.fullPrice / ep.units : 0;
+        ep.avgCogs = ep.units > 0 ? ep.cogsTotal / ep.units : 0;
+        if (ep.fullPrice > 0) ep.avgDisc = Math.max(0, Math.round((ep.discountAmt / ep.fullPrice) * 100));
+
+        // Merge date range
+        const dates = [ep.dateFrom, ep.dateTo, np.dateFrom, np.dateTo].filter(Boolean).sort();
+        ep.dateFrom = dates[0] || ep.dateFrom;
+        ep.dateTo = dates[dates.length-1] || ep.dateTo;
+
+        // Merge size entries
+        const sizeMap = {};
+        (ep.sizeEntries||[]).forEach(([s,u]) => sizeMap[s] = (sizeMap[s]||0) + u);
+        (np.sizeEntries||[]).forEach(([s,u]) => sizeMap[s] = (sizeMap[s]||0) + u);
+        const SIZE_ORDER = ['XS','S','M','L','XL','XXL','2XL','3XL','One Size'];
+        ep.sizeEntries = Object.entries(sizeMap).sort((a,b) => {
+          const ai = SIZE_ORDER.indexOf(a[0]), bi = SIZE_ORDER.indexOf(b[0]);
+          if (ai>=0&&bi>=0) return ai-bi; if(ai>=0) return -1; if(bi>=0) return 1;
+          return a[0].localeCompare(b[0]);
+        });
+        ep.sizes = ep.sizeEntries.map(e=>e[0]);
+
+        // Merge price distribution
+        const pdMap = {};
+        (ep.priceDistrib||[]).forEach(([p,u]) => pdMap[p] = (pdMap[p]||0) + u);
+        (np.priceDistrib||[]).forEach(([p,u]) => pdMap[p] = (pdMap[p]||0) + u);
+        ep.priceDistrib = Object.entries(pdMap).map(([p,u])=>[Number(p),u]).sort((a,b)=>a[0]-b[0]);
+
+        // Merge daily data (by date key — if same date exists, add units)
+        const dailyMap = {};
+        (ep.dailyData||[]).forEach(d => dailyMap[d.date] = {...d});
+        (np.dailyData||[]).forEach(d => {
+          if (dailyMap[d.date]) {
+            const total = dailyMap[d.date].units + d.units;
+            const revenue = (dailyMap[d.date].avgPrice * dailyMap[d.date].units) + (d.avgPrice * d.units);
+            dailyMap[d.date] = {date:d.date, units:total, avgPrice:total>0?Math.round(revenue/total):0};
+          } else {
+            dailyMap[d.date] = {...d};
+          }
+        });
+        ep.dailyData = Object.values(dailyMap).sort((a,b)=>a.date.localeCompare(b.date));
+      }
+
+      // Register in meta if new
+      if (!ataProductMeta[np.title]) {
+        ataProductMeta[np.title] = {publishDate:'', fullPrice:0, cogs:0, firstSeen:today};
       }
     });
+
+    ataPricingData = Object.values(existingMap).sort((a,b) => b.units - a.units);
     saveProductMeta();
     renderAtaPricingTable();
   };
@@ -1447,6 +1516,14 @@ function parseAtaCsv(text) {
   });
 }
 
+async function clearAtaData() {
+  if (!confirm('Clear all pricing data? Your product meta (publish dates, full prices, COGS) will be kept.')) return;
+  ataPricingData = [];
+  await gasWrite('ata_pricing', [['title','baseProduct','color','units','revenue','fullPrice','discountAmt','avgPrice','avgFullPrice','avgCogs','avgDisc','sizeEntries','priceDistrib','dailyData','dateFrom','dateTo']]);
+  document.getElementById('ata-pricing-content').style.display = 'none';
+  document.getElementById('ata-data-status').style.display = 'none';
+}
+
 async function savePricingToSheets() {
   if (!ataPricingData.length) return;
   const rows = [
@@ -1531,11 +1608,27 @@ function renderAtaPricingTable(save=true) {
   if (!ataPricingData.length) return;
   document.getElementById('ata-pricing-content').style.display = 'block';
   document.getElementById('ata-pricing-title').textContent = `Pricing Analysis — ${ataPricingData.length} SCs`;
+  const statusBar = document.getElementById('ata-data-status');
+  if (statusBar) {
+    statusBar.style.display = 'flex';
+    const dr = document.getElementById('ata-date-range');
+    if (dr && firstP.dateFrom && firstP.dateTo) dr.textContent = `${firstP.dateFrom.split('T')[0]} — ${firstP.dateTo.split('T')[0]}`;
+  }
   const firstP = ataPricingData[0] || {};
   const dateRange = (firstP.dateFrom && firstP.dateTo) ? ` · ${firstP.dateFrom.split('T')[0]} — ${firstP.dateTo.split('T')[0]}` : '';
   document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${Math.round(ataPricingData.reduce((s,p)=>s+p.revenue,0)).toLocaleString()} revenue${dateRange}`;
 
   const sortBy = document.getElementById('ata-sort')?.value || 'units';
+  // Update status bar
+  if (ataPricingData.length) {
+    const fp = ataPricingData[0];
+    const statusBar = document.getElementById('ata-data-status');
+    if (statusBar) {
+      statusBar.style.display = 'flex';
+      const dr = document.getElementById('ata-date-range');
+      if (dr && fp.dateFrom && fp.dateTo) dr.textContent = fp.dateFrom.split('T')[0] + ' — ' + fp.dateTo.split('T')[0];
+    }
+  }
   const rankedData = calcBestSellers(ataPricingData, ataProductMeta).sort((a,b) => {
     if (sortBy === 'velocity') return (b.velocity||0) - (a.velocity||0);
     if (sortBy === 'revenue') return b.revenue - a.revenue;
