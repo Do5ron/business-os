@@ -1381,6 +1381,7 @@ function handleAtaCsv(input) {
     });
 
     ataPricingData = Object.values(existingMap).sort((a,b) => b.units - a.units);
+    console.log('ataPricingData after merge:', ataPricingData.length, 'SCs');
     saveProductMeta();
     renderAtaPricingTable();
   };
@@ -1525,7 +1526,8 @@ async function clearAtaData() {
 }
 
 async function savePricingToSheets() {
-  if (!ataPricingData.length) return;
+  console.log('savePricingToSheets called, rows:', ataPricingData.length);
+  if (!ataPricingData.length) { console.log('No data to save'); return; }
   const rows = [
     ['title','baseProduct','color','units','revenue','fullPrice','discountAmt','avgPrice','avgFullPrice','avgCogs','avgDisc','sizeEntries','priceDistrib','dailyData','dateFrom','dateTo'],
     ...ataPricingData.map(p => [
@@ -1608,16 +1610,9 @@ function renderAtaPricingTable(save=true) {
   if (!ataPricingData.length) return;
   document.getElementById('ata-pricing-content').style.display = 'block';
   document.getElementById('ata-pricing-title').textContent = `Pricing Analysis — ${ataPricingData.length} SCs`;
-  const statusBar = document.getElementById('ata-data-status');
-  if (statusBar) {
-    statusBar.style.display = 'flex';
-    const dr = document.getElementById('ata-date-range');
-    if (dr && firstP.dateFrom && firstP.dateTo) dr.textContent = `${firstP.dateFrom.split('T')[0]} — ${firstP.dateTo.split('T')[0]}`;
-  }
   const firstP = ataPricingData[0] || {};
   const dateRange = (firstP.dateFrom && firstP.dateTo) ? ` · ${firstP.dateFrom.split('T')[0]} — ${firstP.dateTo.split('T')[0]}` : '';
   document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${Math.round(ataPricingData.reduce((s,p)=>s+p.revenue,0)).toLocaleString()} revenue${dateRange}`;
-  // Update status bar
   const statusBar = document.getElementById('ata-data-status');
   if (statusBar && firstP.dateFrom) {
     statusBar.style.display = 'flex';
