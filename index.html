@@ -1076,6 +1076,26 @@ function openClientDetail(id) {
 
 document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.style.display='none'; }));
 
+// Chart hover delegation
+document.addEventListener('mouseover', function(e) {
+  const pt = e.target.closest('.chart-point');
+  if (!pt) return;
+  pt.querySelector('.cp-vline')?.setAttribute('opacity','1');
+  pt.querySelector('.cp-dot-u')?.setAttribute('opacity','1');
+  pt.querySelector('.cp-dot-p')?.setAttribute('opacity','1');
+  pt.querySelector('.cp-tip')?.setAttribute('opacity','1');
+});
+document.addEventListener('mouseout', function(e) {
+  const pt = e.target.closest('.chart-point');
+  if (!pt) return;
+  const to = e.relatedTarget?.closest('.chart-point');
+  if (to === pt) return;
+  pt.querySelector('.cp-vline')?.setAttribute('opacity','0');
+  pt.querySelector('.cp-dot-u')?.setAttribute('opacity','0');
+  pt.querySelector('.cp-dot-p')?.setAttribute('opacity','0');
+  pt.querySelector('.cp-tip')?.setAttribute('opacity','0');
+});
+
 // ── AI ────────────────────────────────────────────────────────────────────────
 function buildContext() {
   const c = clients.map(c=>`${c.name} (${c.biz||'?'}) | ${c.status} | Revenue: ${c.revenue||'N/A'} | KPIs: ${c.kpiTracking||'N/A'} | Current: ${c.kpiCurrent||'N/A'} | Last: ${c.last||'N/A'} | Promised: ${c.promise||'N/A'}`).join('\n');
@@ -1185,20 +1205,68 @@ async function generateMyDay() {
   recalcStarts();renderMyDayBlocks();
 }
 
+
+// ── ATA WEAR: Build Daily Dashboard from pricing data ────────────────────────
+function buildAtaDailyFromPricing() {
+  // Aggregate all SCs daily data into overall daily totals
+  const byDate = {};
+  ataPricingData.forEach(sc => {
+    (sc.dailyData||[]).forEach(d => {
+      if (!byDate[d.date]) byDate[d.date] = {date:d.date, units:0, cashflow:0, discTotal:0, discCount:0};
+      byDate[d.date].units += d.units;
+      byDate[d.date].cashflow += d.units * d.avgPrice;
+      if (d.avgPrice > 0 && sc.avgFullPrice > 0) {
+        const disc = Math.max(0, Math.round((1 - d.avgPrice / sc.avgFullPrice) * 100));
+        byDate[d.date].discTotal += disc * d.units;
+        byDate[d.date].discCount += d.units;
+      }
+    });
+  });
+
+  const days = Object.values(byDate).sort((a,b) => a.date.localeCompare(b.date)).map(d => ({
+    date: d.date,
+    units: d.units,
+    cashflow: Math.round(d.cashflow),
+    avgDisc: d.discCount > 0 ? Math.round(d.discTotal / d.discCount) : 0
+  }));
+
+  const yesterday = days.length ? days[days.length-1] : {};
+
+  // Build items list from ataPricingData
+  const items = ataPricingData.map(sc => ({
+    title: sc.title,
+    units: sc.units,
+    cashflow: Math.round(sc.revenue),
+    avgDisc: sc.avgDisc,
+    history: (sc.dailyData||[]).map(d => ({
+      date: d.date,
+      units: d.units,
+      price: d.avgPrice,
+      disc: sc.avgFullPrice > 0 ? Math.max(0, Math.round((1 - d.avgPrice/sc.avgFullPrice)*100)) : 0
+    }))
+  }));
+
+  ataDailyData = {days, yesterday, items};
+}
+
 // ── ATA WEAR: Daily Dashboard ─────────────────────────────────────────────────
 async function loadAtaDaily() {
   const statusEl = document.getElementById('ata-sync-status');
-  statusEl.textContent = '⟳ Loading...';
-  try {
-    const r = await fetch(ATA_GAS_URL + '?action=getDailyData');
-    const data = await r.json();
-    ataDailyData = data;
-    renderAtaDaily(data);
-    statusEl.textContent = '✓ Updated ' + new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
-  } catch(e) {
-    statusEl.textContent = '✗ Could not load data';
-    renderAtaDailyFallback();
+  // If we already have data built from CSV, use it directly
+  if (ataDailyData && ataDailyData.days && ataDailyData.days.length) {
+    renderAtaDaily(ataDailyData);
+    statusEl.textContent = '✓ From CSV';
+    return;
   }
+  // Otherwise try to rebuild from pricing data
+  if (ataPricingData.length) {
+    buildAtaDailyFromPricing();
+    renderAtaDaily(ataDailyData);
+    statusEl.textContent = '✓ From CSV';
+    return;
+  }
+  statusEl.textContent = '— Upload a CSV to see data';
+  renderAtaDailyFallback();
 }
 
 function renderAtaDaily(data) {
@@ -1221,8 +1289,11 @@ function renderAtaDaily(data) {
 }
 
 function renderAtaDailyFallback() {
-  document.getElementById('ata-bars').innerHTML = '<div class="empty-state" style="width:100%">Connect your Google Sheets backend to see chart data.<br><small style="margin-top:8px;display:block;">Make sure your ATA WEAR Google Apps Script is deployed and the URL is correct.</small></div>';
-  document.getElementById('ata-items-grid').innerHTML = '<div class="empty-state" style="grid-column:span 2">No data available. Check your Google Sheets connection.</div>';
+  document.getElementById('ata-bars').innerHTML = '<div class="empty-state" style="width:100%;padding:30px;">Upload a CSV in the Pricing Intelligence tab to populate this dashboard.</div>';
+  document.getElementById('ata-items-grid').innerHTML = '<div class="empty-state" style="grid-column:span 2">No data yet — upload your Discount by product CSV first.</div>';
+  document.getElementById('ata-units').textContent = '—';
+  document.getElementById('ata-cashflow').textContent = '—';
+  document.getElementById('ata-disc').textContent = '—';
 }
 
 function discColor(pct) {
@@ -1382,8 +1453,10 @@ function handleAtaCsv(input) {
 
     ataPricingData = Object.values(existingMap).sort((a,b) => b.units - a.units);
     console.log('ataPricingData after merge:', ataPricingData.length, 'SCs');
+    buildAtaDailyFromPricing();
     saveProductMeta();
     renderAtaPricingTable();
+    renderAtaDaily(ataDailyData);
   };
   reader.readAsText(file, 'UTF-8');
 }
@@ -1576,7 +1649,7 @@ async function loadPricingFromSheets() {
         dateTo: String(obj['dateto']||'')
       };
     }).filter(p => p.title && p.units > 0);
-    if (ataPricingData.length) renderAtaPricingTable(false);
+    if (ataPricingData.length) { buildAtaDailyFromPricing(); renderAtaPricingTable(false); }
   } catch(e) { console.log('No pricing data yet'); }
 }
 
@@ -1704,42 +1777,25 @@ function renderAtaPricingTable(save=true) {
         return `<text x="${x}" y="${H-6}" text-anchor="middle" font-size="10" fill="#a09d97">${d.date.slice(5)}</text>`;
       }).join('');
 
-      // Hover dots with tooltips
+      // Hover zones — use data attributes, wired up after SVG is inserted
       const hoverDots = filledDaily.map((d,i) => {
         const x = pad + i * xStep;
         const uy = H - pad - ((d.units / maxUnits) * (H - pad*2));
         const priceRange = maxPrice - minPrice || 1;
-        const py = H - pad - (((d.avgPrice - minPrice) / priceRange) * (H - pad*2));
+        const py = d.avgPrice > 0 ? H - pad - (((d.avgPrice - minPrice) / priceRange) * (H - pad*2)) : -999;
         const tipX = x > W - 160 ? x - 150 : x + 10;
-        const tipY = Math.min(uy, py) - 10;
-        return `<g class="chart-point" style="cursor:pointer;">
-          <rect x="${x-16}" y="0" width="32" height="${H}" fill="transparent"/>
-          <line x1="${x}" y1="${pad}" x2="${x}" y2="${H-pad}" stroke="#ddd9cf" stroke-width="1" opacity="0" class="hover-line"/>
-          <circle cx="${x}" cy="${uy}" r="5" fill="#1B2C58" opacity="0" class="hover-dot-u"/>
-          <circle cx="${x}" cy="${py}" r="5" fill="#b45309" opacity="0" class="hover-dot-p"/>
-          <g class="hover-tip" opacity="0">
-            <rect x="${tipX}" y="${Math.max(5,tipY-40)}" width="145" height="52" rx="6" fill="#1a1814" opacity=".92"/>
-            <text x="${tipX+8}" y="${Math.max(5,tipY-40)+16}" font-size="10" fill="#fff" font-weight="700">${d.date}</text>
-            <text x="${tipX+8}" y="${Math.max(5,tipY-40)+30}" font-size="10" fill="#7dd3fc">${d.units} units sold</text>
-            <text x="${tipX+8}" y="${Math.max(5,tipY-40)+44}" font-size="10" fill="#fbbf24">avg ₪${d.avgPrice}</text>
+        const tipY = Math.max(5, Math.min(uy, py > 0 ? py : uy) - 50);
+        return `<g class="chart-point" data-date="${d.date}" data-units="${d.units}" data-price="${d.avgPrice}" data-uy="${Math.round(uy)}" data-py="${Math.round(py)}" data-tipx="${Math.round(tipX)}" data-tipy="${Math.round(tipY)}">
+          <rect x="${x-16}" y="0" width="32" height="${H}" fill="transparent" style="cursor:crosshair;"/>
+          <line x1="${x}" y1="${pad}" x2="${x}" y2="${H-pad}" stroke="#1B2C58" stroke-width="1" opacity="0" class="cp-vline"/>
+          <circle cx="${x}" cy="${uy}" r="5" fill="#1B2C58" opacity="0" class="cp-dot-u"/>
+          ${d.avgPrice > 0 ? `<circle cx="${x}" cy="${py}" r="5" fill="#b45309" opacity="0" class="cp-dot-p"/>` : ''}
+          <g class="cp-tip" opacity="0">
+            <rect x="${tipX}" y="${tipY}" width="148" height="54" rx="6" fill="#1a1814" opacity=".93"/>
+            <text x="${tipX+8}" y="${tipY+16}" font-size="11" fill="#fff" font-weight="700">${d.date}</text>
+            <text x="${tipX+8}" y="${tipY+31}" font-size="11" fill="#7dd3fc">${d.units} units sold</text>
+            <text x="${tipX+8}" y="${tipY+46}" font-size="11" fill="#fbbf24">${d.avgPrice > 0 ? 'avg ₪'+d.avgPrice : 'no sales'}</text>
           </g>
-          <script>
-            (function(){
-              var g = document.currentScript.parentElement;
-              g.addEventListener('mouseenter', function(){
-                g.querySelector('.hover-line').setAttribute('opacity','1');
-                g.querySelector('.hover-dot-u').setAttribute('opacity','1');
-                g.querySelector('.hover-dot-p').setAttribute('opacity','1');
-                g.querySelector('.hover-tip').setAttribute('opacity','1');
-              });
-              g.addEventListener('mouseleave', function(){
-                g.querySelector('.hover-line').setAttribute('opacity','0');
-                g.querySelector('.hover-dot-u').setAttribute('opacity','0');
-                g.querySelector('.hover-dot-p').setAttribute('opacity','0');
-                g.querySelector('.hover-tip').setAttribute('opacity','0');
-              });
-            })();
-          <\/script>
         </g>`;
       }).join('');
 
