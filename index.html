@@ -955,6 +955,9 @@ document.addEventListener('click', function(e) {
 
   const sp = e.target.closest('[data-save-product]');
   if (sp) { saveProductEditor(sp.dataset.saveProduct); return; }
+
+  const tv = e.target.closest('[data-toggle-variants]');
+  if (tv) { toggleVariants(tv.dataset.toggleVariants); return; }
 });
 
 async function toggleTask(id) {
@@ -1504,7 +1507,7 @@ function renderAtaPricingTable(save=true) {
           ${isNew ? '<span class="ata-new-badge">NEW</span>' : ''}
         </div>
         ${publishLabel}
-        ${p.sizes && p.sizes.length > 0 ? `<button onclick="toggleVariants('${safeId}')" style="font-size:10px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;margin-top:3px;">▼ ${p.sizes.join(' · ')}</button>` : ''}
+        ${p.sizes && p.sizes.length > 0 ? `<button data-toggle-variants="${safeId}" style="font-size:10px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;margin-top:3px;">▼ ${p.sizes.join(' · ')}</button>` : ''}
       </td>
       <td>${p.units}</td>
       <td>
@@ -1524,9 +1527,20 @@ function renderAtaPricingTable(save=true) {
 }
 
 function toggleVariants(safeId) {
-  const row = document.getElementById('variants-' + safeId);
-  if (!row) return;
-  row.style.display = row.style.display === 'none' ? '' : 'none';
+  const target = document.getElementById('variants-' + safeId);
+  if (!target) return;
+  const isOpen = target.style.display !== 'none';
+  // Close all open variant rows
+  document.querySelectorAll('[id^="variants-"]').forEach(r => r.style.display = 'none');
+  // Reset all toggle buttons
+  document.querySelectorAll('[data-toggle-variants]').forEach(b => b.textContent = b.textContent.replace('▲','▼'));
+  if (!isOpen) {
+    target.style.display = '';
+    // Update button text
+    const btn = document.querySelector(`[data-toggle-variants="${safeId}"]`);
+    if (btn) btn.textContent = btn.textContent.replace('▼','▲');
+    target.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
 }
 
 
