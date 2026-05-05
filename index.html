@@ -949,6 +949,12 @@ document.addEventListener('click', function(e) {
   if (del) { deleteTask(del.dataset.taskDelete); return; }
   const cl = e.target.closest('[data-client-detail]');
   if (cl) { openClientDetail(cl.dataset.clientDetail); return; }
+
+  const ep = e.target.closest('[data-edit-product]');
+  if (ep) { toggleProductEditor(ep.dataset.editProduct); return; }
+
+  const sp = e.target.closest('[data-save-product]');
+  if (sp) { saveProductEditor(sp.dataset.saveProduct); return; }
 });
 
 async function toggleTask(id) {
@@ -1294,28 +1300,20 @@ function handleAtaCsv(input) {
 }
 
 function parseAtaCsv(text) {
-  // Remove BOM if present
-  text = text.replace(/^\uFEFF/, '');
-
-  // Parse CSV properly handling quoted fields with commas
+  text = text.replace(/^﻿/, '');
   function parseLine(line) {
-    const result = [];
-    let cur = '';
-    let inQuotes = false;
+    const result = []; let cur = ''; let inQuotes = false;
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
       if (ch === '"') { inQuotes = !inQuotes; }
       else if (ch === ',' && !inQuotes) { result.push(cur.trim()); cur = ''; }
       else { cur += ch; }
     }
-    result.push(cur.trim());
-    return result;
+    result.push(cur.trim()); return result;
   }
-
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   if (!lines.length) return [];
   const headers = parseLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
-
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const cols = parseLine(lines[i]);
@@ -1324,41 +1322,55 @@ function parseAtaCsv(text) {
     rows.push(row);
   }
 
-  // Aggregate by product title
+  // Aggregate by product AND variant
   const map = {};
   rows.forEach(r => {
-    // Support Shopify "Discount by product" report columns
-    const title = r['product title'] || r['product'] || r['title'] || r['product name'] || Object.values(r)[0] || '';
+    const title = r['product title'] || r['product'] || r['title'] || '';
     if (!title) return;
+    const variantRaw = r['product variant title'] || r['variant title'] || r['variant'] || '';
+    // Parse "Color / Size" format
+    const parts = variantRaw.split('/').map(s => s.trim());
+    const color = parts.length >= 2 ? parts.slice(0, parts.length-1).join('/').trim() : '';
+    const size = parts.length >= 1 ? parts[parts.length-1].trim() : '';
 
-    // Units: "net items sold" is the Shopify discount report column
     const units = parseFloat(r['net items sold'] || r['net quantity'] || r['quantity ordered'] || r['units'] || r['quantity'] || 0);
-    // Revenue: net sales
     const revenue = parseFloat(r['net sales'] || r['sales'] || r['revenue'] || 0);
-    // Full price: gross sales
     const fullPrice = parseFloat(r['gross sales'] || r['full price'] || 0);
-    // Discount amount
     const discountAmt = Math.abs(parseFloat(r['discounts'] || r['discount'] || 0));
 
-    if (!map[title]) map[title] = {title, units:0, revenue:0, fullPrice:0, discountAmt:0, count:0};
+    if (!map[title]) map[title] = {title, units:0, revenue:0, fullPrice:0, discountAmt:0, variants:{}};
     map[title].units += units;
     map[title].revenue += revenue;
     map[title].fullPrice += fullPrice;
     map[title].discountAmt += discountAmt;
-    map[title].count++;
+
+    // Track by color+size
+    if (units > 0) {
+      const vKey = color + '|||' + size;
+      if (!map[title].variants[vKey]) map[title].variants[vKey] = {color, size, units:0, revenue:0};
+      map[title].variants[vKey].units += units;
+      map[title].variants[vKey].revenue += revenue;
+    }
   });
 
   return Object.values(map).filter(p => p.units > 0).sort((a,b) => b.units-a.units).map(p => {
     const avgPrice = p.units > 0 ? p.revenue / p.units : 0;
     const avgFullPrice = p.units > 0 ? p.fullPrice / p.units : 0;
-    // Calculate discount % from gross sales and discount amount
     let avgDisc = 0;
-    if (p.fullPrice > 0) {
-      avgDisc = Math.max(0, Math.round((p.discountAmt / p.fullPrice) * 100));
-    } else if (avgFullPrice > 0) {
-      avgDisc = Math.max(0, Math.round((1 - avgPrice/avgFullPrice)*100));
-    }
-    return {...p, avgPrice, avgFullPrice, avgDisc};
+    if (p.fullPrice > 0) avgDisc = Math.max(0, Math.round((p.discountAmt / p.fullPrice) * 100));
+    else if (avgFullPrice > 0) avgDisc = Math.max(0, Math.round((1 - avgPrice/avgFullPrice)*100));
+
+    // Build variant matrix: sizes as columns, colors as rows
+    const variants = Object.values(p.variants);
+    const sizes = [...new Set(variants.map(v => v.size))].filter(Boolean).sort((a,b) => {
+      const order = ['XS','S','M','L','XL','XXL','2XL','3XL'];
+      const ai = order.indexOf(a), bi = order.indexOf(b);
+      if (ai>=0 && bi>=0) return ai-bi;
+      return a.localeCompare(b);
+    });
+    const colors = [...new Set(variants.map(v => v.color))].filter(Boolean).sort();
+
+    return {...p, avgPrice, avgFullPrice, avgDisc, variants, sizes, colors};
   });
 }
 
@@ -1405,7 +1417,6 @@ function renderAtaPricingTable(save=true) {
     const meta = ataProductMeta[p.title] || {};
     const isNew = !meta.publishDate && !meta.fullPrice;
     const safeId = p.title.replace(/[^a-zA-Z0-9]/g,'_');
-    // Use real full price from meta if available
     let disc = p.avgDisc;
     if (meta.fullPrice > 0 && p.avgPrice > 0) {
       disc = Math.max(0, Math.round((1 - p.avgPrice / meta.fullPrice) * 100));
@@ -1413,6 +1424,58 @@ function renderAtaPricingTable(save=true) {
     const badgeClass = disc <= 15 ? 'badge-green' : disc <= 30 ? 'badge-amber' : 'badge-red';
     const margin = (meta.fullPrice > 0 && meta.cogs > 0) ? Math.round(((p.avgPrice - meta.cogs) / p.avgPrice) * 100) : null;
     const publishLabel = meta.publishDate ? `<div style="font-size:11px;color:var(--ink3);">${meta.publishDate}</div>` : '';
+
+    // Build size breakdown HTML
+    let variantHtml = '';
+    if (p.sizes && p.sizes.length > 0) {
+      const maxUnits = Math.max(...Object.values(p.variants).map(v => v.units));
+      // Size totals
+      const sizeTotals = {};
+      p.sizes.forEach(s => {
+        sizeTotals[s] = Object.values(p.variants).filter(v => v.size === s).reduce((sum,v) => sum+v.units, 0);
+      });
+      const bestSize = p.sizes.reduce((a,b) => sizeTotals[a] >= sizeTotals[b] ? a : b);
+
+      variantHtml = `<tr id="variants-${safeId}" style="display:none;">
+        <td colspan="6" style="padding:0 8px 12px;background:var(--bg);">
+          <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:4px;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead>
+                <tr style="background:#1B2C58;color:#fff;">
+                  <th style="padding:6px 10px;text-align:left;font-weight:600;">Color</th>
+                  ${p.sizes.map(s => `<th style="padding:6px 10px;text-align:center;font-weight:600;${s===bestSize?'background:rgba(255,255,255,.2);':''}">${s}</th>`).join('')}
+                  <th style="padding:6px 10px;text-align:center;font-weight:600;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${p.colors.length > 0 ? p.colors.map(color => {
+                  const colorTotal = Object.values(p.variants).filter(v => v.color === color).reduce((s,v) => s+v.units, 0);
+                  return `<tr style="border-top:1px solid var(--border);">
+                    <td style="padding:6px 10px;font-weight:600;">${color}</td>
+                    ${p.sizes.map(size => {
+                      const vKey = color + '|||' + size;
+                      const v = p.variants[vKey];
+                      const u = v ? v.units : 0;
+                      const pct = maxUnits > 0 ? u/maxUnits : 0;
+                      const bg = u === 0 ? '' : pct > 0.7 ? 'background:var(--green-bg);color:var(--green);font-weight:700;' : pct > 0.3 ? 'background:var(--amber-bg);color:var(--amber);' : '';
+                      return `<td style="padding:6px 10px;text-align:center;${bg}">${u > 0 ? u : '—'}</td>`;
+                    }).join('')}
+                    <td style="padding:6px 10px;text-align:center;font-weight:700;">${colorTotal}</td>
+                  </tr>`;
+                }).join('') : `<tr><td colspan="${p.sizes.length+2}" style="padding:10px;text-align:center;color:var(--ink3);">No color data</td></tr>`}
+                <tr style="border-top:2px solid var(--border);background:var(--bg2);">
+                  <td style="padding:6px 10px;font-weight:700;">Total</td>
+                  ${p.sizes.map(s => `<td style="padding:6px 10px;text-align:center;font-weight:700;${s===bestSize?'color:var(--green);':''}">${sizeTotals[s]}</td>`).join('')}
+                  <td style="padding:6px 10px;text-align:center;font-weight:700;">${p.units}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="padding:6px 10px;font-size:11px;color:var(--ink3);">🏆 Best size: <strong style="color:var(--green)">${bestSize}</strong> (${sizeTotals[bestSize]} units)</div>
+          </div>
+        </td>
+      </tr>`;
+    }
+
     return `<tr id="row-${safeId}">
       <td>
         <div style="display:flex;align-items:center;gap:6px;">
@@ -1420,6 +1483,7 @@ function renderAtaPricingTable(save=true) {
           ${isNew ? '<span class="ata-new-badge">NEW</span>' : ''}
         </div>
         ${publishLabel}
+        ${p.sizes && p.sizes.length > 0 ? `<button onclick="toggleVariants('${safeId}')" style="font-size:10px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;margin-top:3px;">▼ ${p.sizes.join(' · ')}</button>` : ''}
       </td>
       <td>${p.units}</td>
       <td>
@@ -1431,11 +1495,17 @@ function renderAtaPricingTable(save=true) {
         <div>₪${Math.round(p.revenue).toLocaleString()}</div>
         ${margin !== null ? `<div style="font-size:11px;color:var(--green);">margin ${margin}%</div>` : ''}
       </td>
-      <td><button class="ata-edit-btn" onclick="toggleProductEditor('${p.title.replace(/'/g,"\'")}')">✏️ Edit</button></td>
-    </tr>`;
+      <td><button class="ata-edit-btn" data-edit-product="${p.title}">✏️ Edit</button></td>
+    </tr>${variantHtml}`;
   }).join('');
 
   if (save) savePricingToSheets();
+}
+
+function toggleVariants(safeId) {
+  const row = document.getElementById('variants-' + safeId);
+  if (!row) return;
+  row.style.display = row.style.display === 'none' ? '' : 'none';
 }
 
 
@@ -1492,7 +1562,7 @@ function toggleProductEditor(title) {
         <label>COGS ₪</label>
         <input type="number" id="ep-cogs-${safeId}" value="${meta.cogs||''}" placeholder="e.g. 42">
       </div>
-      <button class="ata-save-btn" onclick="saveProductEditor('${title.replace(/'/g,"\'")}')">Save</button>
+      <button class="ata-save-btn" data-save-product="${title.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}">Save</button>
     </div>
   </td>`;
   tr.after(editorRow);
