@@ -1660,22 +1660,36 @@ function renderAtaPricingTable(save=true) {
 
     const dailyData = p.dailyData || [];
     const dailyChartHTML = dailyData.length > 1 ? (() => {
-      const maxUnits = Math.max(...dailyData.map(d=>d.units), 1);
-      const maxPrice = Math.max(...dailyData.map(d=>d.avgPrice), 1);
-      const minPrice = Math.min(...dailyData.map(d=>d.avgPrice).filter(p=>p>0));
+      // Fill in missing dates with zeros so the full range is visible
+      const filledDaily = [];
+      if (dailyData.length > 1) {
+        const start = new Date(dailyData[0].date);
+        const end = new Date(dailyData[dailyData.length-1].date);
+        const dataMap = {};
+        dailyData.forEach(d => dataMap[d.date] = d);
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+          const key = d.toISOString().split('T')[0];
+          filledDaily.push(dataMap[key] || {date: key, units: 0, avgPrice: 0});
+        }
+      } else {
+        filledDaily.push(...dailyData);
+      }
+      const maxUnits = Math.max(...filledDaily.map(d=>d.units), 1);
+      const maxPrice = Math.max(...filledDaily.map(d=>d.avgPrice), 1);
+      const minPrice = Math.min(...filledDaily.filter(d=>d.avgPrice>0).map(d=>d.avgPrice), maxPrice);
       const W = 800, H = 220, pad = 50;
-      const xStep = (W - pad*2) / Math.max(dailyData.length - 1, 1);
+      const xStep = (W - pad*2) / Math.max(filledDaily.length - 1, 1);
       const chartId = 'chart-' + Math.random().toString(36).slice(2,8);
 
       // Units line points
-      const unitPts = dailyData.map((d,i) => {
+      const unitPts = filledDaily.map((d,i) => {
         const x = pad + i * xStep;
         const y = H - pad - ((d.units / maxUnits) * (H - pad*2));
         return `${x},${y}`;
       }).join(' ');
 
       // Price line points
-      const pricePts = dailyData.map((d,i) => {
+      const pricePts = filledDaily.map((d,i) => {
         const x = pad + i * xStep;
         const priceRange = maxPrice - minPrice || 1;
         const y = H - pad - (((d.avgPrice - minPrice) / priceRange) * (H - pad*2));
@@ -1683,15 +1697,15 @@ function renderAtaPricingTable(save=true) {
       }).join(' ');
 
       // X axis labels
-      const step = Math.max(1, Math.floor(dailyData.length / 8));
-      const labels = dailyData.map((d,i) => {
-        if (i % step !== 0 && i !== dailyData.length-1) return '';
+      const step = Math.max(1, Math.floor(filledDaily.length / 8));
+      const labels = filledDaily.map((d,i) => {
+        if (i % step !== 0 && i !== filledDaily.length-1) return '';
         const x = pad + i * xStep;
         return `<text x="${x}" y="${H-6}" text-anchor="middle" font-size="10" fill="#a09d97">${d.date.slice(5)}</text>`;
       }).join('');
 
       // Hover dots with tooltips
-      const hoverDots = dailyData.map((d,i) => {
+      const hoverDots = filledDaily.map((d,i) => {
         const x = pad + i * xStep;
         const uy = H - pad - ((d.units / maxUnits) * (H - pad*2));
         const priceRange = maxPrice - minPrice || 1;
