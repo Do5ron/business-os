@@ -1617,18 +1617,15 @@ function renderAtaPricingTable(save=true) {
   const firstP = ataPricingData[0] || {};
   const dateRange = (firstP.dateFrom && firstP.dateTo) ? ` · ${firstP.dateFrom.split('T')[0]} — ${firstP.dateTo.split('T')[0]}` : '';
   document.getElementById('ata-pricing-sub').textContent = `Total: ${ataPricingData.reduce((s,p)=>s+p.units,0)} units · ₪${Math.round(ataPricingData.reduce((s,p)=>s+p.revenue,0)).toLocaleString()} revenue${dateRange}`;
+  // Update status bar
+  const statusBar = document.getElementById('ata-data-status');
+  if (statusBar && firstP.dateFrom) {
+    statusBar.style.display = 'flex';
+    const dr = document.getElementById('ata-date-range');
+    if (dr) dr.textContent = firstP.dateFrom.split('T')[0] + ' — ' + (firstP.dateTo||'').split('T')[0];
+  }
 
   const sortBy = document.getElementById('ata-sort')?.value || 'units';
-  // Update status bar
-  if (ataPricingData.length) {
-    const fp = ataPricingData[0];
-    const statusBar = document.getElementById('ata-data-status');
-    if (statusBar) {
-      statusBar.style.display = 'flex';
-      const dr = document.getElementById('ata-date-range');
-      if (dr && fp.dateFrom && fp.dateTo) dr.textContent = fp.dateFrom.split('T')[0] + ' — ' + fp.dateTo.split('T')[0];
-    }
-  }
   const rankedData = calcBestSellers(ataPricingData, ataProductMeta).sort((a,b) => {
     if (sortBy === 'velocity') return (b.velocity||0) - (a.velocity||0);
     if (sortBy === 'revenue') return b.revenue - a.revenue;
