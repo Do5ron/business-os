@@ -607,7 +607,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Inconsolata',monospace;m
                 <option value="thismonth">Published this month</option>
                 <option value="lastmonth">Published last month</option>
                 <option value="nodate">No publish date</option>
-                <option value="nofirstseen">First seen this month</option>
+                <option value="nofirstseen">New this month (no publish date)</option>
               </select>
               <button onclick="manageExcluded()" id="ata-excluded-btn" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-bg);border-radius:8px;padding:8px 14px;font-family:'Inconsolata',monospace;font-size:12px;cursor:pointer;display:none;">✕ Hidden (<span id="ata-excluded-count">0</span>)</button>
               <button id="ata-ai-btn" onclick="runAtaAI()" style="background:#1B2C58;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">✨ Get AI Recommendations</button>
@@ -999,6 +999,16 @@ document.addEventListener('click', function(e) {
       ataExcluded.push(title);
       localStorage.setItem('ata_excluded', JSON.stringify(ataExcluded));
     }
+    renderAtaPricingTable(false);
+    return;
+  }
+
+  const oosBtn = e.target.closest('[data-oos-product]');
+  if (oosBtn) {
+    const title = oosBtn.dataset.oosProduct;
+    if (!ataProductMeta[title]) ataProductMeta[title] = {publishDate:'',fullPrice:0,cogs:0,firstSeen:''};
+    ataProductMeta[title].outOfStock = !ataProductMeta[title].outOfStock;
+    saveProductMeta();
     renderAtaPricingTable(false);
     return;
   }
@@ -1757,7 +1767,12 @@ function renderAtaPricingTable(save=true) {
       if (filterDate === 'thismonth') return pd.startsWith(thisMonthStr);
       if (filterDate === 'lastmonth') return pd.startsWith(lastMonthStr);
       if (filterDate === 'nodate') return !pd;
-      if (filterDate === 'nofirstseen') return fs.startsWith(thisMonthStr);
+      if (filterDate === 'nofirstseen') {
+        // First seen this month = firstSeen set this month OR no publish date yet
+        const isNewThisMonth = fs.startsWith(thisMonthStr);
+        const hasNoPublish = !pd;
+        return isNewThisMonth || hasNoPublish;
+      }
       return true;
     }),
     ataProductMeta
@@ -1968,9 +1983,10 @@ function renderAtaPricingTable(save=true) {
     return `<tr id="row-${safeId}">
       <td>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-          <span style="font-weight:600;">${p.title}</span>
+          <span style="font-weight:600;${meta.outOfStock?'text-decoration:line-through;color:var(--ink3);':''}">${p.title}</span>
           ${isNew ? '<span class="ata-new-badge">NEW</span>' : ''}
-          ${bsBadge}
+          ${meta.outOfStock ? '<span class="ata-new-badge" style="background:var(--ink);color:#fff;">🚫 OOS</span>' : ''}
+          ${!meta.outOfStock ? bsBadge : ''}
         </div>
         ${publishLabel}
         ${velocityLabel}
@@ -1988,6 +2004,7 @@ function renderAtaPricingTable(save=true) {
       </td>
       <td style="display:flex;gap:4px;flex-direction:column;">
         <button class="ata-edit-btn" data-edit-product="${p.title}">✏️ Edit</button>
+        <button class="ata-edit-btn" data-oos-product="${p.title}" style="${meta.outOfStock?'background:var(--ink);color:#fff;border-color:var(--ink);':'border-color:var(--ink3);color:var(--ink3);'}font-size:10px;">${meta.outOfStock?'✓ OOS':'🚫 OOS'}</button>
         <button class="ata-edit-btn" data-exclude-product="${p.title}" style="border-color:var(--red);color:var(--red);font-size:10px;">✕ Hide</button>
       </td>
     </tr>${sizeRow}`;
@@ -2034,7 +2051,8 @@ async function loadProductMeta() {
         publishDate: obj['publishdate']||'',
         fullPrice: Number(obj['fullprice']||0),
         cogs: Number(obj['cogs']||0),
-        firstSeen: obj['firstseen']||''
+        firstSeen: obj['firstseen']||'',
+        outOfStock: obj['outofstock']==='true'
       };
     });
   } catch(e) { console.log('No product meta yet'); }
@@ -2042,8 +2060,8 @@ async function loadProductMeta() {
 
 async function saveProductMeta() {
   const rows = [
-    ['title','publishDate','fullPrice','cogs','firstSeen'],
-    ...Object.entries(ataProductMeta).map(([title, m]) => [title, m.publishDate||'', m.fullPrice||0, m.cogs||0, m.firstSeen||''])
+    ['title','publishDate','fullPrice','cogs','firstSeen','outOfStock'],
+    ...Object.entries(ataProductMeta).map(([title, m]) => [title, m.publishDate||'', m.fullPrice||0, m.cogs||0, m.firstSeen||'', m.outOfStock?'true':''])
   ];
   await gasWrite('ata_products', rows);
 }
