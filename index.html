@@ -784,8 +784,7 @@ async function loadAll() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   renderAll(); generateFocus();
-  loadPricingFromSheets();
-  loadProductMeta();
+  loadProductMeta().then(() => loadPricingFromSheets());
 }
 
 function injectRecurringTasks() {
@@ -1744,7 +1743,7 @@ function toggleVariants(safeId) {
 
 // ── ATA WEAR: Product Meta (publish date, full price, COGS) ──────────────────
 async function loadProductMeta() {
-  try {
+  try { // returns promise
     const rows = await gasRead('ata_products');
     if (!rows || rows.length < 2) return;
     const headers = rows[0].map(h => String(h).toLowerCase().replace(/ /g,''));
